@@ -389,6 +389,64 @@ code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
+.mcp-basics {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  gap: 48px;
+  align-items: start;
+  padding: 82px 40px;
+  background: #fbfdff;
+  border-top: 1px solid var(--line);
+}
+
+.mcp-basics h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 46px;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.mcp-basics p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.basics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.basics-card {
+  min-height: 210px;
+  padding: 24px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, .05);
+}
+
+.basics-card span {
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.basics-card strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.basics-card p {
+  font-size: 15px;
+}
+
 .workflows {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -980,6 +1038,7 @@ footer a {
   }
 
   .workflows,
+  .mcp-basics,
   .reports,
   .baseline-section,
   .e2e-proof,
@@ -1015,6 +1074,7 @@ footer a {
 
   .hero,
   .workflows,
+  .mcp-basics,
   .reports,
   .baseline-section,
   .e2e-proof,
@@ -1094,6 +1154,7 @@ footer a {
     font-size: 26px;
   }
 
+  .mcp-basics h2,
   .reports h2,
   .baseline-copy h2,
   .e2e-proof h2,
@@ -1103,6 +1164,10 @@ footer a {
   }
 
   .mini-report {
+    grid-template-columns: 1fr;
+  }
+
+  .basics-grid {
     grid-template-columns: 1fr;
   }
 

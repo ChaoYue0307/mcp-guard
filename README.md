@@ -22,6 +22,21 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.8"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
+## MCP Basics
+
+MCP, the Model Context Protocol, is a common way for AI apps and agents to connect to external tools, files, and services.
+
+In practice, most MCP risk lives in the config file that tells an AI client what servers to start or call.
+
+| Concept | Plain-English meaning | Why security teams should care |
+| --- | --- | --- |
+| MCP client | The AI app or agent runtime, such as Claude Desktop, Cursor, Codex, or an internal agent. | It decides which MCP servers are available to the model. |
+| MCP server | A local process or remote endpoint that exposes tools, resources, or prompts. | It may read files, run commands, call SaaS APIs, or send data outside the machine. |
+| MCP config | JSON or project config that lists server commands, URLs, args, env vars, working directories, and headers. | A small config change can introduce shell execution, broad filesystem access, or long-lived credentials. |
+| Review point | The moment before a server is added locally or merged into a repo. | This is where `mcp-guard` scans for risky commands, unpinned packages, leaked secrets, broad paths, and remote endpoints. |
+
+`mcp-guard` does not try to replace MCP. It gives teams a quick way to review MCP tool access before agents can use it.
+
 ## Install
 
 ```bash

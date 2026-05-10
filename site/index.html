@@ -18,6 +18,7 @@
         <span>mcp-guard</span>
       </a>
       <nav aria-label="Primary navigation">
+        <a href="#mcp-basics">MCP</a>
         <a href="#scan">Scan</a>
         <a href="#action">Action</a>
         <a href="#baseline">Baseline</a>
@@ -98,6 +99,37 @@
   "message": "Shell command executes inline script",
   "uri": "mcp-servers.json"
 }</code></pre>
+        </div>
+      </section>
+
+      <section class="mcp-basics" id="mcp-basics">
+        <div class="basics-copy">
+          <span class="eyebrow">MCP basics</span>
+          <h2>Understand the config before an agent uses it.</h2>
+          <p>MCP connects AI clients to tool servers. That connection is powerful because a server can expose file access, shell commands, SaaS APIs, databases, browser tools, or remote endpoints.</p>
+          <p>The config is the review point. It shows what command starts, which package runs, what paths are mounted, and what secrets or headers are passed into the server.</p>
+        </div>
+        <div class="basics-grid" aria-label="MCP basics">
+          <div class="basics-card">
+            <span>Client</span>
+            <strong>AI app or agent runtime</strong>
+            <p>Claude Desktop, Cursor, Codex, or an internal agent decides which MCP servers are available to the model.</p>
+          </div>
+          <div class="basics-card">
+            <span>Server</span>
+            <strong>Tool, data, or service bridge</strong>
+            <p>A local process or remote endpoint exposes tools, resources, or prompts that the agent can call.</p>
+          </div>
+          <div class="basics-card">
+            <span>Config</span>
+            <strong>Commands, URLs, args, env, headers</strong>
+            <p>This is where shell wrappers, unpinned packages, broad filesystem paths, and credentials usually enter.</p>
+          </div>
+          <div class="basics-card">
+            <span>Guardrail</span>
+            <strong>Review before merge or local install</strong>
+            <p>Scan the config before the agent runs it, then commit policy and baseline files for repeatable team review.</p>
+          </div>
         </div>
       </section>
 
