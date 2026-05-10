@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "description": "Open-source CLI scanner for risky MCP server and AI agent tool configuration.",
   "type": "module",
+  "homepage": "https://chaoyue0307.github.io/mcp-guard/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChaoYue0307/mcp-guard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ChaoYue0307/mcp-guard/issues"
+  },
   "bin": {
     "mcp-guard": "bin/mcp-guard.js"
   },
@@ -33,7 +41,10 @@
     "src",
     "README.md",
     "LICENSE",
+    "SECURITY.md",
     "docs",
-    "examples"
+    "examples",
+    "site/assets/readme-hero.svg",
+    "site/assets/brand-mark.svg"
   ]
 }

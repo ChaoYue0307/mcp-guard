@@ -3,6 +3,7 @@ node_modules/
 .release-check/
 coverage/
 dist/
+output/playwright/
 *.tgz
 .DS_Store
 *.log

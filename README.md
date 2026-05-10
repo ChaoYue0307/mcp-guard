@@ -1,39 +1,26 @@
+<p align="center">
+  <img src="site/assets/readme-hero.svg" alt="mcp-guard scan report hero" width="100%">
+</p>
+
 # mcp-guard
 
-Open-source CLI scanner for risky MCP server and AI agent tool configuration.
+Local-first security scanning for MCP and AI agent tool configs.
 
-`mcp-guard` helps developers review MCP configs before giving AI agents access to files, shells, credentials, SaaS tools, or production systems.
+`mcp-guard` helps teams review what their AI agents can execute before those agents touch local files, shells, credentials, SaaS accounts, or production systems.
 
-## What It Detects
+Website: [chaoyue0307.github.io/mcp-guard](https://chaoyue0307.github.io/mcp-guard/)
 
-- Shell wrappers and inline scripts.
-- `node -e`, `python -c`, and other interpreter eval modes.
-- Remote package runners such as `npx`, `uvx`, `bunx`, and `pnpm dlx`.
-- Unpinned MCP server package versions.
-- Secret-like environment variables and headers.
-- Broad filesystem access such as `/`, home, Desktop, Documents, or Downloads.
-- Remote MCP server URLs.
-- Dangerous command patterns such as `rm -rf`, `sudo`, `chmod 777`, and curl pipe to shell.
+<p>
+  <a href="https://www.npmjs.com/package/agent-mcp-guard"><img alt="npm version" src="https://img.shields.io/npm/v/agent-mcp-guard?color=0f766e"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.1.0"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+</p>
 
 ## Install
 
-For local development from this repo:
-
-```bash
-npm install -g .
-```
-
-After npm publication:
-
 ```bash
 npm install -g agent-mcp-guard
-```
-
-## Usage
-
-Scan common Claude Desktop, Cursor, and project MCP config locations:
-
-```bash
 mcp-guard scan
 ```
 
@@ -49,15 +36,43 @@ Generate a Markdown report:
 mcp-guard scan --format markdown --output mcp-guard-report.md
 ```
 
-Use in CI and fail when high-risk findings are present:
+Use in CI:
 
 ```bash
 mcp-guard scan --config .mcp.json --fail-on high
 ```
 
-## Supported Config Shape
+## What It Finds
 
-`mcp-guard` supports the common MCP config shape used by Claude Desktop, Cursor, and many project configs:
+| Risk | Why it matters |
+| --- | --- |
+| Shell wrappers and inline scripts | Agent startup can become arbitrary code execution. |
+| `npx`, `uvx`, `bunx`, `pnpm dlx` | Remote package execution expands supply-chain risk. |
+| Unpinned packages | A trusted MCP server can change underneath you. |
+| Secret-like env vars and headers | Long-lived tokens leak into tool runtimes and reports. |
+| Broad filesystem access | Home, root, Desktop, Documents, and Downloads are high-blast-radius paths. |
+| Remote MCP URLs | Data may leave the local trust boundary. |
+| Dangerous command patterns | `rm -rf`, `sudo`, `chmod 777`, and curl-pipe-shell should block review. |
+
+## Example Output
+
+```text
+mcp-guard scan report
+Scanned files: 1
+MCP servers: 3
+Findings: 9
+Risk score: 98
+Critical: 2  High: 5  Medium: 2  Low: 0
+
+- [CRITICAL] MCP010 Shell command executes inline script
+- [HIGH] MCP021 Remote MCP package is not version pinned
+- [HIGH] MCP030 Secret-like environment variable is exposed to MCP server
+- [HIGH] MCP041 MCP server argument grants broad filesystem access
+```
+
+See the full sample report: [examples/sample-report.md](examples/sample-report.md)
+
+## Supported Config Shape
 
 ```json
 {
@@ -74,15 +89,35 @@ mcp-guard scan --config .mcp.json --fail-on high
 }
 ```
 
-It also accepts `servers` as an alternative top-level key.
+`mcp-guard` supports the common `mcpServers` shape used by Claude Desktop, Cursor, and project-level MCP configs. It also accepts `servers` as an alternative top-level key.
 
-## Example
+## Why Local-First
 
-```bash
-npm run scan:example
-```
+MCP configs often contain sensitive local paths, internal hostnames, tokens, and workflow details. `mcp-guard` runs locally by default:
 
-This scans `examples/unsafe-claude_desktop_config.json` and writes `examples/sample-report.md`.
+- no config upload;
+- no external API call;
+- secret-like values redacted in reports;
+- text, Markdown, and JSON output for local review and CI.
+
+## Commercial Support
+
+Need help reviewing a real AI agent or MCP setup?
+
+I offer private **AI Agent/MCP Security Audits** covering server inventory, risky startup commands, secret exposure, filesystem scope, remote MCP endpoints, and remediation planning.
+
+Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
+
+Service details: [docs/paid-audit.md](docs/paid-audit.md)
+
+## Documentation
+
+- [Rule reference](docs/rules.md)
+- [Privacy and security](docs/privacy-and-security.md)
+- [Roadmap](docs/roadmap.md)
+- [Business playbook](docs/business-playbook.md)
+- [Launch checklist](docs/launch-checklist.md)
+- [Operator runbook](docs/operator-runbook.md)
 
 ## Exit Codes
 
@@ -90,29 +125,12 @@ This scans `examples/unsafe-claude_desktop_config.json` and writes `examples/sam
 - `1`: CLI usage or runtime error.
 - `2`: finding severity met `--fail-on` threshold.
 
-## Privacy
+## Development
 
-`mcp-guard` is local-first:
-
-- It does not upload configs.
-- It does not call external APIs.
-- It redacts secret-like values in reports by default.
-
-MCP configs and reports can still contain sensitive paths, hostnames, and configuration details. Review before sharing.
-
-## Documentation
-
-- [Rule reference](docs/rules.md)
-- [Privacy and security](docs/privacy-and-security.md)
-- [Paid audit service](docs/paid-audit.md)
-- [Launch checklist](docs/launch-checklist.md)
-- [Operator runbook](docs/operator-runbook.md)
-
-## Commercial Support
-
-Need a private AI Agent/MCP security audit?
-
-The first paid service is a focused review of your MCP and agent tool setup: inventory, risk report, remediation checklist, and a hardening call. See [docs/paid-audit.md](docs/paid-audit.md).
+```bash
+npm test
+npm run release:check
+```
 
 ## License
 

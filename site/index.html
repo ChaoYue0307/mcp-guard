@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>mcp-guard | Local-first MCP security scanner</title>
+    <meta name="description" content="mcp-guard scans MCP and AI agent tool configs for risky shell access, unpinned packages, broad filesystem permissions, exposed secrets, and remote MCP servers.">
+    <meta property="og:title" content="mcp-guard">
+    <meta property="og:description" content="Local-first MCP and AI agent config security scanner.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="assets/brand-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="mcp-guard home">
+        <img src="assets/brand-mark.svg" alt="">
+        <span>mcp-guard</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#scan">Scan</a>
+        <a href="#audit">Audit</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="https://github.com/ChaoYue0307/mcp-guard">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Review MCP tool risk before your agent gets the keys.</h1>
+          <p>mcp-guard is a local-first CLI that scans MCP and AI agent tool configs for risky shell access, unpinned packages, broad filesystem scope, exposed secrets, and remote MCP servers.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="https://www.npmjs.com/package/agent-mcp-guard">Install from npm</a>
+            <a class="button secondary" href="mailto:hechaoyue0307@gmail.com?subject=MCP%20security%20audit">Book an audit</a>
+          </div>
+          <div class="install-command" aria-label="Install command">
+            <code>npm install -g agent-mcp-guard</code>
+            <code>mcp-guard scan</code>
+          </div>
+        </div>
+
+        <div class="hero-panel" aria-label="Example mcp-guard scan report">
+          <div class="terminal-bar">
+            <span></span><span></span><span></span>
+            <code>mcp-guard scan --fail-on high</code>
+          </div>
+          <div class="report-head">
+            <div>
+              <p>Risk score</p>
+              <strong>98</strong>
+            </div>
+            <div>
+              <p>Findings</p>
+              <strong>9</strong>
+            </div>
+            <div>
+              <p>Servers</p>
+              <strong>3</strong>
+            </div>
+          </div>
+          <div class="finding critical">
+            <span>Critical</span>
+            <p>MCP010 Shell command executes inline script</p>
+          </div>
+          <div class="finding high">
+            <span>High</span>
+            <p>MCP030 Secret-like environment variable exposed</p>
+          </div>
+          <div class="finding high">
+            <span>High</span>
+            <p>MCP041 Broad filesystem access</p>
+          </div>
+          <div class="finding medium">
+            <span>Medium</span>
+            <p>MCP060 Remote MCP server URL configured</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="strip" id="scan">
+        <h2>Built for the configs teams actually ship</h2>
+        <div class="risk-grid">
+          <article>
+            <h3>Startup commands</h3>
+            <p>Flags shell wrappers, interpreter eval modes, curl-pipe-shell, sudo, and destructive command patterns.</p>
+          </article>
+          <article>
+            <h3>Supply-chain drift</h3>
+            <p>Highlights npx, uvx, bunx, pnpm dlx, and unpinned MCP packages that can change underneath you.</p>
+          </article>
+          <article>
+            <h3>Credential exposure</h3>
+            <p>Detects secret-like environment variables and headers, then redacts values in generated reports.</p>
+          </article>
+          <article>
+            <h3>Filesystem blast radius</h3>
+            <p>Warns on root, home, Desktop, Documents, Downloads, and other broad local paths.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="split">
+        <div>
+          <h2>Local-first by default</h2>
+          <p>MCP configs can expose private paths, hostnames, tokens, and internal workflow details. mcp-guard runs locally, avoids external API calls, and produces text, Markdown, or redacted JSON output.</p>
+        </div>
+        <pre><code>{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/team"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "..."
+      }
+    }
+  }
+}</code></pre>
+      </section>
+
+      <section class="audit" id="audit">
+        <div class="audit-copy">
+          <h2>Private MCP security audits</h2>
+          <p>For teams already using Claude, Cursor, Codex, or custom agents with real tool access, I can review configs, interpret findings, and help harden the setup.</p>
+        </div>
+        <div class="audit-card">
+          <h3>Audit deliverables</h3>
+          <ul>
+            <li>MCP server inventory</li>
+            <li>Risk report and remediation plan</li>
+            <li>Secret and filesystem scope review</li>
+            <li>60-minute hardening call</li>
+            <li>Optional PR with safer config changes</li>
+          </ul>
+          <a class="button primary" href="mailto:hechaoyue0307@gmail.com?subject=MCP%20security%20audit">Contact for audit</a>
+        </div>
+      </section>
+
+      <section class="roadmap" id="roadmap">
+        <h2>Where the product gets stronger next</h2>
+        <div class="timeline">
+          <div>
+            <span>01</span>
+            <h3>GitHub Action</h3>
+            <p>Make MCP config changes fail PR checks when high-risk findings appear.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <h3>HTML audit report</h3>
+            <p>Create client-ready reports with executive summary, finding table, and remediation checklist.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <h3>Policy mode</h3>
+            <p>Let teams define approved commands, packages, directories, and remote endpoints.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>mcp-guard is Apache-2.0 open source. For private security audits, email <a href="mailto:hechaoyue0307@gmail.com">hechaoyue0307@gmail.com</a>.</p>
+    </footer>
+  </body>
+</html>
+

@@ -1,0 +1,42 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">mcp-guard scan report</title>
+  <desc id="desc">A dark product hero showing an MCP security scan report with critical, high, medium, and low findings.</desc>
+  <rect width="1200" height="420" rx="28" fill="#101312"/>
+  <path d="M0 0h1200v420H0z" fill="url(#grid)" opacity=".22"/>
+  <path d="M925 0h275v150L1015 94 925 132V0z" fill="#0f766e" opacity=".2"/>
+  <path d="M0 282l202 64 144-42v116H0V282z" fill="#7c2d12" opacity=".18"/>
+  <rect x="70" y="66" width="440" height="288" rx="22" fill="#f8fafc"/>
+  <rect x="96" y="94" width="78" height="78" rx="18" fill="#101312"/>
+  <path d="M121 133l15-19 15 19-15 19-15-19z" fill="#2dd4bf"/>
+  <path d="M139 112l23 21-23 21" stroke="#f8fafc" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="198" y="122" fill="#101312" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800">mcp-guard</text>
+  <text x="198" y="154" fill="#475569" font-family="Inter, Arial, sans-serif" font-size="18">Local-first MCP config security scanner</text>
+  <rect x="96" y="196" width="360" height="16" rx="8" fill="#dbeafe"/>
+  <rect x="96" y="226" width="270" height="16" rx="8" fill="#ccfbf1"/>
+  <rect x="96" y="256" width="322" height="16" rx="8" fill="#ffedd5"/>
+  <rect x="96" y="296" width="152" height="40" rx="20" fill="#0f766e"/>
+  <text x="125" y="322" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">npm install</text>
+  <rect x="546" y="44" width="584" height="332" rx="24" fill="#0b0f0e" stroke="#33413d"/>
+  <rect x="546" y="44" width="584" height="54" rx="24" fill="#161d1b"/>
+  <circle cx="576" cy="71" r="6" fill="#ef4444"/>
+  <circle cx="598" cy="71" r="6" fill="#f59e0b"/>
+  <circle cx="620" cy="71" r="6" fill="#10b981"/>
+  <text x="652" y="77" fill="#94a3b8" font-family="Menlo, Consolas, monospace" font-size="14">mcp-guard scan --fail-on high</text>
+  <text x="586" y="134" fill="#e2e8f0" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700">scan report</text>
+  <text x="586" y="172" fill="#94a3b8" font-family="Menlo, Consolas, monospace" font-size="15">MCP servers: 3    Findings: 9    Risk score: 98</text>
+  <rect x="586" y="204" width="138" height="38" rx="12" fill="#7f1d1d"/>
+  <text x="610" y="229" fill="#fecaca" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">2 critical</text>
+  <rect x="742" y="204" width="112" height="38" rx="12" fill="#7c2d12"/>
+  <text x="767" y="229" fill="#fed7aa" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">5 high</text>
+  <rect x="872" y="204" width="124" height="38" rx="12" fill="#713f12"/>
+  <text x="897" y="229" fill="#fde68a" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">2 medium</text>
+  <rect x="586" y="272" width="482" height="1" fill="#33413d"/>
+  <text x="586" y="306" fill="#fca5a5" font-family="Menlo, Consolas, monospace" font-size="15">MCP010 shell command executes inline script</text>
+  <text x="586" y="334" fill="#fdba74" font-family="Menlo, Consolas, monospace" font-size="15">MCP030 secret-like env var exposed</text>
+  <text x="586" y="362" fill="#fef3c7" font-family="Menlo, Consolas, monospace" font-size="15">MCP041 broad filesystem access</text>
+  <defs>
+    <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse">
+      <path d="M38 0H0v38" stroke="#f8fafc" stroke-width="1"/>
+    </pattern>
+  </defs>
+</svg>

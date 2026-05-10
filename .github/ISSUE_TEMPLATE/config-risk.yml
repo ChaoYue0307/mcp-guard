@@ -1,0 +1,32 @@
+name: Config risk report
+description: Report a risky MCP config pattern that mcp-guard should detect.
+title: "[risk]: "
+labels: ["rule-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please remove secrets, tokens, usernames, and private hostnames before sharing config snippets.
+  - type: textarea
+    id: config
+    attributes:
+      label: Redacted config snippet
+      description: Paste the minimal MCP config shape needed to understand the risk.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risk
+      description: What could go wrong if this config is accepted?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected mcp-guard finding
+      description: What should the rule flag and recommend?
+    validations:
+      required: true
+
