@@ -19,6 +19,7 @@
     "scan:example": "node ./bin/mcp-guard.js scan --config examples/unsafe-claude_desktop_config.json --output examples/sample-report.md",
     "release:check": "node ./scripts/release-check.js",
     "launch:github": "node ./scripts/launch-github.js",
+    "marketplace:prepare": "node ./scripts/prepare-marketplace-action.js",
     "publish:npm": "node ./scripts/publish-npm.js",
     "start": "node ./bin/mcp-guard.js"
   },
@@ -44,6 +45,7 @@
     "README.md",
     "action.yml",
     "scripts/action-summary.js",
+    "scripts/prepare-marketplace-action.js",
     "LICENSE",
     "SECURITY.md",
     "docs",

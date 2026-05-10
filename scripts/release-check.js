@@ -89,6 +89,11 @@ const checks = [
     name: "npm pack dry run",
     command: "npm",
     args: ["--cache", "./.npm-cache", "pack", "--dry-run"]
+  },
+  {
+    name: "marketplace action package",
+    command: process.execPath,
+    args: ["scripts/prepare-marketplace-action.js"]
   }
 ];
 
@@ -164,6 +169,14 @@ if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !s
   process.stderr.write("action summary generation failed or missed expected content.\n");
   process.stderr.write(summary.stderr);
   process.exit(summary.status ?? 1);
+}
+
+const marketplaceRoot = path.join(root, "dist", "mcp-guard-action");
+const forbiddenMarketplacePaths = [".github", ".github/workflows"].filter((item) => fs.existsSync(path.join(marketplaceRoot, item)));
+
+if (forbiddenMarketplacePaths.length > 0) {
+  process.stderr.write(`Marketplace action package contains forbidden paths: ${forbiddenMarketplacePaths.join(", ")}\n`);
+  process.exit(1);
 }
 
 process.stdout.write("\nrelease-check passed\n");

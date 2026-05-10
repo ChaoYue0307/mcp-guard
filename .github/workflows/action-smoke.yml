@@ -1,0 +1,30 @@
+name: Action Smoke Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  action-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run mcp-guard action from this repository
+        id: mcp-guard
+        uses: ./
+        with:
+          config: examples/unsafe-claude_desktop_config.json
+          fail-on: none
+          upload-artifact: "false"
+      - name: Verify action outputs
+        run: |
+          test -f "${{ steps.mcp-guard.outputs.markdown-report }}"
+          test -f "${{ steps.mcp-guard.outputs.html-report }}"
+          test -f "${{ steps.mcp-guard.outputs.json-report }}"
+          test -f "${{ steps.mcp-guard.outputs.sarif-report }}"
+          test "${{ steps.mcp-guard.outputs.exit-code }}" = "0"

@@ -1,4 +1,4 @@
-name: mcp-guard
+name: mcp-guard MCP Security Scanner
 description: Scan MCP and AI agent tool configuration for risky commands, secrets, and broad permissions.
 author: mcp-guard
 

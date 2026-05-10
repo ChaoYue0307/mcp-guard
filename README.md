@@ -135,6 +135,7 @@ Service details: [docs/paid-audit.md](docs/paid-audit.md)
 
 - [Rule reference](docs/rules.md)
 - [GitHub Action](docs/github-action.md)
+- [Marketplace publishing plan](docs/marketplace.md)
 - [Privacy and security](docs/privacy-and-security.md)
 - [Roadmap](docs/roadmap.md)
 - [Business playbook](docs/business-playbook.md)
