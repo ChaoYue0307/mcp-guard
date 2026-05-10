@@ -16,6 +16,7 @@ copyFile("docs/marketplace-action-readme.md", "README.md");
 copyDir("bin", "bin");
 copyDir("src", "src");
 copyFile("scripts/action-summary.js", "scripts/action-summary.js");
+copyFile("scripts/action-comment.js", "scripts/action-comment.js");
 writePackageJson();
 validateExport();
 
@@ -58,7 +59,8 @@ function validateExport() {
     "bin/mcp-guard.js",
     "src/cli.js",
     "src/report.js",
-    "scripts/action-summary.js"
+    "scripts/action-summary.js",
+    "scripts/action-comment.js"
   ];
 
   const missing = required.filter((file) => !fs.existsSync(path.join(outputDir, file)));

@@ -82,17 +82,19 @@ Code quality
 Release title:
 
 ```text
-v0.3.1
+v0.4.0
 ```
 
 Release notes:
 
 ```text
-Initial Marketplace-ready release.
+Baseline and pull request comment release.
 
 - Runs mcp-guard from the pinned action tag.
 - Generates Markdown, HTML, JSON, and SARIF reports.
 - Writes a GitHub Step Summary for pull request review.
+- Supports baseline/allowlist files so known accepted findings do not fail CI.
+- Can post or update a pull request comment with active findings.
 - Can upload SARIF to GitHub code scanning with `upload-sarif: "true"`.
 - Fails workflows by configurable severity threshold.
 ```
@@ -103,11 +105,11 @@ Completed:
 
 - Public repository created: <https://github.com/ChaoYue0307/mcp-guard-action>
 - `dist/mcp-guard-action/` exported, committed, and pushed.
-- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.3.1>
+- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.4.0>
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.3.1
+- uses: ChaoYue0307/mcp-guard-action@v0.4.0
 ```
 
 Remaining Marketplace web step:

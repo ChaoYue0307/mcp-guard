@@ -202,6 +202,24 @@ if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !s
   process.exit(summary.status ?? 1);
 }
 
+const comment = spawnSync(process.execPath, [
+  "scripts/action-comment.js",
+  sampleJsonReportPath,
+  sampleReportPath,
+  sampleHtmlReportPath,
+  sampleSarifReportPath,
+  "high"
+], {
+  cwd: root,
+  encoding: "utf8"
+});
+
+if (comment.status !== 0 || !comment.stdout.includes("<!-- mcp-guard-comment -->") || !comment.stdout.includes("Top active findings")) {
+  process.stderr.write("PR comment generation failed or missed expected content.\n");
+  process.stderr.write(comment.stderr);
+  process.exit(comment.status ?? 1);
+}
+
 const marketplaceRoot = path.join(root, "dist", "mcp-guard-action");
 const forbiddenMarketplacePaths = [".github", ".github/workflows"].filter((item) => fs.existsSync(path.join(marketplaceRoot, item)));
 

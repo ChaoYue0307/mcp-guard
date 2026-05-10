@@ -296,8 +296,8 @@
         <div class="grid">
           <div class="metric"><strong>1</strong><span>Scanned files</span></div>
           <div class="metric"><strong>3</strong><span>MCP servers</span></div>
-          <div class="metric"><strong>9</strong><span>Findings</span></div>
-          <div class="metric"><strong>2026-05-10 09:16 UTC</strong><span>Generated</span></div>
+          <div class="metric"><strong>9</strong><span>Active findings</span></div>
+          <div class="metric"><strong>2026-05-10 12:58 UTC</strong><span>Generated</span></div>
         </div>
       </div>
       <aside class="scorecard" aria-label="Risk score">
@@ -357,15 +357,16 @@
     </section>
 
     <section>
-      <h2>Findings</h2>
+      <h2>Active Findings</h2>
       <div class="table-wrap"><table>
-    <thead><tr><th>Severity</th><th>Rule</th><th>Server</th><th>Finding</th><th>Evidence</th><th>Recommendation</th></tr></thead>
+    <thead><tr><th>Severity</th><th>Rule</th><th>Server</th><th>Finding</th><th>Evidence</th><th>Fingerprint</th><th>Recommendation</th></tr></thead>
     <tbody><tr>
     <td><span class="pill critical">critical</span></td>
     <td><code>MCP010</code></td>
     <td>shell-installer</td>
     <td>Shell command executes inline script</td>
     <td><code>command=bash args=-c curl https://example.com/install.sh | bash</code></td>
+    <td><code>mcpg_c2b742f0</code></td>
     <td>Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it.</td>
   </tr><tr>
     <td><span class="pill critical">critical</span></td>
@@ -373,6 +374,7 @@
     <td>shell-installer</td>
     <td>MCP server command includes a dangerous operation</td>
     <td><code>curl pipe to shell</code></td>
+    <td><code>mcpg_73e1a0da</code></td>
     <td>Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately.</td>
   </tr><tr>
     <td><span class="pill high">high</span></td>
@@ -380,6 +382,7 @@
     <td>filesystem-all-home</td>
     <td>Remote MCP package is not version pinned</td>
     <td><code>package=@modelcontextprotocol/server-filesystem</code></td>
+    <td><code>mcpg_7390d900</code></td>
     <td>Pin the package to an exact version such as package@1.2.3 and review updates before changing it.</td>
   </tr><tr>
     <td><span class="pill high">high</span></td>
@@ -387,6 +390,7 @@
     <td>filesystem-all-home</td>
     <td>Secret-like environment variable is exposed to MCP server</td>
     <td><code>GITHUB_TOKEN=ghp...890 (32 chars)</code></td>
+    <td><code>mcpg_73964a76</code></td>
     <td>Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account.</td>
   </tr><tr>
     <td><span class="pill high">high</span></td>
@@ -394,6 +398,7 @@
     <td>filesystem-all-home</td>
     <td>MCP server has a broad working directory</td>
     <td><code>cwd=/</code></td>
+    <td><code>mcpg_70425125</code></td>
     <td>Run the server in a narrow project directory or sandbox with only the files it needs.</td>
   </tr><tr>
     <td><span class="pill high">high</span></td>
@@ -401,6 +406,7 @@
     <td>filesystem-all-home</td>
     <td>MCP server argument grants broad filesystem access</td>
     <td><code>arg=/</code></td>
+    <td><code>mcpg_eea814c0</code></td>
     <td>Replace broad filesystem paths with a dedicated project folder or read-only sandbox path.</td>
   </tr><tr>
     <td><span class="pill high">high</span></td>
@@ -408,6 +414,7 @@
     <td>remote-prod</td>
     <td>Secret-like header is configured for remote MCP server</td>
     <td><code>Authorization=Bea...ken (27 chars)</code></td>
+    <td><code>mcpg_ad4db81f</code></td>
     <td>Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files.</td>
   </tr><tr>
     <td><span class="pill medium">medium</span></td>
@@ -415,6 +422,7 @@
     <td>filesystem-all-home</td>
     <td>MCP server is launched through a remote package runner</td>
     <td><code>command=npx package=@modelcontextprotocol/server-filesystem</code></td>
+    <td><code>mcpg_df881ae7</code></td>
     <td>Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools.</td>
   </tr><tr>
     <td><span class="pill medium">medium</span></td>
@@ -422,10 +430,13 @@
     <td>remote-prod</td>
     <td>Remote MCP server URL is configured</td>
     <td><code>url=https://mcp.example.com/sse</code></td>
+    <td><code>mcpg_45117870</code></td>
     <td>Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints.</td>
   </tr></tbody>
   </table></div>
     </section>
+
+
 
     <section class="notes">
       <h2>Review Notes</h2>

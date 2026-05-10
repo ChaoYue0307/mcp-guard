@@ -43,6 +43,9 @@ test("scan flags common risky MCP config patterns", async () => {
   assert.ok(ids.includes("MCP050"));
   assert.equal(result.summary.serverCount, 2);
   assert.ok(result.summary.counts.high >= 2);
+  assert.ok(result.findings.every((finding) => finding.fingerprint.startsWith("mcpg_")));
+  assert.equal(result.summary.activeFindingCount, result.summary.findingCount);
+  assert.equal(result.summary.acceptedFindingCount, 0);
 });
 
 test("scan discovers project .mcp.json by default", async () => {

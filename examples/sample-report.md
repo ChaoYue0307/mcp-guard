@@ -1,12 +1,12 @@
 # mcp-guard Scan Report
 
-Generated: 2026-05-10T06:56:59.977Z
+Generated: 2026-05-10T12:58:03.265Z
 
 ## Summary
 
 - Scanned files: 1
 - MCP servers: 3
-- Findings: 9
+- Active findings: 9
 - Risk score: 98
 - Critical: 2
 - High: 5
@@ -25,19 +25,19 @@ Generated: 2026-05-10T06:56:59.977Z
 | shell-installer | bash | -c curl https://example.com/install.sh \| bash | - | - | - |
 | remote-prod | - | - | - | https://mcp.example.com/sse | - |
 
-## Findings
+## Active Findings
 
-| Severity | Rule | Server | Finding | Evidence | Recommendation |
-| --- | --- | --- | --- | --- | --- |
-| critical | MCP010 | shell-installer | Shell command executes inline script | command=bash args=-c curl https://example.com/install.sh \| bash | Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it. |
-| critical | MCP050 | shell-installer | MCP server command includes a dangerous operation | curl pipe to shell | Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately. |
-| high | MCP021 | filesystem-all-home | Remote MCP package is not version pinned | package=@modelcontextprotocol/server-filesystem | Pin the package to an exact version such as package@1.2.3 and review updates before changing it. |
-| high | MCP030 | filesystem-all-home | Secret-like environment variable is exposed to MCP server | GITHUB_TOKEN=ghp...890 (32 chars) | Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account. |
-| high | MCP040 | filesystem-all-home | MCP server has a broad working directory | cwd=/ | Run the server in a narrow project directory or sandbox with only the files it needs. |
-| high | MCP041 | filesystem-all-home | MCP server argument grants broad filesystem access | arg=/ | Replace broad filesystem paths with a dedicated project folder or read-only sandbox path. |
-| high | MCP061 | remote-prod | Secret-like header is configured for remote MCP server | Authorization=Bea...ken (27 chars) | Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files. |
-| medium | MCP020 | filesystem-all-home | MCP server is launched through a remote package runner | command=npx package=@modelcontextprotocol/server-filesystem | Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools. |
-| medium | MCP060 | remote-prod | Remote MCP server URL is configured | url=https://mcp.example.com/sse | Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints. |
+| Severity | Rule | Server | Finding | Evidence | Fingerprint | Recommendation |
+| --- | --- | --- | --- | --- | --- | --- |
+| critical | MCP010 | shell-installer | Shell command executes inline script | command=bash args=-c curl https://example.com/install.sh \| bash | mcpg_a009b2c2 | Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it. |
+| critical | MCP050 | shell-installer | MCP server command includes a dangerous operation | curl pipe to shell | mcpg_6bd13204 | Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately. |
+| high | MCP021 | filesystem-all-home | Remote MCP package is not version pinned | package=@modelcontextprotocol/server-filesystem | mcpg_d0af49fa | Pin the package to an exact version such as package@1.2.3 and review updates before changing it. |
+| high | MCP030 | filesystem-all-home | Secret-like environment variable is exposed to MCP server | GITHUB_TOKEN=ghp...890 (32 chars) | mcpg_a5f382b0 | Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account. |
+| high | MCP040 | filesystem-all-home | MCP server has a broad working directory | cwd=/ | mcpg_31aaa689 | Run the server in a narrow project directory or sandbox with only the files it needs. |
+| high | MCP041 | filesystem-all-home | MCP server argument grants broad filesystem access | arg=/ | mcpg_dbc08d76 | Replace broad filesystem paths with a dedicated project folder or read-only sandbox path. |
+| high | MCP061 | remote-prod | Secret-like header is configured for remote MCP server | Authorization=Bea...ken (27 chars) | mcpg_5abd4cbd | Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files. |
+| medium | MCP020 | filesystem-all-home | MCP server is launched through a remote package runner | command=npx package=@modelcontextprotocol/server-filesystem | mcpg_a3493a53 | Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools. |
+| medium | MCP060 | remote-prod | Remote MCP server URL is configured | url=https://mcp.example.com/sse | mcpg_cf1296e4 | Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints. |
 
 ## Notes
 

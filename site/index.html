@@ -20,6 +20,7 @@
       <nav aria-label="Primary navigation">
         <a href="#scan">Scan</a>
         <a href="#action">Action</a>
+        <a href="#baseline">Baseline</a>
         <a href="#reports">Reports</a>
         <a href="#example">Example</a>
         <a href="#pilot">Pilot</a>
@@ -40,6 +41,7 @@
           <div class="trust-row" aria-label="Product properties">
             <span>Local-first</span>
             <span>No config upload</span>
+            <span>Baseline mode</span>
             <span>Apache-2.0 open source</span>
           </div>
         </div>
@@ -81,7 +83,7 @@
             <aside class="pr-panel">
               <h2>GitHub PR Check</h2>
               <strong>Failed</strong>
-              <p>Risk score 98. High-risk MCP changes should be reviewed before merge.</p>
+              <p>2 active critical findings. 7 known findings accepted by baseline.</p>
               <a href="#reports">View reports</a>
             </aside>
           </div>
@@ -118,13 +120,17 @@ mcp-guard scan --format html</code></pre>
           <div class="workflow-icon action-icon">GH</div>
           <h2>Automate with GitHub Action</h2>
           <p>Block risky MCP config changes before they merge, with reports attached to the run.</p>
-          <pre><code>- uses: ChaoYue0307/mcp-guard-action@v0.3.1
+          <pre><code>- uses: ChaoYue0307/mcp-guard-action@v0.4.0
   with:
+    config: .mcp.json
+    baseline: .mcp-guard-baseline.json
     fail-on: high
+    comment-pr: "true"
     upload-sarif: "true"</code></pre>
           <ul>
             <li>Deterministic action from the pinned tag</li>
-            <li>Job summary for quick PR review</li>
+            <li>PR comment and job summary for review</li>
+            <li>Baseline mode for accepted known findings</li>
             <li>SARIF upload for GitHub code scanning</li>
           </ul>
           <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner">View Marketplace listing</a>
@@ -145,6 +151,7 @@ mcp-guard scan --format html</code></pre>
           </div>
           <ul>
             <li>Server inventory and finding table</li>
+            <li>Active vs baseline-accepted findings</li>
             <li>Evidence and remediation guidance</li>
             <li>Useful for internal security reviews</li>
           </ul>
@@ -171,7 +178,38 @@ mcp-guard scan --format html</code></pre>
           <div>
             <span>JSON</span>
             <strong>Automation and dashboards</strong>
-            <p>Machine-readable report for internal tooling, baselines, and future policy workflows.</p>
+            <p>Machine-readable active findings, accepted baseline findings, stable fingerprints, and summary counts.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="baseline-section" id="baseline">
+        <div class="baseline-copy">
+          <span class="eyebrow">Team-ready guardrail</span>
+          <h2>Accept known findings. Block only new risk.</h2>
+          <p>Real repositories rarely start clean. Baseline mode lets teams commit the current reviewed state, keep those findings visible, and fail pull requests only when new high-risk MCP changes appear.</p>
+          <pre><code>mcp-guard scan --config .mcp.json \
+  --write-baseline .mcp-guard-baseline.json
+
+mcp-guard scan --config .mcp.json \
+  --baseline .mcp-guard-baseline.json \
+  --fail-on high</code></pre>
+        </div>
+        <div class="baseline-steps" aria-label="Baseline workflow">
+          <div>
+            <span>01</span>
+            <strong>Generate</strong>
+            <p>Create a JSON baseline with stable fingerprints for current findings.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>Review</strong>
+            <p>Commit the baseline after reviewing accepted risk and reasons.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Enforce</strong>
+            <p>CI reports accepted findings but fails only on new active findings.</p>
           </div>
         </div>
       </section>
@@ -213,19 +251,21 @@ mcp-guard scan --format html</code></pre>
 
       <section class="audit" id="pilot">
         <div class="audit-copy">
-          <h2>Want to try it on a real agent setup?</h2>
-          <p>mcp-guard is an automated local scanner. I am collecting early users, real-world config patterns, and CI setup feedback to improve the product.</p>
+          <h2>Need help wiring this into a real repo?</h2>
+          <p>mcp-guard is an automated local scanner. I am collecting early users, real-world config patterns, CI setup feedback, and baseline workflow needs to improve the product.</p>
         </div>
         <div class="audit-card">
-          <h3>Early pilot scope</h3>
+          <h3>Founding setup scope</h3>
           <ul>
             <li>Run the CLI against local MCP configs</li>
             <li>Generate Markdown, HTML, JSON, and SARIF reports</li>
             <li>Add the GitHub Action to pull request checks</li>
+            <li>Create a reviewed baseline for accepted known findings</li>
+            <li>Enable PR comments for active risk summaries</li>
             <li>Collect missing patterns for future rules</li>
             <li>Keep configs local and redact secret-like values</li>
           </ul>
-          <a class="button primary" href="mailto:hechaoyue0307@gmail.com?subject=mcp-guard%20early%20pilot">Contact for pilot</a>
+          <a class="button primary" href="mailto:hechaoyue0307@gmail.com?subject=mcp-guard%20setup%20pilot">Contact for setup pilot</a>
         </div>
       </section>
     </main>

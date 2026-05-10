@@ -9,14 +9,16 @@
 - Rules for shell wrappers, remote package runners, unpinned packages, broad filesystem access, secret-like env vars/headers, and remote MCP URLs.
 - CI usage with `--fail-on`.
 - GitHub Action wrapper that writes a job summary, uploads Markdown/HTML/JSON/SARIF artifacts, and can upload SARIF to GitHub code scanning.
+- Baseline/allowlist mode for accepting known findings and failing only on new risks.
+- Optional GitHub pull request comments from the Marketplace Action.
 
 ## Next
 
 1. More MCP client discovery paths.
 2. Rule packs mapped to MCP security best practices.
 3. Policy file for approved commands, packages, directories, and remote URLs.
-4. Baseline mode: accept known findings and fail only on new risks.
-5. `mcp-guard audit` mode for review-ready reports.
+4. `mcp-guard audit` mode for review-ready reports.
+5. Safer default remediation snippets for common MCP servers.
 
 ## Later
 

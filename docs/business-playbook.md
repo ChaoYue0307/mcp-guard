@@ -4,31 +4,30 @@
 
 `mcp-guard` is the local-first security scanner for teams adopting AI agents and MCP servers.
 
-The business is not the open-source CLI alone. The CLI creates trust and distribution. Near-term validation comes from early users running the scanner on real setups. Revenue can later come from private audits, remediation, and team workflows once those services are actually offered.
+The business is not the open-source CLI alone. The CLI creates trust and distribution. Near-term validation comes from early users running the scanner on real setups. Revenue can start with setup help and team workflow integration before offering broader manual audits.
 
-## Future Paid Offer
+## Near-Term Paid Offer
 
-AI Agent/MCP Security Audit.
+MCP Guard CI Setup Sprint.
 
-Do not advertise this as active until there is a clear delivery process, pricing, and availability.
+This is setup and product onboarding, not a manual security audit.
 
 Deliverables:
 
-- MCP server inventory;
-- `mcp-guard` Markdown, HTML, JSON, and SARIF scan reports;
-- manual review of high-risk findings;
-- prioritized remediation plan;
-- optional GitHub Action setup for continuous scans;
-- 60-minute hardening call;
-- optional PR with safer config changes.
+- install the CLI and GitHub Action;
+- generate Markdown, HTML, JSON, and SARIF reports;
+- create an initial baseline for accepted known findings;
+- enable PR comments and optional SARIF upload;
+- document missing rule requests for future product work;
+- provide a short setup handoff note.
 
 ## Pricing
 
 | Customer | Price |
 | --- | ---: |
-| Solo founder / indie team | USD 300-800 |
-| Small startup | USD 1,000-3,000 |
-| Funded team / private deployment pilot | USD 3,000-8,000 |
+| Solo founder / indie team | USD 199-500 |
+| Small startup | USD 750-2,000 |
+| Funded team / private deployment pilot | USD 2,000-5,000 |
 
 ## Outreach Copy
 

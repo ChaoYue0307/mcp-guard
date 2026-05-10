@@ -7,7 +7,7 @@
         "driver": {
           "name": "mcp-guard",
           "informationUri": "https://github.com/ChaoYue0307/mcp-guard",
-          "semanticVersion": "0.3.1",
+          "semanticVersion": "0.4.0",
           "rules": [
             {
               "id": "MCP010",
@@ -275,7 +275,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "53023d1e"
+            "mcp-guard/rule-server-evidence": "mcpg_c2b742f0"
           },
           "properties": {
             "severity": "critical",
@@ -310,7 +310,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "195ca278"
+            "mcp-guard/rule-server-evidence": "mcpg_73e1a0da"
           },
           "properties": {
             "severity": "critical",
@@ -345,7 +345,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "ff8588c8"
+            "mcp-guard/rule-server-evidence": "mcpg_7390d900"
           },
           "properties": {
             "severity": "high",
@@ -380,7 +380,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "88eb7690"
+            "mcp-guard/rule-server-evidence": "mcpg_73964a76"
           },
           "properties": {
             "severity": "high",
@@ -415,7 +415,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "28c934c4"
+            "mcp-guard/rule-server-evidence": "mcpg_70425125"
           },
           "properties": {
             "severity": "high",
@@ -450,7 +450,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "8d09d35d"
+            "mcp-guard/rule-server-evidence": "mcpg_eea814c0"
           },
           "properties": {
             "severity": "high",
@@ -485,7 +485,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "c01bb265"
+            "mcp-guard/rule-server-evidence": "mcpg_ad4db81f"
           },
           "properties": {
             "severity": "high",
@@ -520,7 +520,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "5daa06b1"
+            "mcp-guard/rule-server-evidence": "mcpg_df881ae7"
           },
           "properties": {
             "severity": "medium",
@@ -555,7 +555,7 @@
             }
           ],
           "partialFingerprints": {
-            "mcp-guard/rule-server-evidence": "0365e4eb"
+            "mcp-guard/rule-server-evidence": "mcpg_45117870"
           },
           "properties": {
             "severity": "medium",

@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-10T09:16:08.688Z",
+    "generatedAt": "2026-05-10T12:58:03.306Z",
     "cwd": ".",
     "home": "~",
-    "toolVersion": "0.3.1"
+    "toolVersion": "0.4.0"
   },
   "scannedFiles": [
     "site/e2e/claude_desktop_config.json"
@@ -58,7 +58,9 @@
       "serverName": "shell-installer",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "command=bash args=-c curl https://example.com/install.sh | bash",
-      "recommendation": "Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it."
+      "recommendation": "Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it.",
+      "fingerprint": "mcpg_c2b742f0",
+      "status": "active"
     },
     {
       "id": "MCP050",
@@ -67,7 +69,9 @@
       "serverName": "shell-installer",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "curl pipe to shell",
-      "recommendation": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately."
+      "recommendation": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately.",
+      "fingerprint": "mcpg_73e1a0da",
+      "status": "active"
     },
     {
       "id": "MCP021",
@@ -76,7 +80,9 @@
       "serverName": "filesystem-all-home",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "package=@modelcontextprotocol/server-filesystem",
-      "recommendation": "Pin the package to an exact version such as package@1.2.3 and review updates before changing it."
+      "recommendation": "Pin the package to an exact version such as package@1.2.3 and review updates before changing it.",
+      "fingerprint": "mcpg_7390d900",
+      "status": "active"
     },
     {
       "id": "MCP030",
@@ -85,7 +91,9 @@
       "serverName": "filesystem-all-home",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "GITHUB_TOKEN=ghp...890 (32 chars)",
-      "recommendation": "Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account."
+      "recommendation": "Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account.",
+      "fingerprint": "mcpg_73964a76",
+      "status": "active"
     },
     {
       "id": "MCP040",
@@ -94,7 +102,9 @@
       "serverName": "filesystem-all-home",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "cwd=/",
-      "recommendation": "Run the server in a narrow project directory or sandbox with only the files it needs."
+      "recommendation": "Run the server in a narrow project directory or sandbox with only the files it needs.",
+      "fingerprint": "mcpg_70425125",
+      "status": "active"
     },
     {
       "id": "MCP041",
@@ -103,7 +113,9 @@
       "serverName": "filesystem-all-home",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "arg=/",
-      "recommendation": "Replace broad filesystem paths with a dedicated project folder or read-only sandbox path."
+      "recommendation": "Replace broad filesystem paths with a dedicated project folder or read-only sandbox path.",
+      "fingerprint": "mcpg_eea814c0",
+      "status": "active"
     },
     {
       "id": "MCP061",
@@ -112,7 +124,9 @@
       "serverName": "remote-prod",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "Authorization=Bea...ken (27 chars)",
-      "recommendation": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files."
+      "recommendation": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files.",
+      "fingerprint": "mcpg_ad4db81f",
+      "status": "active"
     },
     {
       "id": "MCP020",
@@ -121,7 +135,9 @@
       "serverName": "filesystem-all-home",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "command=npx package=@modelcontextprotocol/server-filesystem",
-      "recommendation": "Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools."
+      "recommendation": "Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools.",
+      "fingerprint": "mcpg_df881ae7",
+      "status": "active"
     },
     {
       "id": "MCP060",
@@ -130,13 +146,19 @@
       "serverName": "remote-prod",
       "configPath": "site/e2e/claude_desktop_config.json",
       "evidence": "url=https://mcp.example.com/sse",
-      "recommendation": "Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints."
+      "recommendation": "Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints.",
+      "fingerprint": "mcpg_45117870",
+      "status": "active"
     }
   ],
+  "acceptedFindings": [],
   "summary": {
     "scannedFileCount": 1,
     "serverCount": 3,
     "findingCount": 9,
+    "activeFindingCount": 9,
+    "acceptedFindingCount": 0,
+    "totalFindingCount": 9,
     "counts": {
       "critical": 2,
       "high": 5,
@@ -144,5 +166,8 @@
       "low": 0
     },
     "riskScore": 98
+  },
+  "baseline": {
+    "enabled": false
   }
 }

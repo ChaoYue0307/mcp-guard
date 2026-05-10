@@ -19,7 +19,7 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.3.1"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.0"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -59,12 +59,22 @@ Use in CI:
 mcp-guard scan --config .mcp.json --fail-on high
 ```
 
+Accept known findings and fail only on new risk:
+
+```bash
+mcp-guard scan --config .mcp.json --write-baseline .mcp-guard-baseline.json
+mcp-guard scan --config .mcp.json --baseline .mcp-guard-baseline.json --fail-on high
+```
+
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.3.1
+- uses: ChaoYue0307/mcp-guard-action@v0.4.0
   with:
+    config: .mcp.json
+    baseline: .mcp-guard-baseline.json
     fail-on: high
+    comment-pr: "true"
     upload-sarif: "true"
 ```
 
@@ -80,7 +90,7 @@ Use the transparent example to evaluate what the scanner actually does:
 - generated JSON report: [site/e2e/report.json](site/e2e/report.json)
 - generated SARIF report: [site/e2e/report.sarif](site/e2e/report.sarif)
 
-The example scans 3 MCP servers and reports 9 findings with a risk score of 98. It is synthetic, but fully reproducible from committed files.
+The example scans 3 MCP servers and reports 9 active findings with a risk score of 98. It is synthetic, but fully reproducible from committed files.
 
 For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307/mcp-guard-demo](https://github.com/ChaoYue0307/mcp-guard-demo).
 
@@ -96,13 +106,24 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 | Remote MCP URLs | Data may leave the local trust boundary. |
 | Dangerous command patterns | `rm -rf`, `sudo`, `chmod 777`, and curl-pipe-shell should block review. |
 
+## Team Workflow
+
+`mcp-guard` now supports a baseline/allowlist workflow for real teams:
+
+1. Generate a baseline from already-known findings.
+2. Commit the baseline file after review.
+3. Run CI with `--baseline` so accepted findings are visible but do not fail the build.
+4. Fail pull requests only when new high-risk MCP changes appear.
+
+The GitHub Action can also post an optional pull request comment with the active finding summary.
+
 ## Example Output
 
 ```text
 mcp-guard scan report
 Scanned files: 1
 MCP servers: 3
-Findings: 9
+Active findings: 9
 Risk score: 98
 Critical: 2  High: 5  Medium: 2  Low: 0
 
@@ -146,13 +167,14 @@ MCP configs often contain sensitive local paths, internal hostnames, tokens, and
 
 Want to try `mcp-guard` on a real AI agent or MCP setup?
 
-The project is currently an automated local scanner. I am collecting early users, real-world config examples, CI setup feedback, and rule requests to improve coverage.
+The project is currently an automated local scanner. I am collecting early users, real-world config examples, CI setup feedback, baseline workflow feedback, and rule requests to improve coverage.
 
 Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
 
 ## Documentation
 
 - [Rule reference](docs/rules.md)
+- [Baseline and allowlist](docs/baseline.md)
 - [GitHub Action](docs/github-action.md)
 - [Marketplace publishing plan](docs/marketplace.md)
 - [Privacy and security](docs/privacy-and-security.md)
