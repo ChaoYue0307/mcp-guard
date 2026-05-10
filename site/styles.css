@@ -481,6 +481,7 @@ code {
 .workflow > a {
   display: inline-flex;
   margin-top: 20px;
+  margin-right: 18px;
   color: var(--teal);
   font-weight: 850;
   text-decoration: none;
@@ -606,6 +607,17 @@ code {
 
 .e2e-proof .button {
   margin-top: 28px;
+}
+
+.proof-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.proof-actions .button {
+  margin-top: 0;
 }
 
 .proof-grid {

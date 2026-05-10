@@ -10,8 +10,13 @@ Local-first security scanning for MCP and AI agent tool configs.
 
 Website: [chaoyue0307.github.io/mcp-guard](https://chaoyue0307.github.io/mcp-guard/)
 
+Marketplace: [mcp-guard MCP Security Scanner](https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner)
+
+Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/pull/1)
+
 <p>
   <a href="https://www.npmjs.com/package/agent-mcp-guard"><img alt="npm version" src="https://img.shields.io/npm/v/agent-mcp-guard?color=0f766e"></a>
+  <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.3.1"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
@@ -63,6 +68,8 @@ Use the GitHub Action:
     upload-sarif: "true"
 ```
 
+Inspect the live demo pull request: [ChaoYue0307/mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/pull/1). It intentionally introduces risky MCP config so the Action fails, uploads reports, and sends SARIF to GitHub code scanning.
+
 ## End-to-End Example
 
 Use the transparent example to evaluate what the scanner actually does:
@@ -74,6 +81,8 @@ Use the transparent example to evaluate what the scanner actually does:
 - generated SARIF report: [site/e2e/report.sarif](site/e2e/report.sarif)
 
 The example scans 3 MCP servers and reports 9 findings with a risk score of 98. It is synthetic, but fully reproducible from committed files.
+
+For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307/mcp-guard-demo](https://github.com/ChaoYue0307/mcp-guard-demo).
 
 ## What It Finds
 
