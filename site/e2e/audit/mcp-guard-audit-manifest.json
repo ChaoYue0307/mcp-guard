@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "tool": {
+    "name": "mcp-guard",
+    "version": "0.4.5"
+  },
+  "generatedAt": "2026-05-10T14:16:23.655Z",
+  "status": "needs_review",
+  "failOn": "none",
+  "outputDir": "site/e2e/audit",
+  "summary": {
+    "scannedFileCount": 1,
+    "serverCount": 3,
+    "findingCount": 9,
+    "activeFindingCount": 9,
+    "acceptedFindingCount": 0,
+    "totalFindingCount": 9,
+    "counts": {
+      "critical": 2,
+      "high": 5,
+      "medium": 2,
+      "low": 0
+    },
+    "riskScore": 98
+  },
+  "policy": null,
+  "baseline": {
+    "enabled": false
+  },
+  "files": {
+    "executiveSummary": "site/e2e/audit/mcp-guard-executive-summary.md",
+    "remediation": "site/e2e/audit/mcp-guard-remediation.md",
+    "markdownReport": "site/e2e/audit/mcp-guard-report.md",
+    "htmlReport": "site/e2e/audit/mcp-guard-report.html",
+    "jsonReport": "site/e2e/audit/mcp-guard-report.json",
+    "sarifReport": "site/e2e/audit/mcp-guard.sarif",
+    "manifest": "site/e2e/audit/mcp-guard-audit-manifest.json"
+  }
+}

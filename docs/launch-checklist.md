@@ -28,10 +28,16 @@ mcp-guard scan
 mcp-guard scan --config .mcp.json --fail-on high
 ```
 
+## Audit Pack
+
+```bash
+mcp-guard audit --config .mcp.json --policy .mcp-guard-policy.json --output-dir mcp-guard-audit
+```
+
 ## GitHub Action Setup
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.4
+- uses: ChaoYue0307/mcp-guard-action@v0.4.5
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json

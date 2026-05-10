@@ -12,6 +12,7 @@ const sampleJsonReportPath = path.join(outputDir, "sample-report.json");
 const policyJsonReportPath = path.join(outputDir, "policy-report.json");
 const sampleSarifReportPath = path.join(outputDir, "mcp-guard.sarif");
 const e2eJsonReportPath = path.join(outputDir, "e2e-report.json");
+const auditOutputDir = path.join(outputDir, "audit-pack");
 
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -101,6 +102,22 @@ const checks = [
       "json",
       "--output",
       policyJsonReportPath
+    ]
+  },
+  {
+    name: "unsafe example audit pack",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "audit",
+      "--config",
+      "examples/unsafe-claude_desktop_config.json",
+      "--policy",
+      "examples/mcp-guard-policy.json",
+      "--output-dir",
+      auditOutputDir,
+      "--fail-on",
+      "none"
     ]
   },
   {
@@ -211,19 +228,56 @@ if (!policyReport.metadata?.policyEnabled || policyMissing.length > 0) {
   process.exit(1);
 }
 
+const auditFiles = [
+  "mcp-guard-executive-summary.md",
+  "mcp-guard-remediation.md",
+  "mcp-guard-report.md",
+  "mcp-guard-report.html",
+  "mcp-guard-report.json",
+  "mcp-guard.sarif",
+  "mcp-guard-audit-manifest.json"
+];
+const missingAuditFiles = auditFiles.filter((file) => !fs.existsSync(path.join(auditOutputDir, file)));
+
+if (missingAuditFiles.length > 0) {
+  process.stderr.write(`audit pack is missing expected files: ${missingAuditFiles.join(", ")}\n`);
+  process.exit(1);
+}
+
+const auditManifest = JSON.parse(fs.readFileSync(path.join(auditOutputDir, "mcp-guard-audit-manifest.json"), "utf8"));
+const auditRemediation = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-remediation.md"), "utf8");
+const auditSummary = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-executive-summary.md"), "utf8");
+
+if (auditManifest.summary?.riskScore !== 100 || !auditManifest.policy?.path || !auditRemediation.includes("MCP070") || !auditSummary.includes("Risk score: **100**")) {
+  process.stderr.write("audit pack is missing expected policy, risk, or remediation content.\n");
+  process.exit(1);
+}
+
+const auditLeaks = ["exampleSecretValue", "example-secret-token"].filter((item) =>
+  auditRemediation.includes(item) || auditSummary.includes(item)
+);
+
+if (auditLeaks.length > 0) {
+  process.stderr.write(`audit pack leaked secret-like sample values: ${auditLeaks.join(", ")}\n`);
+  process.exit(1);
+}
+
 const summary = spawnSync(process.execPath, [
   "scripts/action-summary.js",
   sampleJsonReportPath,
   sampleReportPath,
   sampleHtmlReportPath,
   sampleSarifReportPath,
-  "high"
+  "high",
+  path.join(auditOutputDir, "mcp-guard-executive-summary.md"),
+  path.join(auditOutputDir, "mcp-guard-remediation.md"),
+  path.join(auditOutputDir, "mcp-guard-audit-manifest.json")
 ], {
   cwd: root,
   encoding: "utf8"
 });
 
-if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !summary.stdout.includes("SARIF")) {
+if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !summary.stdout.includes("SARIF") || !summary.stdout.includes("Executive summary") || !summary.stdout.includes("Remediation") || !summary.stdout.includes("Audit manifest")) {
   process.stderr.write("action summary generation failed or missed expected content.\n");
   process.stderr.write(summary.stderr);
   process.exit(summary.status ?? 1);
@@ -235,13 +289,16 @@ const comment = spawnSync(process.execPath, [
   sampleReportPath,
   sampleHtmlReportPath,
   sampleSarifReportPath,
-  "high"
+  "high",
+  path.join(auditOutputDir, "mcp-guard-executive-summary.md"),
+  path.join(auditOutputDir, "mcp-guard-remediation.md"),
+  path.join(auditOutputDir, "mcp-guard-audit-manifest.json")
 ], {
   cwd: root,
   encoding: "utf8"
 });
 
-if (comment.status !== 0 || !comment.stdout.includes("<!-- mcp-guard-comment -->") || !comment.stdout.includes("Top active findings")) {
+if (comment.status !== 0 || !comment.stdout.includes("<!-- mcp-guard-comment -->") || !comment.stdout.includes("Top active findings") || !comment.stdout.includes("Executive summary") || !comment.stdout.includes("Audit manifest")) {
   process.stderr.write("PR comment generation failed or missed expected content.\n");
   process.stderr.write(comment.stderr);
   process.exit(comment.status ?? 1);
@@ -296,6 +353,10 @@ const actionRequired = [
   "policy:",
   "MCP_GUARD_POLICY",
   "--policy",
+  "audit",
+  "executive-summary",
+  "remediation-report",
+  "audit-manifest",
   "package-manager-cache: false"
 ];
 const actionMissing = actionRequired.filter((item) => !actionMetadata.includes(item));

@@ -82,18 +82,17 @@ Code quality
 Current release title:
 
 ```text
-v0.4.4
+v0.4.5
 ```
 
 Release notes:
 
 ```text
-Policy enforcement release.
+Audit pack release.
 
-- Adds `.mcp-guard-policy.json` support for approved commands, packages, directories, and remote URLs.
-- Adds the `policy` GitHub Action input and automatic root policy discovery.
-- Adds MCP070-MCP074 policy findings.
-- Keeps Node.js 24, PR comments, artifacts, and SARIF upload support.
+- Adds `mcp-guard audit` for executive summary, remediation plan, Markdown, HTML, JSON, SARIF, and manifest outputs.
+- The GitHub Action now uploads audit pack artifacts, including remediation and manifest files.
+- Keeps policy enforcement, baseline support, PR comments, artifacts, and SARIF upload support.
 ```
 
 ## Manual Publishing Steps
@@ -106,7 +105,7 @@ Completed:
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.4
+- uses: ChaoYue0307/mcp-guard-action@v0.4.5
 ```
 
 Remaining Marketplace web step:

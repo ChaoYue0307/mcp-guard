@@ -1,6 +1,6 @@
 # End-to-End Example
 
-This example is designed for transparent product evaluation. It uses a synthetic MCP config committed to the repository, then runs the real `mcp-guard` CLI to generate Markdown, HTML, JSON, and SARIF outputs.
+This example is designed for transparent product evaluation. It uses a synthetic MCP config committed to the repository, then runs the real `mcp-guard` CLI to generate Markdown, HTML, JSON, SARIF, and audit pack outputs.
 
 The input is intentionally unsafe so users can see whether the scanner catches concrete risks.
 
@@ -23,6 +23,7 @@ node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --form
 node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format html --output site/e2e/report.html
 node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format json --output site/e2e/report.json
 node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format sarif --output site/e2e/report.sarif
+node ./bin/mcp-guard.js audit --config site/e2e/claude_desktop_config.json --output-dir site/e2e/audit
 ```
 
 ## Expected Result
@@ -51,10 +52,13 @@ Important findings include:
 - [HTML report](../../site/e2e/report.html)
 - [JSON report](../../site/e2e/report.json)
 - [SARIF report](../../site/e2e/report.sarif)
+- [Audit executive summary](../../site/e2e/audit/mcp-guard-executive-summary.md)
+- [Audit remediation plan](../../site/e2e/audit/mcp-guard-remediation.md)
+- [Audit manifest](../../site/e2e/audit/mcp-guard-audit-manifest.json)
 
 ## What This Proves
 
 - The scanner does not need the config to leave the machine.
 - Secret-like values are redacted in reports.
 - Findings include rule IDs, severity, evidence, and remediation guidance.
-- The same scan can feed a human-readable HTML report, automation JSON, and GitHub code scanning SARIF.
+- The same scan can feed a human-readable HTML report, automation JSON, GitHub code scanning SARIF, and a review-ready audit handoff package.

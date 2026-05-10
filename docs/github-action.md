@@ -2,7 +2,7 @@
 
 Use the `mcp-guard` action to scan MCP and AI agent tool configuration in pull requests and CI.
 
-The action runs the CLI from the pinned GitHub Action tag, generates Markdown, HTML, JSON, and SARIF reports, writes a job summary, uploads reports as an artifact, and fails the job when findings meet your selected severity threshold.
+The action runs the CLI from the pinned GitHub Action tag, generates an audit pack with Markdown, HTML, JSON, SARIF, remediation, and manifest files, writes a job summary, uploads reports as an artifact, and fails the job when findings meet your selected severity threshold.
 
 It can also use a committed baseline to accept known findings, enforce a committed policy file, and optionally post a pull request comment with only the active findings.
 
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ChaoYue0307/mcp-guard-action@v0.4.4
+      - uses: ChaoYue0307/mcp-guard-action@v0.4.5
         with:
           config: .mcp.json
           fail-on: high
@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ChaoYue0307/mcp-guard-action@v0.4.4
+      - uses: ChaoYue0307/mcp-guard-action@v0.4.5
         with:
           config: .mcp.json
           fail-on: high
@@ -77,7 +77,7 @@ jobs:
 Use `fail-on: none` when you want artifacts and summaries without blocking a pull request.
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.4
+- uses: ChaoYue0307/mcp-guard-action@v0.4.5
   with:
     fail-on: none
 ```
@@ -93,7 +93,7 @@ mcp-guard scan --config .mcp.json --write-baseline .mcp-guard-baseline.json
 Commit `.mcp-guard-baseline.json`, then reference it from the action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.4
+- uses: ChaoYue0307/mcp-guard-action@v0.4.5
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json
@@ -107,7 +107,7 @@ Reports will show active findings separately from findings accepted by the basel
 Use a policy when you want CI to enforce approved commands, packages, directories, and remote URLs.
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.4
+- uses: ChaoYue0307/mcp-guard-action@v0.4.5
   with:
     config: .mcp.json
     policy: .mcp-guard-policy.json
@@ -134,9 +134,12 @@ See [Policy files](policy.md) for the file format.
 
 | Output | Description |
 | --- | --- |
+| `executive-summary` | Path to the generated executive summary. |
 | `markdown-report` | Path to the generated Markdown report. |
 | `html-report` | Path to the generated HTML report. |
 | `json-report` | Path to the generated JSON report. |
 | `sarif-report` | Path to the generated SARIF report. |
+| `remediation-report` | Path to the generated remediation plan. |
+| `audit-manifest` | Path to the generated audit pack manifest. |
 | `comment-report` | Path to the generated pull request comment body. |
 | `exit-code` | `0` when below threshold, `2` when findings met the threshold. |

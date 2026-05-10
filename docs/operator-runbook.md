@@ -11,6 +11,7 @@ npm test
 npm run release:check
 npm --cache ./.npm-cache pack --dry-run
 node ./bin/mcp-guard.js scan --config examples/unsafe-claude_desktop_config.json
+node ./bin/mcp-guard.js audit --config examples/unsafe-claude_desktop_config.json --policy examples/mcp-guard-policy.json --output-dir .release-check/audit-pack
 ```
 
 If your global npm cache has permission errors, either keep using the local cache flag above or fix ownership:

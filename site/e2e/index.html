@@ -65,7 +65,8 @@
           <pre><code>node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format markdown --output site/e2e/report.md
 node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format html --output site/e2e/report.html
 node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format json --output site/e2e/report.json
-node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format sarif --output site/e2e/report.sarif</code></pre>
+node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format sarif --output site/e2e/report.sarif
+node ./bin/mcp-guard.js audit --config site/e2e/claude_desktop_config.json --output-dir site/e2e/audit</code></pre>
 
           <h2>3. What it found</h2>
           <div class="finding-table">
@@ -86,6 +87,9 @@ node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --form
           <a href="report.html">HTML report</a>
           <a href="report.json">JSON report</a>
           <a href="report.sarif">SARIF report</a>
+          <a href="audit/mcp-guard-executive-summary.md">Audit summary</a>
+          <a href="audit/mcp-guard-remediation.md">Remediation plan</a>
+          <a href="audit/mcp-guard-audit-manifest.json">Audit manifest</a>
           <h2>Output summary</h2>
           <ul>
             <li>Scanned files: 1</li>

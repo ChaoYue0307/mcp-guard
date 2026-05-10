@@ -19,7 +19,7 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.4"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.5"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -65,6 +65,12 @@ Generate SARIF for GitHub code scanning:
 mcp-guard scan --format sarif --output mcp-guard.sarif
 ```
 
+Generate a review-ready audit pack:
+
+```bash
+mcp-guard audit --config .mcp.json --policy .mcp-guard-policy.json --output-dir mcp-guard-audit
+```
+
 Use in CI:
 
 ```bash
@@ -87,7 +93,7 @@ mcp-guard scan --config .mcp.json --baseline .mcp-guard-baseline.json --fail-on 
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.4
+- uses: ChaoYue0307/mcp-guard-action@v0.4.5
   with:
     config: .mcp.json
     # policy: .mcp-guard-policy.json
@@ -108,6 +114,8 @@ Use the transparent example to evaluate what the scanner actually does:
 - generated HTML report: [site/e2e/report.html](site/e2e/report.html)
 - generated JSON report: [site/e2e/report.json](site/e2e/report.json)
 - generated SARIF report: [site/e2e/report.sarif](site/e2e/report.sarif)
+- generated audit summary: [site/e2e/audit/mcp-guard-executive-summary.md](site/e2e/audit/mcp-guard-executive-summary.md)
+- generated remediation plan: [site/e2e/audit/mcp-guard-remediation.md](site/e2e/audit/mcp-guard-remediation.md)
 
 The example scans 3 MCP servers and reports 9 active findings with a risk score of 98. It is synthetic, but fully reproducible from committed files.
 
@@ -136,6 +144,13 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 4. Fail pull requests only when new high-risk MCP changes appear.
 
 The GitHub Action can also post an optional pull request comment with the active finding summary.
+
+For paid setup or internal review handoff, `mcp-guard audit` writes a complete evidence package with:
+
+- executive summary;
+- remediation plan grouped by MCP server;
+- Markdown, HTML, JSON, and SARIF reports;
+- machine-readable audit manifest.
 
 For stricter governance, commit `.mcp-guard-policy.json` and define the commands, remote packages, filesystem roots, and remote MCP endpoints the team has approved. See [Policy files](docs/policy.md).
 
@@ -213,6 +228,7 @@ Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
 ## Documentation
 
 - [Rule reference](docs/rules.md)
+- [Audit packs](docs/audit.md)
 - [Baseline and allowlist](docs/baseline.md)
 - [Policy files](docs/policy.md)
 - [GitHub Action](docs/github-action.md)
