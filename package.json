@@ -1,0 +1,39 @@
+{
+  "name": "agent-mcp-guard",
+  "version": "0.1.0",
+  "description": "Open-source CLI scanner for risky MCP server and AI agent tool configuration.",
+  "type": "module",
+  "bin": {
+    "mcp-guard": "bin/mcp-guard.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "scan:example": "node ./bin/mcp-guard.js scan --config examples/unsafe-claude_desktop_config.json --output examples/sample-report.md",
+    "release:check": "node ./scripts/release-check.js",
+    "launch:github": "node ./scripts/launch-github.js",
+    "publish:npm": "node ./scripts/publish-npm.js",
+    "start": "node ./bin/mcp-guard.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agent",
+    "security",
+    "cli",
+    "scanner",
+    "devsecops"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE",
+    "docs",
+    "examples"
+  ]
+}

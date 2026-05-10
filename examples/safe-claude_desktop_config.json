@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "project-filesystem": {
+      "command": "/usr/local/bin/mcp-server-filesystem",
+      "args": [
+        "/Users/example/projects/demo"
+      ],
+      "cwd": "/Users/example/projects/demo"
+    }
+  }
+}
