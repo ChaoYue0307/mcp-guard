@@ -98,5 +98,5 @@ Send this to 20 teams using MCP or AI agents:
 ```text
 I am building mcp-guard, an open-source security scanner for MCP and AI agent tool configs. It checks for risky shell access, unpinned remote packages, over-broad file permissions, exposed secrets, and unsafe remote server setup.
 
-I am doing a few early scans for teams using MCP in real workflows. If you send a redacted config or run the CLI locally, I can help interpret the report and suggest hardening steps.
+I am collecting real-world MCP config patterns from teams using agents in real workflows. If you can share a redacted config or run the CLI locally, your feedback can help improve the scanner's rules and reports.
 ```

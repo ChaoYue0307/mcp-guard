@@ -10,6 +10,7 @@ const sampleReportPath = path.join(outputDir, "sample-report.md");
 const sampleHtmlReportPath = path.join(outputDir, "sample-report.html");
 const sampleJsonReportPath = path.join(outputDir, "sample-report.json");
 const sampleSarifReportPath = path.join(outputDir, "mcp-guard.sarif");
+const e2eJsonReportPath = path.join(outputDir, "e2e-report.json");
 
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -86,6 +87,20 @@ const checks = [
     ]
   },
   {
+    name: "site e2e example json report",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "scan",
+      "--config",
+      "site/e2e/claude_desktop_config.json",
+      "--format",
+      "json",
+      "--output",
+      e2eJsonReportPath
+    ]
+  },
+  {
     name: "npm pack dry run",
     command: "npm",
     args: ["--cache", "./.npm-cache", "pack", "--dry-run"]
@@ -150,6 +165,22 @@ const sarifLeaks = ["exampleSecretValue", "example-secret-token"].filter((item) 
 
 if (sarifLeaks.length > 0) {
   process.stderr.write(`SARIF report leaked secret-like sample values: ${sarifLeaks.join(", ")}\n`);
+  process.exit(1);
+}
+
+const e2eReport = JSON.parse(fs.readFileSync(e2eJsonReportPath, "utf8"));
+const e2eSummary = e2eReport.summary || {};
+const e2eExpected = [
+  e2eSummary.serverCount === 3,
+  e2eSummary.findingCount === 9,
+  e2eSummary.riskScore === 98,
+  e2eSummary.counts?.critical === 2,
+  e2eSummary.counts?.high === 5,
+  e2eSummary.counts?.medium === 2
+];
+
+if (!e2eExpected.every(Boolean)) {
+  process.stderr.write("E2E example no longer matches the documented summary.\n");
   process.exit(1);
 }
 

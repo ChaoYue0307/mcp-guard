@@ -1,0 +1,570 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "mcp-guard",
+          "informationUri": "https://github.com/ChaoYue0307/mcp-guard",
+          "semanticVersion": "0.3.0",
+          "rules": [
+            {
+              "id": "MCP010",
+              "name": "MCP010",
+              "shortDescription": {
+                "text": "Shell command executes inline script"
+              },
+              "fullDescription": {
+                "text": "Shell command executes inline script"
+              },
+              "help": {
+                "text": "Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it.",
+                "markdown": "Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "critical",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP050",
+              "name": "MCP050",
+              "shortDescription": {
+                "text": "MCP server command includes a dangerous operation"
+              },
+              "fullDescription": {
+                "text": "MCP server command includes a dangerous operation"
+              },
+              "help": {
+                "text": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately.",
+                "markdown": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "critical",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP021",
+              "name": "MCP021",
+              "shortDescription": {
+                "text": "Remote MCP package is not version pinned"
+              },
+              "fullDescription": {
+                "text": "Remote MCP package is not version pinned"
+              },
+              "help": {
+                "text": "Pin the package to an exact version such as package@1.2.3 and review updates before changing it.",
+                "markdown": "Pin the package to an exact version such as package@1.2.3 and review updates before changing it."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "high",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP030",
+              "name": "MCP030",
+              "shortDescription": {
+                "text": "Secret-like environment variable is exposed to MCP server"
+              },
+              "fullDescription": {
+                "text": "Secret-like environment variable is exposed to MCP server"
+              },
+              "help": {
+                "text": "Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account.",
+                "markdown": "Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "high",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP040",
+              "name": "MCP040",
+              "shortDescription": {
+                "text": "MCP server has a broad working directory"
+              },
+              "fullDescription": {
+                "text": "MCP server has a broad working directory"
+              },
+              "help": {
+                "text": "Run the server in a narrow project directory or sandbox with only the files it needs.",
+                "markdown": "Run the server in a narrow project directory or sandbox with only the files it needs."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "high",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP041",
+              "name": "MCP041",
+              "shortDescription": {
+                "text": "MCP server argument grants broad filesystem access"
+              },
+              "fullDescription": {
+                "text": "MCP server argument grants broad filesystem access"
+              },
+              "help": {
+                "text": "Replace broad filesystem paths with a dedicated project folder or read-only sandbox path.",
+                "markdown": "Replace broad filesystem paths with a dedicated project folder or read-only sandbox path."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "high",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP061",
+              "name": "MCP061",
+              "shortDescription": {
+                "text": "Secret-like header is configured for remote MCP server"
+              },
+              "fullDescription": {
+                "text": "Secret-like header is configured for remote MCP server"
+              },
+              "help": {
+                "text": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files.",
+                "markdown": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "high",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP020",
+              "name": "MCP020",
+              "shortDescription": {
+                "text": "MCP server is launched through a remote package runner"
+              },
+              "fullDescription": {
+                "text": "MCP server is launched through a remote package runner"
+              },
+              "help": {
+                "text": "Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools.",
+                "markdown": "Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "severity": "medium",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP060",
+              "name": "MCP060",
+              "shortDescription": {
+                "text": "Remote MCP server URL is configured"
+              },
+              "fullDescription": {
+                "text": "Remote MCP server URL is configured"
+              },
+              "help": {
+                "text": "Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints.",
+                "markdown": "Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "severity": "medium",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "mcp-guard/"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "workingDirectory": {
+            "uri": "."
+          }
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "MCP010",
+          "level": "error",
+          "message": {
+            "text": "Shell command executes inline script. command=bash args=-c curl https://example.com/install.sh | bash Fix: Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "shell-installer",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "53023d1e"
+          },
+          "properties": {
+            "severity": "critical",
+            "serverName": "shell-installer",
+            "evidence": "command=bash args=-c curl https://example.com/install.sh | bash",
+            "recommendation": "Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it."
+          }
+        },
+        {
+          "ruleId": "MCP050",
+          "level": "error",
+          "message": {
+            "text": "MCP server command includes a dangerous operation. curl pipe to shell Fix: Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "shell-installer",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "195ca278"
+          },
+          "properties": {
+            "severity": "critical",
+            "serverName": "shell-installer",
+            "evidence": "curl pipe to shell",
+            "recommendation": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately."
+          }
+        },
+        {
+          "ruleId": "MCP021",
+          "level": "error",
+          "message": {
+            "text": "Remote MCP package is not version pinned. package=@modelcontextprotocol/server-filesystem Fix: Pin the package to an exact version such as package@1.2.3 and review updates before changing it."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "filesystem-all-home",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "ff8588c8"
+          },
+          "properties": {
+            "severity": "high",
+            "serverName": "filesystem-all-home",
+            "evidence": "package=@modelcontextprotocol/server-filesystem",
+            "recommendation": "Pin the package to an exact version such as package@1.2.3 and review updates before changing it."
+          }
+        },
+        {
+          "ruleId": "MCP030",
+          "level": "error",
+          "message": {
+            "text": "Secret-like environment variable is exposed to MCP server. GITHUB_TOKEN=ghp...890 (32 chars) Fix: Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "filesystem-all-home",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "88eb7690"
+          },
+          "properties": {
+            "severity": "high",
+            "serverName": "filesystem-all-home",
+            "evidence": "GITHUB_TOKEN=ghp...890 (32 chars)",
+            "recommendation": "Pass the least privileged token possible. Prefer scoped tokens, short-lived credentials, and a dedicated service account."
+          }
+        },
+        {
+          "ruleId": "MCP040",
+          "level": "error",
+          "message": {
+            "text": "MCP server has a broad working directory. cwd=/ Fix: Run the server in a narrow project directory or sandbox with only the files it needs."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "filesystem-all-home",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "28c934c4"
+          },
+          "properties": {
+            "severity": "high",
+            "serverName": "filesystem-all-home",
+            "evidence": "cwd=/",
+            "recommendation": "Run the server in a narrow project directory or sandbox with only the files it needs."
+          }
+        },
+        {
+          "ruleId": "MCP041",
+          "level": "error",
+          "message": {
+            "text": "MCP server argument grants broad filesystem access. arg=/ Fix: Replace broad filesystem paths with a dedicated project folder or read-only sandbox path."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "filesystem-all-home",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "8d09d35d"
+          },
+          "properties": {
+            "severity": "high",
+            "serverName": "filesystem-all-home",
+            "evidence": "arg=/",
+            "recommendation": "Replace broad filesystem paths with a dedicated project folder or read-only sandbox path."
+          }
+        },
+        {
+          "ruleId": "MCP061",
+          "level": "error",
+          "message": {
+            "text": "Secret-like header is configured for remote MCP server. Authorization=Bea...ken (27 chars) Fix: Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "remote-prod",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "c01bb265"
+          },
+          "properties": {
+            "severity": "high",
+            "serverName": "remote-prod",
+            "evidence": "Authorization=Bea...ken (27 chars)",
+            "recommendation": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files."
+          }
+        },
+        {
+          "ruleId": "MCP020",
+          "level": "warning",
+          "message": {
+            "text": "MCP server is launched through a remote package runner. command=npx package=@modelcontextprotocol/server-filesystem Fix: Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "filesystem-all-home",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "5daa06b1"
+          },
+          "properties": {
+            "severity": "medium",
+            "serverName": "filesystem-all-home",
+            "evidence": "command=npx package=@modelcontextprotocol/server-filesystem",
+            "recommendation": "Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools."
+          }
+        },
+        {
+          "ruleId": "MCP060",
+          "level": "warning",
+          "message": {
+            "text": "Remote MCP server URL is configured. url=https://mcp.example.com/sse Fix: Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "remote-prod",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "0365e4eb"
+          },
+          "properties": {
+            "severity": "medium",
+            "serverName": "remote-prod",
+            "evidence": "url=https://mcp.example.com/sse",
+            "recommendation": "Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints."
+          }
+        }
+      ]
+    }
+  ]
+}

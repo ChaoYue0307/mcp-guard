@@ -50,6 +50,7 @@
     "SECURITY.md",
     "docs",
     "examples",
+    "site/e2e",
     "site/assets/readme-hero.svg",
     "site/assets/brand-mark.svg"
   ]

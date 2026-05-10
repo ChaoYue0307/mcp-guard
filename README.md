@@ -63,6 +63,18 @@ Use the GitHub Action:
     upload-sarif: "true"
 ```
 
+## End-to-End Example
+
+Use the transparent example to evaluate what the scanner actually does:
+
+- input config: [site/e2e/claude_desktop_config.json](site/e2e/claude_desktop_config.json)
+- generated Markdown report: [site/e2e/report.md](site/e2e/report.md)
+- generated HTML report: [site/e2e/report.html](site/e2e/report.html)
+- generated JSON report: [site/e2e/report.json](site/e2e/report.json)
+- generated SARIF report: [site/e2e/report.sarif](site/e2e/report.sarif)
+
+The example scans 3 MCP servers and reports 9 findings with a risk score of 98. It is synthetic, but fully reproducible from committed files.
+
 ## What It Finds
 
 | Risk | Why it matters |
@@ -121,15 +133,13 @@ MCP configs often contain sensitive local paths, internal hostnames, tokens, and
 - secret-like values redacted in reports;
 - text, Markdown, HTML, JSON, and SARIF output for local review, CI artifacts, and GitHub code scanning.
 
-## Commercial Support
+## Early Access and Feedback
 
-Need help reviewing a real AI agent or MCP setup?
+Want to try `mcp-guard` on a real AI agent or MCP setup?
 
-I offer private **AI Agent/MCP Security Audits** covering server inventory, risky startup commands, secret exposure, filesystem scope, remote MCP endpoints, and remediation planning.
+The project is currently an automated local scanner. I am collecting early users, real-world config examples, CI setup feedback, and rule requests to improve coverage.
 
 Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
-
-Service details: [docs/paid-audit.md](docs/paid-audit.md)
 
 ## Documentation
 
@@ -138,8 +148,6 @@ Service details: [docs/paid-audit.md](docs/paid-audit.md)
 - [Marketplace publishing plan](docs/marketplace.md)
 - [Privacy and security](docs/privacy-and-security.md)
 - [Roadmap](docs/roadmap.md)
-- [Business playbook](docs/business-playbook.md)
-- [Launch checklist](docs/launch-checklist.md)
 - [Operator runbook](docs/operator-runbook.md)
 
 ## Exit Codes

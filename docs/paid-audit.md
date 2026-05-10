@@ -1,6 +1,8 @@
-# AI Agent/MCP Security Audit
+# Future Service Concept
 
-This is the first paid service attached to `mcp-guard`.
+This is a planning note for a possible future service attached to `mcp-guard`.
+
+It is not currently advertised as an active consulting service. Keep public website and README copy focused on the automated scanner, early pilots, and CI setup feedback until this offer is actually available.
 
 ## Who It Is For
 
@@ -24,6 +26,6 @@ Use `docs/templates/audit-report-template.md` as the starting point for client d
 - Small startup: USD 1,000-3,000.
 - Funded team or private deployment pilot: USD 3,000-8,000.
 
-## Sales Copy
+## Draft Sales Copy
 
-I am building `mcp-guard`, an open-source scanner for MCP and AI agent tool security. It checks for risky shell access, unpinned remote packages, over-broad file permissions, exposed secrets, and unsafe remote server setup. I am offering a few early MCP security audits for teams using agents in real workflows.
+I am building `mcp-guard`, an open-source scanner for MCP and AI agent tool security. It checks for risky shell access, unpinned remote packages, over-broad file permissions, exposed secrets, and unsafe remote server setup. I am collecting real-world config patterns from teams using agents in real workflows.

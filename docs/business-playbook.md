@@ -4,11 +4,13 @@
 
 `mcp-guard` is the local-first security scanner for teams adopting AI agents and MCP servers.
 
-The business is not the open-source CLI alone. The CLI creates trust and distribution. Revenue comes from private audits, remediation, and eventually team workflows.
+The business is not the open-source CLI alone. The CLI creates trust and distribution. Near-term validation comes from early users running the scanner on real setups. Revenue can later come from private audits, remediation, and team workflows once those services are actually offered.
 
-## First Paid Offer
+## Future Paid Offer
 
 AI Agent/MCP Security Audit.
+
+Do not advertise this as active until there is a clear delivery process, pricing, and availability.
 
 Deliverables:
 
@@ -35,7 +37,7 @@ I built mcp-guard, an open-source local scanner for MCP and AI agent tool config
 
 It checks for risky shell access, unpinned npx packages, broad filesystem permissions, exposed secrets, and remote MCP servers.
 
-I am doing a few early MCP security audits for teams using Claude, Cursor, Codex, or MCP in real workflows. If you send a redacted config or run the CLI locally, I can help interpret the report and suggest hardening steps.
+I am collecting real-world MCP and AI agent config patterns from teams using Claude, Cursor, Codex, or MCP in production-like workflows. If you can share a redacted config or run the CLI locally, your feedback can help improve the scanner's rules and reports.
 ```
 
 ## First 20 Targets

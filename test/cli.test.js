@@ -32,6 +32,11 @@ test("CLI can emit JSON report", () => {
   const parsed = JSON.parse(result.stdout);
   assert.equal(parsed.summary.serverCount, 3);
   assert.ok(parsed.summary.findingCount >= 1);
+  assert.equal(parsed.metadata.cwd, ".");
+  assert.equal(parsed.metadata.home, "~");
+  assert.equal(parsed.scannedFiles[0], "examples/unsafe-claude_desktop_config.json");
+  assert.equal(path.isAbsolute(parsed.servers[0].configPath), false);
+  assert.equal(path.isAbsolute(parsed.findings[0].configPath), false);
   assert.equal(parsed.servers[0].env.GITHUB_TOKEN.includes("exampleSecretValue"), false);
   assert.equal("raw" in parsed.servers[0], false);
 });

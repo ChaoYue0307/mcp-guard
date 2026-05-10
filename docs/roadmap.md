@@ -16,7 +16,7 @@
 2. Rule packs mapped to MCP security best practices.
 3. Policy file for approved commands, packages, directories, and remote URLs.
 4. Baseline mode: accept known findings and fail only on new risks.
-5. `mcp-guard audit` mode for client-ready reports.
+5. `mcp-guard audit` mode for review-ready reports.
 
 ## Later
 

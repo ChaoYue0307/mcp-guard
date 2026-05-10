@@ -12,7 +12,7 @@
 - [ ] Add screenshots or paste report excerpt into README.
 - [ ] Finish the GitHub Marketplace web publishing step for `mcp-guard-action`.
 - [ ] Post a short technical article or launch note.
-- [ ] Contact 20 early users for free scans or paid hardening.
+- [ ] Contact 20 early users for scan feedback, missing rules, and CI setup needs.
 - [ ] Follow the detailed steps in `docs/operator-runbook.md`.
 
 ## User Setup
