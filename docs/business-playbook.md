@@ -22,6 +22,8 @@ Deliverables:
 - document missing rule requests for future product work;
 - provide a short setup handoff note.
 
+For product operations, npm Trusted Publishing should be used after the package setting is configured. This avoids manual QR-code publish flows and makes small releases repeatable.
+
 ## Pricing
 
 | Customer | Price |

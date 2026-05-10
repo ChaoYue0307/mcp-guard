@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-10T13:31:24.346Z",
+    "generatedAt": "2026-05-10T13:47:08.576Z",
     "cwd": ".",
     "home": "~",
-    "toolVersion": "0.4.2"
+    "toolVersion": "0.4.3"
   },
   "scannedFiles": [
     "site/e2e/claude_desktop_config.json"

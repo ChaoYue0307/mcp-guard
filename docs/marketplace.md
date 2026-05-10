@@ -82,16 +82,16 @@ Code quality
 Current release title:
 
 ```text
-v0.4.2
+v0.4.3
 ```
 
 Release notes:
 
 ```text
-CI bootstrap release.
+Trusted Publishing readiness release.
 
-- Adds `mcp-guard init` for generating a GitHub Action workflow.
-- Can generate and reference an initial baseline.
+- Adds a GitHub Actions workflow for npm Trusted Publishing readiness.
+- Keeps `mcp-guard init` for generating a GitHub Action workflow and baseline.
 - Keeps Node.js 24, PR comments, artifacts, and SARIF upload support.
 ```
 
@@ -105,7 +105,7 @@ Completed:
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.2
+- uses: ChaoYue0307/mcp-guard-action@v0.4.3
 ```
 
 Remaining Marketplace web step:

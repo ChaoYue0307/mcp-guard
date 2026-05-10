@@ -228,4 +228,26 @@ if (forbiddenMarketplacePaths.length > 0) {
   process.exit(1);
 }
 
+const publishWorkflowPath = path.join(root, ".github", "workflows", "publish-npm.yml");
+const publishWorkflow = fs.readFileSync(publishWorkflowPath, "utf8");
+const publishWorkflowRequired = [
+  "id-token: write",
+  "actions/checkout@v6",
+  "actions/setup-node@v6",
+  "node-version: \"24\"",
+  "package-manager-cache: false",
+  "npm publish --access public"
+];
+const publishWorkflowMissing = publishWorkflowRequired.filter((item) => !publishWorkflow.includes(item));
+
+if (publishWorkflowMissing.length > 0) {
+  process.stderr.write(`publish-npm workflow is missing expected trusted publishing content: ${publishWorkflowMissing.join(", ")}\n`);
+  process.exit(1);
+}
+
+if (publishWorkflow.includes("NODE_AUTH_TOKEN") || publishWorkflow.includes("NPM_TOKEN")) {
+  process.stderr.write("publish-npm workflow must not depend on long-lived npm tokens.\n");
+  process.exit(1);
+}
+
 process.stdout.write("\nrelease-check passed\n");

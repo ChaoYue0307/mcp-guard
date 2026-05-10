@@ -31,7 +31,7 @@ mcp-guard scan --config .mcp.json --fail-on high
 ## GitHub Action Setup
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.2
+- uses: ChaoYue0307/mcp-guard-action@v0.4.3
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json

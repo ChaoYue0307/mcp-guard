@@ -13,7 +13,7 @@ jobs:
   action-smoke:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Run mcp-guard action from this repository
         id: mcp-guard
         uses: ./

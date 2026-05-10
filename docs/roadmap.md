@@ -12,6 +12,7 @@
 - Baseline/allowlist mode for accepting known findings and failing only on new risks.
 - Optional GitHub pull request comments from the Marketplace Action.
 - `mcp-guard init` for bootstrapping a GitHub Action workflow and optional baseline.
+- npm Trusted Publishing workflow prepared for tokenless release publishing.
 
 ## Next
 

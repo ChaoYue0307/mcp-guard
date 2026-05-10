@@ -1,6 +1,6 @@
 # mcp-guard Scan Report
 
-Generated: 2026-05-10T13:31:24.377Z
+Generated: 2026-05-10T13:47:08.616Z
 
 ## Summary
 
