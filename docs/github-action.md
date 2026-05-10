@@ -4,6 +4,8 @@ Use the `mcp-guard` action to scan MCP and AI agent tool configuration in pull r
 
 The action runs the CLI from the pinned GitHub Action tag, generates Markdown, HTML, JSON, and SARIF reports, writes a job summary, uploads reports as an artifact, and fails the job when findings meet your selected severity threshold.
 
+Marketplace/action repository: <https://github.com/ChaoYue0307/mcp-guard-action>
+
 ## Basic Workflow
 
 ```yaml
@@ -22,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ChaoYue0307/mcp-guard@v0.3.0
+      - uses: ChaoYue0307/mcp-guard-action@v0.3.0
         with:
           fail-on: high
 ```
@@ -48,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ChaoYue0307/mcp-guard@v0.3.0
+      - uses: ChaoYue0307/mcp-guard-action@v0.3.0
         with:
           config: .mcp.json
           fail-on: high
@@ -60,7 +62,7 @@ jobs:
 Use `fail-on: none` when you want artifacts and summaries without blocking a pull request.
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard@v0.3.0
+- uses: ChaoYue0307/mcp-guard-action@v0.3.0
   with:
     fail-on: none
 ```

@@ -57,7 +57,7 @@ mcp-guard scan --config .mcp.json --fail-on high
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard@v0.3.0
+- uses: ChaoYue0307/mcp-guard-action@v0.3.0
   with:
     fail-on: high
     upload-sarif: "true"

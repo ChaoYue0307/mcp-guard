@@ -10,7 +10,7 @@
 - [ ] Publish with `npm publish --access public`.
 - [ ] Generate fresh sample report with `npm run scan:example`.
 - [ ] Add screenshots or paste report excerpt into README.
-- [ ] Run `npm run marketplace:prepare` and publish the dedicated `mcp-guard-action` repository if Marketplace distribution is desired.
+- [ ] Finish the GitHub Marketplace web publishing step for `mcp-guard-action`.
 - [ ] Post a short technical article or launch note.
 - [ ] Contact 20 early users for free scans or paid hardening.
 - [ ] Follow the detailed steps in `docs/operator-runbook.md`.
@@ -31,7 +31,7 @@ mcp-guard scan --config .mcp.json --fail-on high
 ## GitHub Action Setup
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard@v0.3.0
+- uses: ChaoYue0307/mcp-guard-action@v0.3.0
   with:
     fail-on: high
     upload-sarif: "true"

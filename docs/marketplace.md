@@ -99,24 +99,21 @@ Initial Marketplace-ready release.
 
 ## Manual Publishing Steps
 
-1. Create the public repository `ChaoYue0307/mcp-guard-action`.
-2. Copy the generated `dist/mcp-guard-action/` contents into that repository.
-3. Commit and push the files.
-4. Open `action.yml` on GitHub and click the Marketplace banner.
-5. Draft a release with tag `v0.3.0`.
-6. Select `Publish this Action to the GitHub Marketplace`.
-7. Accept the GitHub Marketplace Developer Agreement if prompted.
-8. Choose `Security` as the primary category.
-9. Publish the release with 2FA.
+Completed:
 
-After publishing, update the main README and website usage snippets from:
-
-```yaml
-- uses: ChaoYue0307/mcp-guard@v0.3.0
-```
-
-to:
+- Public repository created: <https://github.com/ChaoYue0307/mcp-guard-action>
+- `dist/mcp-guard-action/` exported, committed, and pushed.
+- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.3.0>
+- README, docs, and website examples now use:
 
 ```yaml
 - uses: ChaoYue0307/mcp-guard-action@v0.3.0
 ```
+
+Remaining Marketplace web step:
+
+1. Open `action.yml` or the release page on GitHub and click the Marketplace banner.
+2. Select `Publish this Action to the GitHub Marketplace`.
+3. Accept the GitHub Marketplace Developer Agreement if prompted.
+4. Choose `Security` as the primary category.
+5. Publish the release with 2FA.
