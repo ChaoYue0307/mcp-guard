@@ -19,7 +19,7 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.8"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.9"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## MCP Basics
@@ -36,6 +36,12 @@ In practice, most MCP risk lives in the config file that tells an AI client what
 | Review point | The moment before a server is added locally or merged into a repo. | This is where `mcp-guard` scans for risky commands, unpinned packages, leaked secrets, broad paths, and remote endpoints. |
 
 `mcp-guard` does not try to replace MCP. It gives teams a quick way to review MCP tool access before agents can use it.
+
+To see the exact risk checks in the current release:
+
+```bash
+mcp-guard rules --format markdown
+```
 
 ## Install
 
@@ -80,6 +86,13 @@ Generate SARIF for GitHub code scanning:
 mcp-guard scan --format sarif --output mcp-guard.sarif
 ```
 
+Inspect the rule catalog:
+
+```bash
+mcp-guard rules
+mcp-guard rules --format json
+```
+
 Generate a review-ready audit pack:
 
 ```bash
@@ -109,7 +122,7 @@ mcp-guard scan --config .mcp.json --baseline .mcp-guard-baseline.json --fail-on 
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.8
+- uses: ChaoYue0307/mcp-guard-action@v0.4.9
   with:
     config: .mcp.json
     # policy: .mcp-guard-policy.json

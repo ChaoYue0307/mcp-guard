@@ -171,6 +171,72 @@ for (const check of checks) {
   }
 }
 
+const ruleCatalogJson = spawnSync(process.execPath, [
+  "bin/mcp-guard.js",
+  "rules",
+  "--format",
+  "json"
+], {
+  cwd: root,
+  encoding: "utf8"
+});
+
+if (ruleCatalogJson.status !== 0) {
+  process.stderr.write("rule catalog JSON command failed.\n");
+  process.stderr.write(ruleCatalogJson.stderr);
+  process.exit(ruleCatalogJson.status ?? 1);
+}
+
+const ruleCatalog = JSON.parse(ruleCatalogJson.stdout);
+const ruleIds = new Set((ruleCatalog.rules || []).map((rule) => rule.id));
+const ruleRequired = [
+  "MCP000",
+  "MCP001",
+  "MCP002",
+  "MCP003",
+  "MCP010",
+  "MCP011",
+  "MCP020",
+  "MCP021",
+  "MCP030",
+  "MCP040",
+  "MCP041",
+  "MCP050",
+  "MCP060",
+  "MCP061",
+  "MCP070",
+  "MCP071",
+  "MCP072",
+  "MCP073",
+  "MCP074"
+];
+const ruleMissing = ruleRequired.filter((item) => !ruleIds.has(item));
+
+if ((ruleCatalog.rules || []).length < 19 || ruleMissing.length > 0) {
+  process.stderr.write(`rule catalog is missing expected entries: ${ruleMissing.join(", ")}\n`);
+  process.exit(1);
+}
+
+const ruleCatalogMarkdown = spawnSync(process.execPath, [
+  "bin/mcp-guard.js",
+  "rules",
+  "--format",
+  "markdown"
+], {
+  cwd: root,
+  encoding: "utf8"
+});
+
+if (
+  ruleCatalogMarkdown.status !== 0 ||
+  !ruleCatalogMarkdown.stdout.includes("| Rule | Severity | Title |") ||
+  !ruleCatalogMarkdown.stdout.includes("| MCP070 | high | Command is outside policy |")
+) {
+  process.stderr.write("rule catalog Markdown command failed or missed expected content.\n");
+  process.stderr.write(ruleCatalogMarkdown.stderr);
+  process.exit(ruleCatalogMarkdown.status ?? 1);
+}
+
 const report = fs.readFileSync(sampleReportPath, "utf8");
 const required = ["MCP010", "MCP021", "MCP030", "MCP041", "MCP061"];
 const missing = required.filter((item) => !report.includes(item));

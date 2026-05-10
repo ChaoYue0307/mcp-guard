@@ -1,6 +1,6 @@
 # mcp-guard Executive Summary
 
-Generated: 2026-05-10T20:20:35.470Z
+Generated: 2026-05-10T20:51:28.472Z
 Status: **Needs review**
 Risk score: **98**
 Fail threshold: **none**
