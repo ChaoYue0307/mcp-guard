@@ -2,9 +2,9 @@
   "version": 1,
   "tool": {
     "name": "mcp-guard",
-    "version": "0.4.5"
+    "version": "0.4.6"
   },
-  "generatedAt": "2026-05-10T14:16:23.655Z",
+  "generatedAt": "2026-05-10T19:56:07.107Z",
   "status": "needs_review",
   "failOn": "none",
   "outputDir": "site/e2e/audit",
@@ -30,6 +30,7 @@
   "files": {
     "executiveSummary": "site/e2e/audit/mcp-guard-executive-summary.md",
     "remediation": "site/e2e/audit/mcp-guard-remediation.md",
+    "remediationChecklist": "site/e2e/audit/mcp-guard-remediation-checklist.md",
     "markdownReport": "site/e2e/audit/mcp-guard-report.md",
     "htmlReport": "site/e2e/audit/mcp-guard-report.html",
     "jsonReport": "site/e2e/audit/mcp-guard-report.json",

@@ -13,7 +13,7 @@ It is not currently advertised as an active consulting service. Keep public webs
 ## Deliverables
 
 - MCP and agent tool inventory.
-- `mcp-guard audit` evidence pack with executive summary, remediation plan, reports, and manifest.
+- `mcp-guard audit` evidence pack with executive summary, remediation plan, remediation checklist, reports, and manifest.
 - Risk report covering shell access, package execution, filesystem scope, secrets, remote servers, and dangerous commands.
 - Practical remediation checklist.
 - Optional PR with safer config and policy changes.

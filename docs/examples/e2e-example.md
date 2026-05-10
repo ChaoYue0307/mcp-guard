@@ -54,6 +54,7 @@ Important findings include:
 - [SARIF report](../../site/e2e/report.sarif)
 - [Audit executive summary](../../site/e2e/audit/mcp-guard-executive-summary.md)
 - [Audit remediation plan](../../site/e2e/audit/mcp-guard-remediation.md)
+- [Audit remediation checklist](../../site/e2e/audit/mcp-guard-remediation-checklist.md)
 - [Audit manifest](../../site/e2e/audit/mcp-guard-audit-manifest.json)
 
 ## What This Proves
@@ -61,4 +62,4 @@ Important findings include:
 - The scanner does not need the config to leave the machine.
 - Secret-like values are redacted in reports.
 - Findings include rule IDs, severity, evidence, and remediation guidance.
-- The same scan can feed a human-readable HTML report, automation JSON, GitHub code scanning SARIF, and a review-ready audit handoff package.
+- The same scan can feed a human-readable HTML report, automation JSON, GitHub code scanning SARIF, and a review-ready audit handoff package with a remediation checklist.

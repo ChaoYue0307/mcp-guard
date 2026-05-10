@@ -82,17 +82,17 @@ Code quality
 Current release title:
 
 ```text
-v0.4.5
+v0.4.6
 ```
 
 Release notes:
 
 ```text
-Audit pack release.
+Remediation checklist release.
 
-- Adds `mcp-guard audit` for executive summary, remediation plan, Markdown, HTML, JSON, SARIF, and manifest outputs.
-- The GitHub Action now uploads audit pack artifacts, including remediation and manifest files.
-- Keeps policy enforcement, baseline support, PR comments, artifacts, and SARIF upload support.
+- Adds a checkbox remediation checklist to every `mcp-guard audit` pack.
+- PR comments and job summaries now include first remediation steps, not only finding counts.
+- Keeps executive summary, remediation plan, Markdown, HTML, JSON, SARIF, manifest, policy, baseline, artifacts, and SARIF upload support.
 ```
 
 ## Manual Publishing Steps
@@ -105,7 +105,7 @@ Completed:
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.5
+- uses: ChaoYue0307/mcp-guard-action@v0.4.6
 ```
 
 Remaining Marketplace web step:

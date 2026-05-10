@@ -32,6 +32,7 @@ mcp-guard audit --config .mcp.json --fail-on high
 | --- | --- |
 | `mcp-guard-executive-summary.md` | Short decision summary for founders, security leads, and engineering managers. |
 | `mcp-guard-remediation.md` | Server-by-server remediation plan with evidence and fixes. |
+| `mcp-guard-remediation-checklist.md` | Checkbox-based remediation tasks for PRs, paid setup handoff, or internal tracking. |
 | `mcp-guard-report.md` | Full Markdown scan report. |
 | `mcp-guard-report.html` | Readable HTML report for review artifacts. |
 | `mcp-guard-report.json` | Redacted machine-readable report for automation. |
@@ -43,8 +44,9 @@ mcp-guard audit --config .mcp.json --fail-on high
 1. Run `mcp-guard audit` locally or through the GitHub Action.
 2. Open `mcp-guard-executive-summary.md` to decide whether the MCP setup is acceptable.
 3. Work through `mcp-guard-remediation.md` with the engineering team.
-4. Use `mcp-guard-report.html` for readable evidence and `mcp-guard-report.json` or `mcp-guard.sarif` for automation.
-5. Commit a reviewed policy and baseline only after the team has decided what risk is intentionally accepted.
+4. Track concrete work in `mcp-guard-remediation-checklist.md`.
+5. Use `mcp-guard-report.html` for readable evidence and `mcp-guard-report.json` or `mcp-guard.sarif` for automation.
+6. Commit a reviewed policy and baseline only after the team has decided what risk is intentionally accepted.
 
 ## Privacy
 

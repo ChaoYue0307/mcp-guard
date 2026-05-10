@@ -231,6 +231,7 @@ if (!policyReport.metadata?.policyEnabled || policyMissing.length > 0) {
 const auditFiles = [
   "mcp-guard-executive-summary.md",
   "mcp-guard-remediation.md",
+  "mcp-guard-remediation-checklist.md",
   "mcp-guard-report.md",
   "mcp-guard-report.html",
   "mcp-guard-report.json",
@@ -246,15 +247,23 @@ if (missingAuditFiles.length > 0) {
 
 const auditManifest = JSON.parse(fs.readFileSync(path.join(auditOutputDir, "mcp-guard-audit-manifest.json"), "utf8"));
 const auditRemediation = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-remediation.md"), "utf8");
+const auditChecklist = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-remediation-checklist.md"), "utf8");
 const auditSummary = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-executive-summary.md"), "utf8");
 
-if (auditManifest.summary?.riskScore !== 100 || !auditManifest.policy?.path || !auditRemediation.includes("MCP070") || !auditSummary.includes("Risk score: **100**")) {
+if (
+  auditManifest.summary?.riskScore !== 100 ||
+  !auditManifest.policy?.path ||
+  !auditManifest.files?.remediationChecklist ||
+  !auditRemediation.includes("MCP070") ||
+  !auditChecklist.includes("Remediation Tasks") ||
+  !auditSummary.includes("Risk score: **100**")
+) {
   process.stderr.write("audit pack is missing expected policy, risk, or remediation content.\n");
   process.exit(1);
 }
 
 const auditLeaks = ["exampleSecretValue", "example-secret-token"].filter((item) =>
-  auditRemediation.includes(item) || auditSummary.includes(item)
+  auditRemediation.includes(item) || auditChecklist.includes(item) || auditSummary.includes(item)
 );
 
 if (auditLeaks.length > 0) {
@@ -271,13 +280,14 @@ const summary = spawnSync(process.execPath, [
   "high",
   path.join(auditOutputDir, "mcp-guard-executive-summary.md"),
   path.join(auditOutputDir, "mcp-guard-remediation.md"),
+  path.join(auditOutputDir, "mcp-guard-remediation-checklist.md"),
   path.join(auditOutputDir, "mcp-guard-audit-manifest.json")
 ], {
   cwd: root,
   encoding: "utf8"
 });
 
-if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !summary.stdout.includes("SARIF") || !summary.stdout.includes("Executive summary") || !summary.stdout.includes("Remediation") || !summary.stdout.includes("Audit manifest")) {
+if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !summary.stdout.includes("First remediation steps") || !summary.stdout.includes("SARIF") || !summary.stdout.includes("Executive summary") || !summary.stdout.includes("Remediation checklist") || !summary.stdout.includes("Audit manifest")) {
   process.stderr.write("action summary generation failed or missed expected content.\n");
   process.stderr.write(summary.stderr);
   process.exit(summary.status ?? 1);
@@ -292,13 +302,14 @@ const comment = spawnSync(process.execPath, [
   "high",
   path.join(auditOutputDir, "mcp-guard-executive-summary.md"),
   path.join(auditOutputDir, "mcp-guard-remediation.md"),
+  path.join(auditOutputDir, "mcp-guard-remediation-checklist.md"),
   path.join(auditOutputDir, "mcp-guard-audit-manifest.json")
 ], {
   cwd: root,
   encoding: "utf8"
 });
 
-if (comment.status !== 0 || !comment.stdout.includes("<!-- mcp-guard-comment -->") || !comment.stdout.includes("Top active findings") || !comment.stdout.includes("Executive summary") || !comment.stdout.includes("Audit manifest")) {
+if (comment.status !== 0 || !comment.stdout.includes("<!-- mcp-guard-comment -->") || !comment.stdout.includes("Top active findings") || !comment.stdout.includes("First remediation steps") || !comment.stdout.includes("Executive summary") || !comment.stdout.includes("Remediation checklist") || !comment.stdout.includes("Audit manifest")) {
   process.stderr.write("PR comment generation failed or missed expected content.\n");
   process.stderr.write(comment.stderr);
   process.exit(comment.status ?? 1);
@@ -356,6 +367,7 @@ const actionRequired = [
   "audit",
   "executive-summary",
   "remediation-report",
+  "remediation-checklist",
   "audit-manifest",
   "package-manager-cache: false"
 ];

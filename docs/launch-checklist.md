@@ -37,7 +37,7 @@ mcp-guard audit --config .mcp.json --policy .mcp-guard-policy.json --output-dir 
 ## GitHub Action Setup
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.5
+- uses: ChaoYue0307/mcp-guard-action@v0.4.6
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json
