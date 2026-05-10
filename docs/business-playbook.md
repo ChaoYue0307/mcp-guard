@@ -13,9 +13,10 @@ AI Agent/MCP Security Audit.
 Deliverables:
 
 - MCP server inventory;
-- `mcp-guard` scan report;
+- `mcp-guard` Markdown, HTML, and JSON scan reports;
 - manual review of high-risk findings;
 - prioritized remediation plan;
+- optional GitHub Action setup for continuous scans;
 - 60-minute hardening call;
 - optional PR with safer config changes.
 
@@ -61,4 +62,3 @@ Weak:
 - vague security interest;
 - requests for a full dashboard before any audit;
 - only free users with toy configs.
-

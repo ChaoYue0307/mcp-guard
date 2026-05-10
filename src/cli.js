@@ -1,10 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { scan } from "./scan.js";
-import { generateJsonReport, generateMarkdownReport, generateTextReport } from "./report.js";
+import { generateHtmlReport, generateJsonReport, generateMarkdownReport, generateTextReport } from "./report.js";
 import { compareSeverity, severityRank } from "./severity.js";
 
-const VERSION = "0.1.1";
+const VERSION = "0.2.0";
 
 export async function runCli(argv, io) {
   const args = argv.slice(2);
@@ -80,8 +80,8 @@ function parseScanArgs(args, defaultCwd) {
     } else if (arg === "--format" || arg === "-f") {
       options.format = readValue(args, index, arg);
       index += 1;
-      if (!["text", "markdown", "json"].includes(options.format)) {
-        throw new Error("--format must be one of: text, markdown, json");
+      if (!["text", "markdown", "json", "html"].includes(options.format)) {
+        throw new Error("--format must be one of: text, markdown, json, html");
       }
     } else if (arg === "--fail-on") {
       options.failOn = readValue(args, index, arg);
@@ -121,6 +121,9 @@ function renderReport(result, format) {
   if (format === "markdown") {
     return generateMarkdownReport(result);
   }
+  if (format === "html") {
+    return generateHtmlReport(result);
+  }
   return generateTextReport(result);
 }
 
@@ -142,7 +145,7 @@ Usage:
 Scan options:
   -c, --config <path>       Scan a specific MCP config file. Can be repeated.
   -o, --output <path>       Write report to a file.
-  -f, --format <format>     text, markdown, or json. Default: text.
+  -f, --format <format>     text, markdown, json, or html. Default: text.
       --fail-on <severity>  Exit 2 when finding severity is at least threshold.
                             critical, high, medium, low, none. Default: none.
       --cwd <path>          Working directory for project config discovery.
@@ -151,6 +154,7 @@ Scan options:
 Examples:
   mcp-guard scan
   mcp-guard scan --format markdown --output mcp-guard-report.md
+  mcp-guard scan --format html --output mcp-guard-report.html
   mcp-guard scan --config .mcp.json --fail-on high
 `;
 }

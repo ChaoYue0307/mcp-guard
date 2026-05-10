@@ -7,6 +7,7 @@ import path from "node:path";
 const root = path.resolve(import.meta.dirname, "..");
 const outputDir = path.join(root, ".release-check");
 const sampleReportPath = path.join(outputDir, "sample-report.md");
+const sampleHtmlReportPath = path.join(outputDir, "sample-report.html");
 
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -41,6 +42,20 @@ const checks = [
     ]
   },
   {
+    name: "unsafe example html report",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "scan",
+      "--config",
+      "examples/unsafe-claude_desktop_config.json",
+      "--format",
+      "html",
+      "--output",
+      sampleHtmlReportPath
+    ]
+  },
+  {
     name: "npm pack dry run",
     command: "npm",
     args: ["--cache", "./.npm-cache", "pack", "--dry-run"]
@@ -67,6 +82,22 @@ const missing = required.filter((item) => !report.includes(item));
 
 if (missing.length > 0) {
   process.stderr.write(`sample report is missing expected rules: ${missing.join(", ")}\n`);
+  process.exit(1);
+}
+
+const htmlReport = fs.readFileSync(sampleHtmlReportPath, "utf8");
+const htmlRequired = ["<!doctype html>", "Risk score", "MCP010", "MCP061"];
+const htmlMissing = htmlRequired.filter((item) => !htmlReport.includes(item));
+
+if (htmlMissing.length > 0) {
+  process.stderr.write(`HTML report is missing expected content: ${htmlMissing.join(", ")}\n`);
+  process.exit(1);
+}
+
+const leakedSecrets = ["exampleSecretValue", "example-secret-token"].filter((item) => htmlReport.includes(item));
+
+if (leakedSecrets.length > 0) {
+  process.stderr.write(`HTML report leaked secret-like sample values: ${leakedSecrets.join(", ")}\n`);
   process.exit(1);
 }
 

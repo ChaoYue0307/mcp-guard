@@ -254,6 +254,10 @@ nav a {
   padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 72px);
 }
 
+.strip {
+  padding-top: clamp(36px, 4vw, 56px);
+}
+
 .strip h2,
 .split h2,
 .audit h2,

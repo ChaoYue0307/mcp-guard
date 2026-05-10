@@ -12,7 +12,7 @@ test("CLI help exits successfully", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /mcp-guard 0\.1\.1/);
+  assert.match(result.stdout, /mcp-guard 0\.2\.0/);
 });
 
 test("CLI can emit JSON report", () => {
@@ -34,6 +34,27 @@ test("CLI can emit JSON report", () => {
   assert.ok(parsed.summary.findingCount >= 1);
   assert.equal(parsed.servers[0].env.GITHUB_TOKEN.includes("exampleSecretValue"), false);
   assert.equal("raw" in parsed.servers[0], false);
+});
+
+test("CLI can emit HTML report with redacted secrets", () => {
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "scan",
+    "--config",
+    "examples/unsafe-claude_desktop_config.json",
+    "--format",
+    "html"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /<!doctype html>/);
+  assert.match(result.stdout, /mcp-guard scan report/);
+  assert.match(result.stdout, /MCP010/);
+  assert.doesNotMatch(result.stdout, /exampleSecretValue/);
+  assert.doesNotMatch(result.stdout, /example-secret-token/);
 });
 
 test("CLI exits 2 when fail threshold is reached", () => {

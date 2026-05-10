@@ -37,6 +37,7 @@
           <div class="install-command" aria-label="Install command">
             <code>npm install -g agent-mcp-guard</code>
             <code>mcp-guard scan</code>
+            <code>mcp-guard scan --format html</code>
           </div>
         </div>
 
@@ -103,7 +104,7 @@
       <section class="split">
         <div>
           <h2>Local-first by default</h2>
-          <p>MCP configs can expose private paths, hostnames, tokens, and internal workflow details. mcp-guard runs locally, avoids external API calls, and produces text, Markdown, or redacted JSON output.</p>
+          <p>MCP configs can expose private paths, hostnames, tokens, and internal workflow details. mcp-guard runs locally, avoids external API calls, and produces text, Markdown, HTML, or redacted JSON output.</p>
         </div>
         <pre><code>{
   "mcpServers": {
@@ -145,12 +146,12 @@
           <div>
             <span>01</span>
             <h3>GitHub Action</h3>
-            <p>Make MCP config changes fail PR checks when high-risk findings appear.</p>
+            <p>Make MCP config changes fail PR checks and upload Markdown, HTML, and JSON reports as artifacts.</p>
           </div>
           <div>
             <span>02</span>
             <h3>HTML audit report</h3>
-            <p>Create client-ready reports with executive summary, finding table, and remediation checklist.</p>
+            <p>Generate client-ready reports with risk score, server inventory, finding table, and remediation guidance.</p>
           </div>
           <div>
             <span>03</span>
@@ -166,4 +167,3 @@
     </footer>
   </body>
 </html>
-

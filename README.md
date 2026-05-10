@@ -14,7 +14,7 @@ Website: [chaoyue0307.github.io/mcp-guard](https://chaoyue0307.github.io/mcp-gua
   <a href="https://www.npmjs.com/package/agent-mcp-guard"><img alt="npm version" src="https://img.shields.io/npm/v/agent-mcp-guard?color=0f766e"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.1.1"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.2.0"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -36,10 +36,24 @@ Generate a Markdown report:
 mcp-guard scan --format markdown --output mcp-guard-report.md
 ```
 
+Generate an HTML report:
+
+```bash
+mcp-guard scan --format html --output mcp-guard-report.html
+```
+
 Use in CI:
 
 ```bash
 mcp-guard scan --config .mcp.json --fail-on high
+```
+
+Use the GitHub Action:
+
+```yaml
+- uses: ChaoYue0307/mcp-guard@v0.2.0
+  with:
+    fail-on: high
 ```
 
 ## What It Finds
@@ -98,7 +112,7 @@ MCP configs often contain sensitive local paths, internal hostnames, tokens, and
 - no config upload;
 - no external API call;
 - secret-like values redacted in reports;
-- text, Markdown, and JSON output for local review and CI.
+- text, Markdown, HTML, and JSON output for local review and CI.
 
 ## Commercial Support
 
@@ -113,6 +127,7 @@ Service details: [docs/paid-audit.md](docs/paid-audit.md)
 ## Documentation
 
 - [Rule reference](docs/rules.md)
+- [GitHub Action](docs/github-action.md)
 - [Privacy and security](docs/privacy-and-security.md)
 - [Roadmap](docs/roadmap.md)
 - [Business playbook](docs/business-playbook.md)
