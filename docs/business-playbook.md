@@ -13,7 +13,7 @@ AI Agent/MCP Security Audit.
 Deliverables:
 
 - MCP server inventory;
-- `mcp-guard` Markdown, HTML, and JSON scan reports;
+- `mcp-guard` Markdown, HTML, JSON, and SARIF scan reports;
 - manual review of high-risk findings;
 - prioritized remediation plan;
 - optional GitHub Action setup for continuous scans;

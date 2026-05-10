@@ -5,18 +5,18 @@
 ## Now
 
 - CLI config scanning.
-- Text, Markdown, HTML, and redacted JSON output.
+- Text, Markdown, HTML, redacted JSON, and SARIF output.
 - Rules for shell wrappers, remote package runners, unpinned packages, broad filesystem access, secret-like env vars/headers, and remote MCP URLs.
 - CI usage with `--fail-on`.
-- GitHub Action wrapper that uploads Markdown, HTML, and JSON reports as artifacts.
+- GitHub Action wrapper that writes a job summary, uploads Markdown/HTML/JSON/SARIF artifacts, and can upload SARIF to GitHub code scanning.
 
 ## Next
 
 1. More MCP client discovery paths.
 2. Rule packs mapped to MCP security best practices.
-3. `mcp-guard audit` mode for client-ready reports.
-4. Policy file for approved commands, packages, directories, and remote URLs.
-5. Baseline mode: accept known findings and fail only on new risks.
+3. Policy file for approved commands, packages, directories, and remote URLs.
+4. Baseline mode: accept known findings and fail only on new risks.
+5. `mcp-guard audit` mode for client-ready reports.
 
 ## Later
 

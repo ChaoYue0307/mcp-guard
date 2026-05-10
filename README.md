@@ -14,7 +14,7 @@ Website: [chaoyue0307.github.io/mcp-guard](https://chaoyue0307.github.io/mcp-gua
   <a href="https://www.npmjs.com/package/agent-mcp-guard"><img alt="npm version" src="https://img.shields.io/npm/v/agent-mcp-guard?color=0f766e"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.2.0"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.3.0"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -42,6 +42,12 @@ Generate an HTML report:
 mcp-guard scan --format html --output mcp-guard-report.html
 ```
 
+Generate SARIF for GitHub code scanning:
+
+```bash
+mcp-guard scan --format sarif --output mcp-guard.sarif
+```
+
 Use in CI:
 
 ```bash
@@ -51,9 +57,10 @@ mcp-guard scan --config .mcp.json --fail-on high
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard@v0.2.0
+- uses: ChaoYue0307/mcp-guard@v0.3.0
   with:
     fail-on: high
+    upload-sarif: "true"
 ```
 
 ## What It Finds
@@ -112,7 +119,7 @@ MCP configs often contain sensitive local paths, internal hostnames, tokens, and
 - no config upload;
 - no external API call;
 - secret-like values redacted in reports;
-- text, Markdown, HTML, and JSON output for local review and CI.
+- text, Markdown, HTML, JSON, and SARIF output for local review, CI artifacts, and GitHub code scanning.
 
 ## Commercial Support
 

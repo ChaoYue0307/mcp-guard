@@ -12,7 +12,7 @@ test("CLI help exits successfully", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /mcp-guard 0\.2\.0/);
+  assert.match(result.stdout, /mcp-guard 0\.3\.0/);
 });
 
 test("CLI can emit JSON report", () => {
@@ -53,6 +53,31 @@ test("CLI can emit HTML report with redacted secrets", () => {
   assert.match(result.stdout, /<!doctype html>/);
   assert.match(result.stdout, /mcp-guard scan report/);
   assert.match(result.stdout, /MCP010/);
+  assert.doesNotMatch(result.stdout, /exampleSecretValue/);
+  assert.doesNotMatch(result.stdout, /example-secret-token/);
+});
+
+test("CLI can emit SARIF report for GitHub code scanning", () => {
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "scan",
+    "--config",
+    "examples/unsafe-claude_desktop_config.json",
+    "--format",
+    "sarif"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  const parsed = JSON.parse(result.stdout);
+  assert.equal(parsed.version, "2.1.0");
+  assert.equal(parsed.runs[0].tool.driver.name, "mcp-guard");
+  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.3.0");
+  assert.ok(parsed.runs[0].tool.driver.rules.some((rule) => rule.id === "MCP010"));
+  assert.ok(parsed.runs[0].results.some((finding) => finding.ruleId === "MCP010"));
+  assert.equal(parsed.runs[0].results[0].locations[0].physicalLocation.region.startLine, 1);
   assert.doesNotMatch(result.stdout, /exampleSecretValue/);
   assert.doesNotMatch(result.stdout, /example-secret-token/);
 });

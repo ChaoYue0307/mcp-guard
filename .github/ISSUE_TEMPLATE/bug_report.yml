@@ -7,7 +7,7 @@ body:
     id: version
     attributes:
       label: mcp-guard version
-      placeholder: "0.2.0"
+      placeholder: "0.3.0"
     validations:
       required: true
   - type: dropdown

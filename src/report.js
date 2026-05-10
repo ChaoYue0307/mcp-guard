@@ -105,6 +105,40 @@ export function generateJsonReport(result) {
   return JSON.stringify(sanitizeResult(result), null, 2);
 }
 
+export function generateSarifReport(result) {
+  const rules = buildSarifRules(result.findings);
+  const sarif = {
+    version: "2.1.0",
+    $schema: "https://json.schemastore.org/sarif-2.1.0.json",
+    runs: [
+      {
+        tool: {
+          driver: {
+            name: "mcp-guard",
+            informationUri: "https://github.com/ChaoYue0307/mcp-guard",
+            semanticVersion: result.metadata.toolVersion,
+            rules
+          }
+        },
+        automationDetails: {
+          id: "mcp-guard/"
+        },
+        invocations: [
+          {
+            executionSuccessful: true,
+            workingDirectory: {
+              uri: uriFromPath(result.metadata.cwd, result.metadata.cwd)
+            }
+          }
+        ],
+        results: result.findings.map((finding) => sarifResult(finding, result.metadata.cwd))
+      }
+    ]
+  };
+
+  return JSON.stringify(sarif, null, 2);
+}
+
 export function generateHtmlReport(result) {
   const safeResult = sanitizeResult(result);
   const riskTone = riskToneForScore(safeResult.summary.riskScore);
@@ -489,6 +523,93 @@ function sanitizeResult(result) {
     findings: result.findings,
     summary: result.summary
   };
+}
+
+function buildSarifRules(findings) {
+  const unique = new Map();
+  for (const finding of findings) {
+    if (unique.has(finding.id)) continue;
+    unique.set(finding.id, {
+      id: finding.id,
+      name: finding.id,
+      shortDescription: {
+        text: finding.title
+      },
+      fullDescription: {
+        text: finding.title
+      },
+      help: {
+        text: finding.recommendation,
+        markdown: finding.recommendation
+      },
+      defaultConfiguration: {
+        level: sarifLevel(finding.severity)
+      },
+      properties: {
+        severity: finding.severity,
+        tags: ["mcp", "ai-agent", "security"]
+      }
+    });
+  }
+  return [...unique.values()];
+}
+
+function sarifResult(finding, cwd) {
+  return {
+    ruleId: finding.id,
+    level: sarifLevel(finding.severity),
+    message: {
+      text: `${finding.title}. ${finding.evidence} Fix: ${finding.recommendation}`
+    },
+    locations: [
+      {
+        physicalLocation: {
+          artifactLocation: {
+            uri: uriFromPath(finding.configPath, cwd)
+          },
+          region: {
+            startLine: 1,
+            startColumn: 1
+          }
+        },
+        logicalLocations: [
+          {
+            name: finding.serverName,
+            kind: "object"
+          }
+        ]
+      }
+    ],
+    partialFingerprints: {
+      "mcp-guard/rule-server-evidence": fingerprint(`${finding.id}:${finding.serverName}:${finding.evidence}`)
+    },
+    properties: {
+      severity: finding.severity,
+      serverName: finding.serverName,
+      evidence: finding.evidence,
+      recommendation: finding.recommendation
+    }
+  };
+}
+
+function sarifLevel(severity) {
+  if (severity === "critical" || severity === "high") return "error";
+  if (severity === "medium") return "warning";
+  return "note";
+}
+
+function uriFromPath(filePath, cwd) {
+  const display = displayPath(filePath, cwd) || ".";
+  return display.split("/").map(encodeURIComponent).join("/");
+}
+
+function fingerprint(value) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
 }
 
 function metric(label, value) {

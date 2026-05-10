@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>mcp-guard | Local-first MCP security scanner</title>
-    <meta name="description" content="mcp-guard scans MCP and AI agent tool configs for risky shell access, unpinned packages, broad filesystem permissions, exposed secrets, and remote MCP servers.">
+    <title>mcp-guard | Secure MCP tools before agents run them</title>
+    <meta name="description" content="mcp-guard scans MCP and AI agent tool configs for risky shell access, leaked secrets, broad filesystem permissions, remote MCP endpoints, and unpinned packages.">
     <meta property="og:title" content="mcp-guard">
-    <meta property="og:description" content="Local-first MCP and AI agent config security scanner.">
+    <meta property="og:description" content="Local-first MCP and AI agent config security scanner with CLI, GitHub Action, SARIF, HTML, JSON, and audit reports.">
     <meta property="og:type" content="website">
     <link rel="icon" href="assets/brand-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
@@ -19,145 +19,175 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#scan">Scan</a>
+        <a href="#action">Action</a>
+        <a href="#reports">Reports</a>
         <a href="#audit">Audit</a>
-        <a href="#roadmap">Roadmap</a>
-        <a href="https://github.com/ChaoYue0307/mcp-guard">GitHub</a>
+        <a class="github-link" href="https://github.com/ChaoYue0307/mcp-guard">GitHub</a>
       </nav>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <h1>Review MCP tool risk before your agent gets the keys.</h1>
-          <p>mcp-guard is a local-first CLI that scans MCP and AI agent tool configs for risky shell access, unpinned packages, broad filesystem scope, exposed secrets, and remote MCP servers.</p>
+          <h1>Secure MCP tools before agents run them.</h1>
+          <p>Local-first scanner for risky shell commands, leaked secrets, broad filesystem access, remote MCP endpoints, and unpinned packages.</p>
           <div class="hero-actions">
-            <a class="button primary" href="https://www.npmjs.com/package/agent-mcp-guard">Install from npm</a>
-            <a class="button secondary" href="mailto:hechaoyue0307@gmail.com?subject=MCP%20security%20audit">Book an audit</a>
+            <a class="button primary" href="https://www.npmjs.com/package/agent-mcp-guard">Install CLI</a>
+            <a class="button secondary" href="#action">Add GitHub Action</a>
           </div>
-          <div class="install-command" aria-label="Install command">
-            <code>npm install -g agent-mcp-guard</code>
-            <code>mcp-guard scan</code>
-            <code>mcp-guard scan --format html</code>
+          <div class="trust-row" aria-label="Product properties">
+            <span>Local-first</span>
+            <span>No config upload</span>
+            <span>Apache-2.0 open source</span>
           </div>
         </div>
 
-        <div class="hero-panel" aria-label="Example mcp-guard scan report">
-          <div class="terminal-bar">
-            <span></span><span></span><span></span>
-            <code>mcp-guard scan --fail-on high</code>
+        <div class="product-preview" aria-label="mcp-guard product preview">
+          <div class="preview-topbar">
+            <span class="mini-brand"><img src="assets/brand-mark.svg" alt="">mcp-guard</span>
+            <span class="scan-status">Scan completed · 2s</span>
           </div>
-          <div class="report-head">
-            <div>
-              <p>Risk score</p>
+          <div class="preview-grid">
+            <div class="score-panel">
+              <span>Risk Score</span>
               <strong>98</strong>
+              <b>Critical</b>
+              <ul>
+                <li><i class="dot critical"></i>6 Critical</li>
+                <li><i class="dot high"></i>2 High</li>
+                <li><i class="dot medium"></i>1 Medium</li>
+              </ul>
             </div>
-            <div>
-              <p>Findings</p>
-              <strong>9</strong>
+            <div class="issues-panel">
+              <h2>Top Issues</h2>
+              <div class="issue critical">
+                <span>Critical</span>
+                <strong>Shell injection via bash -c</strong>
+                <code>mcp-servers.json:12</code>
+              </div>
+              <div class="issue high">
+                <span>High</span>
+                <strong>Broad filesystem access</strong>
+                <code>args: ["/"]</code>
+              </div>
+              <div class="issue high">
+                <span>High</span>
+                <strong>Secret-like header configured</strong>
+                <code>Authorization=Bea...ken</code>
+              </div>
             </div>
-            <div>
-              <p>Servers</p>
-              <strong>3</strong>
-            </div>
+            <aside class="pr-panel">
+              <h2>GitHub PR Check</h2>
+              <strong>Failed</strong>
+              <p>Risk score 98. High-risk MCP changes should be reviewed before merge.</p>
+              <a href="#reports">View reports</a>
+            </aside>
           </div>
-          <div class="finding critical">
-            <span>Critical</span>
-            <p>MCP010 Shell command executes inline script</p>
+          <div class="output-tabs">
+            <span>SARIF</span>
+            <span>HTML</span>
+            <span>JSON</span>
           </div>
-          <div class="finding high">
-            <span>High</span>
-            <p>MCP030 Secret-like environment variable exposed</p>
-          </div>
-          <div class="finding high">
-            <span>High</span>
-            <p>MCP041 Broad filesystem access</p>
-          </div>
-          <div class="finding medium">
-            <span>Medium</span>
-            <p>MCP060 Remote MCP server URL configured</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="strip" id="scan">
-        <h2>Built for the configs teams actually ship</h2>
-        <div class="risk-grid">
-          <article>
-            <h3>Startup commands</h3>
-            <p>Flags shell wrappers, interpreter eval modes, curl-pipe-shell, sudo, and destructive command patterns.</p>
-          </article>
-          <article>
-            <h3>Supply-chain drift</h3>
-            <p>Highlights npx, uvx, bunx, pnpm dlx, and unpinned MCP packages that can change underneath you.</p>
-          </article>
-          <article>
-            <h3>Credential exposure</h3>
-            <p>Detects secret-like environment variables and headers, then redacts values in generated reports.</p>
-          </article>
-          <article>
-            <h3>Filesystem blast radius</h3>
-            <p>Warns on root, home, Desktop, Documents, Downloads, and other broad local paths.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="split">
-        <div>
-          <h2>Local-first by default</h2>
-          <p>MCP configs can expose private paths, hostnames, tokens, and internal workflow details. mcp-guard runs locally, avoids external API calls, and produces text, Markdown, HTML, or redacted JSON output.</p>
-        </div>
-        <pre><code>{
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": [
-        "@modelcontextprotocol/server-filesystem",
-        "/Users/team"
-      ],
-      "env": {
-        "GITHUB_TOKEN": "..."
-      }
-    }
-  }
+          <pre><code>{
+  "ruleId": "MCP010",
+  "level": "error",
+  "message": "Shell command executes inline script",
+  "uri": "mcp-servers.json"
 }</code></pre>
+        </div>
+      </section>
+
+      <section class="workflows" id="scan">
+        <div class="workflow">
+          <div class="workflow-icon terminal-icon">›_</div>
+          <h2>Scan locally with the CLI</h2>
+          <p>Fast, private, and simple enough for local review or pre-commit workflows.</p>
+          <pre><code>npm i -g agent-mcp-guard
+mcp-guard scan --format html</code></pre>
+          <ul>
+            <li>Detect risky shell commands and broad access</li>
+            <li>Redact secret-like env vars and headers</li>
+            <li>Output text, Markdown, HTML, JSON, and SARIF</li>
+          </ul>
+          <a href="https://www.npmjs.com/package/agent-mcp-guard">View npm package</a>
+        </div>
+
+        <div class="workflow" id="action">
+          <div class="workflow-icon action-icon">GH</div>
+          <h2>Automate with GitHub Action</h2>
+          <p>Block risky MCP config changes before they merge, with reports attached to the run.</p>
+          <pre><code>- uses: ChaoYue0307/mcp-guard@v0.3.0
+  with:
+    fail-on: high
+    upload-sarif: "true"</code></pre>
+          <ul>
+            <li>Deterministic action from the pinned tag</li>
+            <li>Job summary for quick PR review</li>
+            <li>SARIF upload for GitHub code scanning</li>
+          </ul>
+          <a href="https://github.com/ChaoYue0307/mcp-guard/blob/main/docs/github-action.md">View Action docs</a>
+        </div>
+
+        <div class="workflow">
+          <div class="workflow-icon report-icon">▤</div>
+          <h2>Ship audit-ready reports</h2>
+          <p>Turn raw config risk into a report a founder, security lead, or engineering team can act on.</p>
+          <div class="mini-report">
+            <strong>98<span>/100</span></strong>
+            <div>
+              <p><span class="bar critical"></span>Critical 6</p>
+              <p><span class="bar high"></span>High 2</p>
+              <p><span class="bar medium"></span>Medium 1</p>
+            </div>
+          </div>
+          <ul>
+            <li>Server inventory and finding table</li>
+            <li>Evidence and remediation guidance</li>
+            <li>Good fit for paid MCP security audits</li>
+          </ul>
+          <a href="mailto:hechaoyue0307@gmail.com?subject=MCP%20security%20audit">Book an audit</a>
+        </div>
+      </section>
+
+      <section class="reports" id="reports">
+        <div>
+          <h2>Outputs that match developer workflows.</h2>
+          <p>Use one scanner across local review, pull requests, artifacts, and GitHub Security. Reports are generated locally and secret-like values are redacted before output.</p>
+        </div>
+        <div class="report-list">
+          <div>
+            <span>SARIF</span>
+            <strong>GitHub Security tab</strong>
+            <p>Rules and findings map to SARIF 2.1.0 so teams can track MCP risks beside other code scanning alerts.</p>
+          </div>
+          <div>
+            <span>HTML</span>
+            <strong>Client-ready audit report</strong>
+            <p>Readable risk score, server inventory, severity summary, evidence, and remediation guidance.</p>
+          </div>
+          <div>
+            <span>JSON</span>
+            <strong>Automation and dashboards</strong>
+            <p>Machine-readable report for internal tooling, baselines, and future policy workflows.</p>
+          </div>
+        </div>
       </section>
 
       <section class="audit" id="audit">
         <div class="audit-copy">
-          <h2>Private MCP security audits</h2>
-          <p>For teams already using Claude, Cursor, Codex, or custom agents with real tool access, I can review configs, interpret findings, and help harden the setup.</p>
+          <h2>Need a human review of a real agent setup?</h2>
+          <p>I offer private AI Agent/MCP Security Audits for teams using Claude, Cursor, Codex, custom agents, or MCP servers with real file, shell, SaaS, or production access.</p>
         </div>
         <div class="audit-card">
           <h3>Audit deliverables</h3>
           <ul>
             <li>MCP server inventory</li>
             <li>Risk report and remediation plan</li>
-            <li>Secret and filesystem scope review</li>
-            <li>60-minute hardening call</li>
+            <li>Secret, filesystem, and remote endpoint review</li>
+            <li>GitHub Action setup for continuous scanning</li>
             <li>Optional PR with safer config changes</li>
           </ul>
           <a class="button primary" href="mailto:hechaoyue0307@gmail.com?subject=MCP%20security%20audit">Contact for audit</a>
-        </div>
-      </section>
-
-      <section class="roadmap" id="roadmap">
-        <h2>Where the product gets stronger next</h2>
-        <div class="timeline">
-          <div>
-            <span>01</span>
-            <h3>GitHub Action</h3>
-            <p>Make MCP config changes fail PR checks and upload Markdown, HTML, and JSON reports as artifacts.</p>
-          </div>
-          <div>
-            <span>02</span>
-            <h3>HTML audit report</h3>
-            <p>Generate client-ready reports with risk score, server inventory, finding table, and remediation guidance.</p>
-          </div>
-          <div>
-            <span>03</span>
-            <h3>Policy mode</h3>
-            <p>Let teams define approved commands, packages, directories, and remote endpoints.</p>
-          </div>
         </div>
       </section>
     </main>

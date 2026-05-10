@@ -8,6 +8,8 @@ const root = path.resolve(import.meta.dirname, "..");
 const outputDir = path.join(root, ".release-check");
 const sampleReportPath = path.join(outputDir, "sample-report.md");
 const sampleHtmlReportPath = path.join(outputDir, "sample-report.html");
+const sampleJsonReportPath = path.join(outputDir, "sample-report.json");
+const sampleSarifReportPath = path.join(outputDir, "mcp-guard.sarif");
 
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -56,6 +58,34 @@ const checks = [
     ]
   },
   {
+    name: "unsafe example json report",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "scan",
+      "--config",
+      "examples/unsafe-claude_desktop_config.json",
+      "--format",
+      "json",
+      "--output",
+      sampleJsonReportPath
+    ]
+  },
+  {
+    name: "unsafe example sarif report",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "scan",
+      "--config",
+      "examples/unsafe-claude_desktop_config.json",
+      "--format",
+      "sarif",
+      "--output",
+      sampleSarifReportPath
+    ]
+  },
+  {
     name: "npm pack dry run",
     command: "npm",
     args: ["--cache", "./.npm-cache", "pack", "--dry-run"]
@@ -99,6 +129,41 @@ const leakedSecrets = ["exampleSecretValue", "example-secret-token"].filter((ite
 if (leakedSecrets.length > 0) {
   process.stderr.write(`HTML report leaked secret-like sample values: ${leakedSecrets.join(", ")}\n`);
   process.exit(1);
+}
+
+const sarifReport = JSON.parse(fs.readFileSync(sampleSarifReportPath, "utf8"));
+const sarifResults = sarifReport.runs?.[0]?.results || [];
+const sarifRules = sarifReport.runs?.[0]?.tool?.driver?.rules || [];
+
+if (sarifReport.version !== "2.1.0" || sarifResults.length === 0 || !sarifRules.some((rule) => rule.id === "MCP010")) {
+  process.stderr.write("SARIF report is missing expected version, results, or rules.\n");
+  process.exit(1);
+}
+
+const sarifText = JSON.stringify(sarifReport);
+const sarifLeaks = ["exampleSecretValue", "example-secret-token"].filter((item) => sarifText.includes(item));
+
+if (sarifLeaks.length > 0) {
+  process.stderr.write(`SARIF report leaked secret-like sample values: ${sarifLeaks.join(", ")}\n`);
+  process.exit(1);
+}
+
+const summary = spawnSync(process.execPath, [
+  "scripts/action-summary.js",
+  sampleJsonReportPath,
+  sampleReportPath,
+  sampleHtmlReportPath,
+  sampleSarifReportPath,
+  "high"
+], {
+  cwd: root,
+  encoding: "utf8"
+});
+
+if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !summary.stdout.includes("SARIF")) {
+  process.stderr.write("action summary generation failed or missed expected content.\n");
+  process.stderr.write(summary.stderr);
+  process.exit(summary.status ?? 1);
 }
 
 process.stdout.write("\nrelease-check passed\n");

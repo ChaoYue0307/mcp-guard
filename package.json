@@ -1,6 +1,6 @@
 {
   "name": "agent-mcp-guard",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Open-source CLI scanner for risky MCP server and AI agent tool configuration.",
   "type": "module",
   "homepage": "https://chaoyue0307.github.io/mcp-guard/",
@@ -32,7 +32,9 @@
     "security",
     "cli",
     "scanner",
-    "devsecops"
+    "devsecops",
+    "sarif",
+    "github-actions"
   ],
   "author": "",
   "license": "Apache-2.0",
@@ -41,6 +43,7 @@
     "src",
     "README.md",
     "action.yml",
+    "scripts/action-summary.js",
     "LICENSE",
     "SECURITY.md",
     "docs",
