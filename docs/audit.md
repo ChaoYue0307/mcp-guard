@@ -26,6 +26,14 @@ Use `--fail-on` in CI when the audit should write artifacts and then fail on act
 mcp-guard audit --config .mcp.json --fail-on high
 ```
 
+Verify the audit pack before handoff or after downloading a CI artifact:
+
+```bash
+mcp-guard verify-audit --manifest mcp-guard-audit/mcp-guard-audit-manifest.json
+```
+
+`verify-audit` recalculates every recorded artifact size and SHA-256 hash. It exits `0` when the pack still matches the manifest and exits `2` when a report is missing or changed.
+
 ## Generated Files
 
 | File | Purpose |
@@ -46,7 +54,7 @@ mcp-guard audit --config .mcp.json --fail-on high
 3. Work through `mcp-guard-remediation.md` with the engineering team.
 4. Track concrete work in `mcp-guard-remediation-checklist.md`.
 5. Use `mcp-guard-report.html` for readable evidence and `mcp-guard-report.json` or `mcp-guard.sarif` for automation.
-6. Use the `integrity.artifacts` section in `mcp-guard-audit-manifest.json` when you need to prove an audit artifact has not changed.
+6. Run `mcp-guard verify-audit --manifest mcp-guard-audit/mcp-guard-audit-manifest.json` when you need to prove an audit artifact has not changed.
 7. Commit a reviewed policy and baseline only after the team has decided what risk is intentionally accepted.
 
 ## Privacy

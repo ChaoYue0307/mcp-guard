@@ -123,7 +123,7 @@ mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
           <div class="workflow-icon action-icon">GH</div>
           <h2>Automate with GitHub Action</h2>
           <p>Block risky MCP config changes before they merge, with reports attached to the run.</p>
-          <pre><code>- uses: ChaoYue0307/mcp-guard-action@v0.4.7
+          <pre><code>- uses: ChaoYue0307/mcp-guard-action@v0.4.8
   with:
     config: .mcp.json
     # policy: .mcp-guard-policy.json
@@ -147,7 +147,9 @@ mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
           <p>Turn raw config risk into a customer-ready audit pack a founder, security lead, or engineering team can act on.</p>
           <pre><code>mcp-guard audit --config .mcp.json \
   --policy .mcp-guard-policy.json \
-  --output-dir mcp-guard-audit</code></pre>
+  --output-dir mcp-guard-audit
+
+mcp-guard verify-audit</code></pre>
           <div class="mini-report">
             <strong>98<span>/100</span></strong>
             <div>
@@ -160,6 +162,7 @@ mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
             <li>Server inventory and finding table</li>
             <li>Executive summary and remediation plan</li>
             <li>Checkbox remediation checklist</li>
+            <li>Verifiable SHA-256 audit manifest</li>
             <li>Active vs baseline-accepted findings</li>
             <li>Evidence and remediation guidance</li>
             <li>Useful for internal security reviews</li>
@@ -188,6 +191,11 @@ mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
             <span>JSON</span>
             <strong>Automation and dashboards</strong>
             <p>Machine-readable active findings, accepted baseline findings, stable fingerprints, and summary counts.</p>
+          </div>
+          <div>
+            <span>Manifest</span>
+            <strong>Verifiable audit handoff</strong>
+            <p>SHA-256 hashes and byte sizes let teams confirm downloaded reports still match the generated evidence pack.</p>
           </div>
         </div>
       </section>

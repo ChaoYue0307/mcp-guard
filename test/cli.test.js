@@ -14,9 +14,10 @@ test("CLI help exits successfully", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /mcp-guard 0\.4\.7/);
+  assert.match(result.stdout, /mcp-guard 0\.4\.8/);
   assert.match(result.stdout, /mcp-guard init \[options\]/);
   assert.match(result.stdout, /mcp-guard audit \[options\]/);
+  assert.match(result.stdout, /mcp-guard verify-audit \[options\]/);
 });
 
 test("CLI can emit JSON report", () => {
@@ -84,7 +85,7 @@ test("CLI can emit SARIF report for GitHub code scanning", () => {
   const parsed = JSON.parse(result.stdout);
   assert.equal(parsed.version, "2.1.0");
   assert.equal(parsed.runs[0].tool.driver.name, "mcp-guard");
-  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.4.7");
+  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.4.8");
   assert.ok(parsed.runs[0].tool.driver.rules.some((rule) => rule.id === "MCP010"));
   assert.ok(parsed.runs[0].results.some((finding) => finding.ruleId === "MCP010"));
   assert.equal(parsed.runs[0].results[0].locations[0].physicalLocation.region.startLine, 1);
@@ -167,7 +168,7 @@ test("CLI audit writes a review-ready audit pack", () => {
 
   const manifest = JSON.parse(fs.readFileSync(path.join(outputDir, "mcp-guard-audit-manifest.json"), "utf8"));
   assert.equal(manifest.version, 1);
-  assert.equal(manifest.tool.version, "0.4.7");
+  assert.equal(manifest.tool.version, "0.4.8");
   assert.equal(manifest.status, "needs_review");
   assert.equal(manifest.summary.riskScore, 100);
   assert.equal(manifest.policy.path, "examples/mcp-guard-policy.json");
@@ -197,6 +198,99 @@ test("CLI audit writes a review-ready audit pack", () => {
   assert.match(checklist, /Release Gate/);
   assert.doesNotMatch(checklist, /exampleSecretValue/);
   assert.doesNotMatch(checklist, /example-secret-token/);
+});
+
+test("CLI can verify audit pack integrity", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-verify-audit-"));
+  const outputDir = path.join(dir, "audit-pack");
+  const manifestPath = path.join(outputDir, "mcp-guard-audit-manifest.json");
+
+  const audit = spawnSync(process.execPath, [
+    CLI,
+    "audit",
+    "--config",
+    "examples/unsafe-claude_desktop_config.json",
+    "--output-dir",
+    outputDir
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(audit.status, 0);
+
+  const verified = spawnSync(process.execPath, [
+    CLI,
+    "verify-audit",
+    "--manifest",
+    manifestPath
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(verified.status, 0);
+  assert.match(verified.stdout, /mcp-guard audit verification/);
+  assert.match(verified.stdout, /Status: passed/);
+  assert.match(verified.stdout, /Artifacts checked: 7/);
+
+  fs.appendFileSync(path.join(outputDir, "mcp-guard-report.md"), "\nmodified after audit\n", "utf8");
+
+  const tampered = spawnSync(process.execPath, [
+    CLI,
+    "verify-audit",
+    "--manifest",
+    manifestPath
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(tampered.status, 2);
+  assert.match(tampered.stdout, /Status: failed/);
+  assert.match(tampered.stdout, /mcp-guard-report\.md/);
+  assert.match(tampered.stdout, /Expected sha256/);
+});
+
+test("CLI verifies a moved audit pack from the manifest directory", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-moved-audit-"));
+  const originalDir = path.join(dir, "audit-pack");
+  const movedDir = path.join(dir, "downloaded-pack");
+  const movedManifestPath = path.join(movedDir, "mcp-guard-audit-manifest.json");
+
+  const audit = spawnSync(process.execPath, [
+    CLI,
+    "audit",
+    "--cwd",
+    dir,
+    "--config",
+    path.resolve("examples/unsafe-claude_desktop_config.json"),
+    "--output-dir",
+    "audit-pack"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(audit.status, 0);
+  fs.cpSync(originalDir, movedDir, { recursive: true });
+  fs.appendFileSync(path.join(originalDir, "mcp-guard-report.md"), "\noriginal pack changed after download\n", "utf8");
+
+  const verified = spawnSync(process.execPath, [
+    CLI,
+    "verify-audit",
+    "--cwd",
+    dir,
+    "--manifest",
+    movedManifestPath
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(verified.status, 0);
+  assert.match(verified.stdout, /Status: passed/);
+  assert.match(verified.stdout, /Artifacts checked: 7/);
 });
 
 test("CLI exits 2 when fail threshold is reached", () => {
@@ -299,7 +393,7 @@ test("CLI init writes a GitHub Action workflow", () => {
 
   const workflow = fs.readFileSync(path.join(dir, ".github", "workflows", "mcp-guard.yml"), "utf8");
   assert.match(workflow, /actions\/checkout@v6/);
-  assert.match(workflow, /ChaoYue0307\/mcp-guard-action@v0\.4\.7/);
+  assert.match(workflow, /ChaoYue0307\/mcp-guard-action@v0\.4\.8/);
   assert.match(workflow, /config: \.mcp\.json/);
   assert.match(workflow, /policy: \.mcp-guard-policy\.json/);
   assert.match(workflow, /pull-requests: write/);
@@ -341,7 +435,7 @@ test("CLI init can generate a baseline and SARIF workflow", () => {
   const baseline = JSON.parse(fs.readFileSync(path.join(dir, ".mcp-guard-baseline.json"), "utf8"));
   assert.equal(baseline.version, 1);
   assert.ok(baseline.findings.length >= 1);
-  assert.equal(baseline.toolVersion, "0.4.7");
+  assert.equal(baseline.toolVersion, "0.4.8");
 
   const workflow = fs.readFileSync(path.join(dir, ".github", "workflows", "mcp-guard.yml"), "utf8");
   assert.match(workflow, /baseline: \.mcp-guard-baseline\.json/);

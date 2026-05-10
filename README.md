@@ -19,7 +19,7 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.7"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.8"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -69,6 +69,7 @@ Generate a review-ready audit pack:
 
 ```bash
 mcp-guard audit --config .mcp.json --policy .mcp-guard-policy.json --output-dir mcp-guard-audit
+mcp-guard verify-audit --manifest mcp-guard-audit/mcp-guard-audit-manifest.json
 ```
 
 Use in CI:
@@ -93,7 +94,7 @@ mcp-guard scan --config .mcp.json --baseline .mcp-guard-baseline.json --fail-on 
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.7
+- uses: ChaoYue0307/mcp-guard-action@v0.4.8
   with:
     config: .mcp.json
     # policy: .mcp-guard-policy.json
@@ -117,8 +118,9 @@ Use the transparent example to evaluate what the scanner actually does:
 - generated audit summary: [site/e2e/audit/mcp-guard-executive-summary.md](site/e2e/audit/mcp-guard-executive-summary.md)
 - generated remediation plan: [site/e2e/audit/mcp-guard-remediation.md](site/e2e/audit/mcp-guard-remediation.md)
 - generated remediation checklist: [site/e2e/audit/mcp-guard-remediation-checklist.md](site/e2e/audit/mcp-guard-remediation-checklist.md)
+- generated audit manifest: [site/e2e/audit/mcp-guard-audit-manifest.json](site/e2e/audit/mcp-guard-audit-manifest.json)
 
-The example scans 3 MCP servers and reports 9 active findings with a risk score of 98. It is synthetic, but fully reproducible from committed files.
+The example scans 3 MCP servers and reports 9 active findings with a risk score of 98. It is synthetic, but fully reproducible from committed files. The audit manifest can be verified with `mcp-guard verify-audit` to confirm the generated reports still match their recorded SHA-256 hashes.
 
 For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307/mcp-guard-demo](https://github.com/ChaoYue0307/mcp-guard-demo).
 
@@ -152,7 +154,7 @@ For paid setup or internal review handoff, `mcp-guard audit` writes a complete e
 - remediation plan grouped by MCP server;
 - remediation checklist for PR or handoff tracking;
 - Markdown, HTML, JSON, and SARIF reports;
-- machine-readable audit manifest with artifact hashes.
+- machine-readable audit manifest with artifact hashes and a CLI verifier.
 
 For stricter governance, commit `.mcp-guard-policy.json` and define the commands, remote packages, filesystem roots, and remote MCP endpoints the team has approved. See [Policy files](docs/policy.md).
 

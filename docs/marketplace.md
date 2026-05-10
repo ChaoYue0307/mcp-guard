@@ -82,17 +82,18 @@ Code quality
 Current release title:
 
 ```text
-v0.4.7
+v0.4.8
 ```
 
 Release notes:
 
 ```text
-Audit integrity release.
+Audit verification release.
 
-- Adds SHA-256 checksums and byte sizes for generated audit artifacts in `mcp-guard-audit-manifest.json`.
+- Adds `mcp-guard verify-audit` so downloaded audit packs can be checked against the manifest without custom scripts.
+- Verifies SHA-256 checksums and byte sizes for generated audit artifacts in `mcp-guard-audit-manifest.json`.
 - Keeps remediation checklist, first remediation steps in PR comments, executive summary, remediation plan, Markdown, HTML, JSON, SARIF, policy, baseline, artifacts, and SARIF upload support.
-- Improves paid setup and internal review handoff by making generated evidence easier to verify after delivery.
+- Improves paid setup and internal review handoff by making generated evidence easier to verify after delivery or CI download.
 ```
 
 ## Manual Publishing Steps
@@ -105,7 +106,7 @@ Completed:
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.7
+- uses: ChaoYue0307/mcp-guard-action@v0.4.8
 ```
 
 Remaining Marketplace web step:

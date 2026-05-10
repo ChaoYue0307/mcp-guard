@@ -13,6 +13,7 @@ const policyJsonReportPath = path.join(outputDir, "policy-report.json");
 const sampleSarifReportPath = path.join(outputDir, "mcp-guard.sarif");
 const e2eJsonReportPath = path.join(outputDir, "e2e-report.json");
 const auditOutputDir = path.join(outputDir, "audit-pack");
+const auditManifestPath = path.join(auditOutputDir, "mcp-guard-audit-manifest.json");
 
 fs.mkdirSync(outputDir, { recursive: true });
 
@@ -118,6 +119,16 @@ const checks = [
       auditOutputDir,
       "--fail-on",
       "none"
+    ]
+  },
+  {
+    name: "unsafe example audit verification",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "verify-audit",
+      "--manifest",
+      auditManifestPath
     ]
   },
   {
@@ -245,7 +256,7 @@ if (missingAuditFiles.length > 0) {
   process.exit(1);
 }
 
-const auditManifest = JSON.parse(fs.readFileSync(path.join(auditOutputDir, "mcp-guard-audit-manifest.json"), "utf8"));
+const auditManifest = JSON.parse(fs.readFileSync(auditManifestPath, "utf8"));
 const auditRemediation = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-remediation.md"), "utf8");
 const auditChecklist = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-remediation-checklist.md"), "utf8");
 const auditSummary = fs.readFileSync(path.join(auditOutputDir, "mcp-guard-executive-summary.md"), "utf8");

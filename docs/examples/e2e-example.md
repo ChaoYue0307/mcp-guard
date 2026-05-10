@@ -24,6 +24,7 @@ node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --form
 node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format json --output site/e2e/report.json
 node ./bin/mcp-guard.js scan --config site/e2e/claude_desktop_config.json --format sarif --output site/e2e/report.sarif
 node ./bin/mcp-guard.js audit --config site/e2e/claude_desktop_config.json --output-dir site/e2e/audit
+node ./bin/mcp-guard.js verify-audit --manifest site/e2e/audit/mcp-guard-audit-manifest.json
 ```
 
 ## Expected Result
@@ -63,3 +64,4 @@ Important findings include:
 - Secret-like values are redacted in reports.
 - Findings include rule IDs, severity, evidence, and remediation guidance.
 - The same scan can feed a human-readable HTML report, automation JSON, GitHub code scanning SARIF, and a review-ready audit handoff package with a remediation checklist.
+- The audit handoff can be verified later because the manifest records SHA-256 hashes and byte sizes for each generated report.

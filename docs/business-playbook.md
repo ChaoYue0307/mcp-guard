@@ -17,7 +17,7 @@ Deliverables:
 - install the CLI and GitHub Action;
 - run `mcp-guard init` or generate an equivalent workflow manually;
 - generate Markdown, HTML, JSON, and SARIF reports;
-- generate a customer handoff audit pack with executive summary, remediation plan, remediation checklist, reports, and hashed manifest;
+- generate a customer handoff audit pack with executive summary, remediation plan, remediation checklist, reports, hashed manifest, and verifier output;
 - define an initial `.mcp-guard-policy.json` for approved commands, packages, directories, and remote URLs;
 - create an initial baseline for accepted known findings;
 - enable PR comments and optional SARIF upload;

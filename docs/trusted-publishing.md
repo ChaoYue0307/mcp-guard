@@ -36,7 +36,7 @@ Configure this once on npmjs.com:
 After this is saved, run the workflow from GitHub Actions with the release tag, for example:
 
 ```text
-v0.4.7
+v0.4.8
 ```
 
 ## Release Flow After Setup
@@ -44,7 +44,7 @@ v0.4.7
 1. Update `package.json` and `src/cli.js`.
 2. Run `npm test` and `npm run release:check`.
 3. Commit and push to `main`.
-4. Create a GitHub release tag such as `v0.4.7`.
+4. Create a GitHub release tag such as `v0.4.8`.
 5. Run the `Publish npm` workflow with the same tag.
 6. Verify npm:
 
