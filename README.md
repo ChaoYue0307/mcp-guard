@@ -14,7 +14,7 @@ Website: [chaoyue0307.github.io/mcp-guard](https://chaoyue0307.github.io/mcp-gua
   <a href="https://www.npmjs.com/package/agent-mcp-guard"><img alt="npm version" src="https://img.shields.io/npm/v/agent-mcp-guard?color=0f766e"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.3.0"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.3.1"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -57,7 +57,7 @@ mcp-guard scan --config .mcp.json --fail-on high
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.3.0
+- uses: ChaoYue0307/mcp-guard-action@v0.3.1
   with:
     fail-on: high
     upload-sarif: "true"

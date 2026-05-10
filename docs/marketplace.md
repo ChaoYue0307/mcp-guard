@@ -82,7 +82,7 @@ Code quality
 Release title:
 
 ```text
-v0.3.0
+v0.3.1
 ```
 
 Release notes:
@@ -103,11 +103,11 @@ Completed:
 
 - Public repository created: <https://github.com/ChaoYue0307/mcp-guard-action>
 - `dist/mcp-guard-action/` exported, committed, and pushed.
-- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.3.0>
+- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.3.1>
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.3.0
+- uses: ChaoYue0307/mcp-guard-action@v0.3.1
 ```
 
 Remaining Marketplace web step:

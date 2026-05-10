@@ -12,7 +12,7 @@ test("CLI help exits successfully", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /mcp-guard 0\.3\.0/);
+  assert.match(result.stdout, /mcp-guard 0\.3\.1/);
 });
 
 test("CLI can emit JSON report", () => {
@@ -79,7 +79,7 @@ test("CLI can emit SARIF report for GitHub code scanning", () => {
   const parsed = JSON.parse(result.stdout);
   assert.equal(parsed.version, "2.1.0");
   assert.equal(parsed.runs[0].tool.driver.name, "mcp-guard");
-  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.3.0");
+  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.3.1");
   assert.ok(parsed.runs[0].tool.driver.rules.some((rule) => rule.id === "MCP010"));
   assert.ok(parsed.runs[0].results.some((finding) => finding.ruleId === "MCP010"));
   assert.equal(parsed.runs[0].results[0].locations[0].physicalLocation.region.startLine, 1);

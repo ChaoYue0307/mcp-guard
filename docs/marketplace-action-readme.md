@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ChaoYue0307/mcp-guard-action@v0.3.0
+      - uses: ChaoYue0307/mcp-guard-action@v0.3.1
         with:
           fail-on: high
 ```
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ChaoYue0307/mcp-guard-action@v0.3.0
+      - uses: ChaoYue0307/mcp-guard-action@v0.3.1
         with:
           config: .mcp.json
           fail-on: high
