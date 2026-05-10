@@ -4,7 +4,7 @@ import { scan } from "./scan.js";
 import { generateJsonReport, generateMarkdownReport, generateTextReport } from "./report.js";
 import { compareSeverity, severityRank } from "./severity.js";
 
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 
 export async function runCli(argv, io) {
   const args = argv.slice(2);

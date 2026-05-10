@@ -12,7 +12,7 @@ test("CLI help exits successfully", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /mcp-guard 0\.1\.0/);
+  assert.match(result.stdout, /mcp-guard 0\.1\.1/);
 });
 
 test("CLI can emit JSON report", () => {
