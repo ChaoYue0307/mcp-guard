@@ -174,6 +174,11 @@ Scan options:
   -f, --format <format>     text, markdown, json, html, or sarif. Default: text.
       --fail-on <severity>  Exit 2 when finding severity is at least threshold.
                             critical, high, medium, low, none. Default: none.
+      --baseline <path>     Accept matching known findings from a baseline JSON file.
+      --write-baseline <path>
+                            Write current findings to a baseline JSON file.
+      --baseline-reason <text>
+                            Reason stored for newly written baseline entries.
       --cwd <path>          Working directory for project config discovery.
       --no-defaults         Only scan paths passed with --config.
 
