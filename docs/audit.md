@@ -37,7 +37,7 @@ mcp-guard audit --config .mcp.json --fail-on high
 | `mcp-guard-report.html` | Readable HTML report for review artifacts. |
 | `mcp-guard-report.json` | Redacted machine-readable report for automation. |
 | `mcp-guard.sarif` | SARIF 2.1.0 report for GitHub code scanning. |
-| `mcp-guard-audit-manifest.json` | Manifest listing status, summary, policy/baseline context, and file paths. |
+| `mcp-guard-audit-manifest.json` | Manifest listing status, summary, policy/baseline context, file paths, SHA-256 hashes, and artifact sizes. |
 
 ## Review Flow
 
@@ -46,7 +46,8 @@ mcp-guard audit --config .mcp.json --fail-on high
 3. Work through `mcp-guard-remediation.md` with the engineering team.
 4. Track concrete work in `mcp-guard-remediation-checklist.md`.
 5. Use `mcp-guard-report.html` for readable evidence and `mcp-guard-report.json` or `mcp-guard.sarif` for automation.
-6. Commit a reviewed policy and baseline only after the team has decided what risk is intentionally accepted.
+6. Use the `integrity.artifacts` section in `mcp-guard-audit-manifest.json` when you need to prove an audit artifact has not changed.
+7. Commit a reviewed policy and baseline only after the team has decided what risk is intentionally accepted.
 
 ## Privacy
 

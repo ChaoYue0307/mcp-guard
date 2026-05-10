@@ -19,7 +19,7 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.6"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.7"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -93,7 +93,7 @@ mcp-guard scan --config .mcp.json --baseline .mcp-guard-baseline.json --fail-on 
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.6
+- uses: ChaoYue0307/mcp-guard-action@v0.4.7
   with:
     config: .mcp.json
     # policy: .mcp-guard-policy.json
@@ -152,7 +152,7 @@ For paid setup or internal review handoff, `mcp-guard audit` writes a complete e
 - remediation plan grouped by MCP server;
 - remediation checklist for PR or handoff tracking;
 - Markdown, HTML, JSON, and SARIF reports;
-- machine-readable audit manifest.
+- machine-readable audit manifest with artifact hashes.
 
 For stricter governance, commit `.mcp-guard-policy.json` and define the commands, remote packages, filesystem roots, and remote MCP endpoints the team has approved. See [Policy files](docs/policy.md).
 

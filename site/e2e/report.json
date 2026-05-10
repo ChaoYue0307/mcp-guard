@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-10T19:56:04.165Z",
+    "generatedAt": "2026-05-10T20:07:57.237Z",
     "cwd": ".",
     "home": "~",
     "policyPath": "",
     "policyEnabled": false,
-    "toolVersion": "0.4.6"
+    "toolVersion": "0.4.7"
   },
   "policy": null,
   "scannedFiles": [

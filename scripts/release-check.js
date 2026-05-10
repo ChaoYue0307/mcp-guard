@@ -254,6 +254,13 @@ if (
   auditManifest.summary?.riskScore !== 100 ||
   !auditManifest.policy?.path ||
   !auditManifest.files?.remediationChecklist ||
+  auditManifest.integrity?.algorithm !== "sha256" ||
+  !auditManifest.integrity?.artifacts?.some((artifact) =>
+    artifact.key === "remediationChecklist" &&
+    artifact.path === auditManifest.files.remediationChecklist &&
+    /^[a-f0-9]{64}$/.test(artifact.sha256) &&
+    artifact.bytes > 0
+  ) ||
   !auditRemediation.includes("MCP070") ||
   !auditChecklist.includes("Remediation Tasks") ||
   !auditSummary.includes("Risk score: **100**")

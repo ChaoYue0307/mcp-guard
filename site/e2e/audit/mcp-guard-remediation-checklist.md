@@ -1,6 +1,6 @@
 # mcp-guard Remediation Checklist
 
-Generated: 2026-05-10T19:56:07.107Z
+Generated: 2026-05-10T20:08:00.622Z
 Risk score: **98**
 Active findings: **9**
 
