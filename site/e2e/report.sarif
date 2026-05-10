@@ -7,7 +7,7 @@
         "driver": {
           "name": "mcp-guard",
           "informationUri": "https://github.com/ChaoYue0307/mcp-guard",
-          "semanticVersion": "0.4.0",
+          "semanticVersion": "0.4.1",
           "rules": [
             {
               "id": "MCP010",

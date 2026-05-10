@@ -82,21 +82,18 @@ Code quality
 Release title:
 
 ```text
-v0.4.0
+v0.4.1
 ```
 
 Release notes:
 
 ```text
-Baseline and pull request comment release.
+Node 24 compatibility release.
 
-- Runs mcp-guard from the pinned action tag.
-- Generates Markdown, HTML, JSON, and SARIF reports.
-- Writes a GitHub Step Summary for pull request review.
-- Supports baseline/allowlist files so known accepted findings do not fail CI.
-- Can post or update a pull request comment with active findings.
-- Can upload SARIF to GitHub code scanning with `upload-sarif: "true"`.
-- Fails workflows by configurable severity threshold.
+- Keeps the v0.4 baseline and pull request comment workflow.
+- Uses Node.js 24 for the scanner runtime.
+- Updates first-party GitHub Actions dependencies to current major versions.
+- Uses CodeQL SARIF upload v4.
 ```
 
 ## Manual Publishing Steps
@@ -105,11 +102,11 @@ Completed:
 
 - Public repository created: <https://github.com/ChaoYue0307/mcp-guard-action>
 - `dist/mcp-guard-action/` exported, committed, and pushed.
-- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.4.0>
+- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.4.1>
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.0
+- uses: ChaoYue0307/mcp-guard-action@v0.4.1
 ```
 
 Remaining Marketplace web step:
