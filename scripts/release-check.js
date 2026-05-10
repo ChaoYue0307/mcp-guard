@@ -9,6 +9,7 @@ const outputDir = path.join(root, ".release-check");
 const sampleReportPath = path.join(outputDir, "sample-report.md");
 const sampleHtmlReportPath = path.join(outputDir, "sample-report.html");
 const sampleJsonReportPath = path.join(outputDir, "sample-report.json");
+const policyJsonReportPath = path.join(outputDir, "policy-report.json");
 const sampleSarifReportPath = path.join(outputDir, "mcp-guard.sarif");
 const e2eJsonReportPath = path.join(outputDir, "e2e-report.json");
 
@@ -84,6 +85,22 @@ const checks = [
       "sarif",
       "--output",
       sampleSarifReportPath
+    ]
+  },
+  {
+    name: "unsafe example policy report",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "scan",
+      "--config",
+      "examples/unsafe-claude_desktop_config.json",
+      "--policy",
+      "examples/mcp-guard-policy.json",
+      "--format",
+      "json",
+      "--output",
+      policyJsonReportPath
     ]
   },
   {
@@ -184,6 +201,16 @@ if (!e2eExpected.every(Boolean)) {
   process.exit(1);
 }
 
+const policyReport = JSON.parse(fs.readFileSync(policyJsonReportPath, "utf8"));
+const policyIds = new Set((policyReport.findings || []).map((finding) => finding.id));
+const policyRequired = ["MCP070", "MCP071", "MCP072", "MCP073", "MCP074"];
+const policyMissing = policyRequired.filter((item) => !policyIds.has(item));
+
+if (!policyReport.metadata?.policyEnabled || policyMissing.length > 0) {
+  process.stderr.write(`Policy report is missing expected policy enforcement: ${policyMissing.join(", ")}\n`);
+  process.exit(1);
+}
+
 const summary = spawnSync(process.execPath, [
   "scripts/action-summary.js",
   sampleJsonReportPath,
@@ -220,11 +247,61 @@ if (comment.status !== 0 || !comment.stdout.includes("<!-- mcp-guard-comment -->
   process.exit(comment.status ?? 1);
 }
 
+const policySummary = spawnSync(process.execPath, [
+  "scripts/action-summary.js",
+  policyJsonReportPath,
+  sampleReportPath,
+  sampleHtmlReportPath,
+  sampleSarifReportPath,
+  "high"
+], {
+  cwd: root,
+  encoding: "utf8"
+});
+
+if (policySummary.status !== 0 || !policySummary.stdout.includes("Policy: **examples/mcp-guard-policy.json**")) {
+  process.stderr.write("policy action summary generation failed or missed policy context.\n");
+  process.stderr.write(policySummary.stderr);
+  process.exit(policySummary.status ?? 1);
+}
+
+const policyComment = spawnSync(process.execPath, [
+  "scripts/action-comment.js",
+  policyJsonReportPath,
+  sampleReportPath,
+  sampleHtmlReportPath,
+  sampleSarifReportPath,
+  "high"
+], {
+  cwd: root,
+  encoding: "utf8"
+});
+
+if (policyComment.status !== 0 || !policyComment.stdout.includes("Policy: **examples/mcp-guard-policy.json**")) {
+  process.stderr.write("policy PR comment generation failed or missed policy context.\n");
+  process.stderr.write(policyComment.stderr);
+  process.exit(policyComment.status ?? 1);
+}
+
 const marketplaceRoot = path.join(root, "dist", "mcp-guard-action");
 const forbiddenMarketplacePaths = [".github", ".github/workflows"].filter((item) => fs.existsSync(path.join(marketplaceRoot, item)));
 
 if (forbiddenMarketplacePaths.length > 0) {
   process.stderr.write(`Marketplace action package contains forbidden paths: ${forbiddenMarketplacePaths.join(", ")}\n`);
+  process.exit(1);
+}
+
+const actionMetadata = fs.readFileSync(path.join(root, "action.yml"), "utf8");
+const actionRequired = [
+  "policy:",
+  "MCP_GUARD_POLICY",
+  "--policy",
+  "package-manager-cache: false"
+];
+const actionMissing = actionRequired.filter((item) => !actionMetadata.includes(item));
+
+if (actionMissing.length > 0) {
+  process.stderr.write(`action.yml is missing expected policy/runtime content: ${actionMissing.join(", ")}\n`);
   process.exit(1);
 }
 

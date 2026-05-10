@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "allowedCommands": [
+    "node",
+    "uvx"
+  ],
+  "allowedPackages": [
+    "@approved/mcp-server"
+  ],
+  "allowedDirectories": [
+    "./workspace"
+  ],
+  "allowedRemoteUrls": [
+    "https://approved.example.com"
+  ]
+}

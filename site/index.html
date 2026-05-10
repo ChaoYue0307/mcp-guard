@@ -108,10 +108,11 @@
           <p>Fast, private, and simple enough for local review or pre-commit workflows.</p>
           <pre><code>npm i -g agent-mcp-guard
 mcp-guard init
-mcp-guard scan --format html</code></pre>
+mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
           <ul>
             <li>Bootstrap a GitHub Action in one command</li>
             <li>Detect risky shell commands and broad access</li>
+            <li>Enforce approved commands, packages, directories, and URLs</li>
             <li>Redact secret-like env vars and headers</li>
             <li>Output text, Markdown, HTML, JSON, and SARIF</li>
           </ul>
@@ -122,9 +123,10 @@ mcp-guard scan --format html</code></pre>
           <div class="workflow-icon action-icon">GH</div>
           <h2>Automate with GitHub Action</h2>
           <p>Block risky MCP config changes before they merge, with reports attached to the run.</p>
-          <pre><code>- uses: ChaoYue0307/mcp-guard-action@v0.4.3
+          <pre><code>- uses: ChaoYue0307/mcp-guard-action@v0.4.4
   with:
     config: .mcp.json
+    # policy: .mcp-guard-policy.json
     baseline: .mcp-guard-baseline.json
     fail-on: high
     comment-pr: "true"

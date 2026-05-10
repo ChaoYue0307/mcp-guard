@@ -12,15 +12,15 @@
 - Baseline/allowlist mode for accepting known findings and failing only on new risks.
 - Optional GitHub pull request comments from the Marketplace Action.
 - `mcp-guard init` for bootstrapping a GitHub Action workflow and optional baseline.
+- Policy file enforcement for approved commands, packages, directories, and remote URLs.
 - npm Trusted Publishing workflow prepared for tokenless release publishing.
 
 ## Next
 
 1. More MCP client discovery paths.
 2. Rule packs mapped to MCP security best practices.
-3. Policy file for approved commands, packages, directories, and remote URLs.
-4. `mcp-guard audit` mode for review-ready reports.
-5. Safer default remediation snippets for common MCP servers.
+3. `mcp-guard audit` mode for review-ready reports.
+4. Safer default remediation snippets for common MCP servers.
 
 ## Later
 

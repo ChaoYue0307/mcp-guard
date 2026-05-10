@@ -18,6 +18,11 @@
 | MCP050 | Critical | Dangerous command pattern such as `rm -rf`, `sudo`, `chmod 777`, or curl pipe to shell. |
 | MCP060 | Medium | Remote MCP server URL configured. |
 | MCP061 | High | Secret-like header configured for a remote MCP server. |
+| MCP070 | High | MCP server command is outside `allowedCommands` policy. |
+| MCP071 | High | Remote MCP package is outside `allowedPackages` policy. |
+| MCP072 | High | MCP server working directory is outside `allowedDirectories` policy. |
+| MCP073 | High | Filesystem argument is outside `allowedDirectories` policy. |
+| MCP074 | High | Remote MCP URL is outside `allowedRemoteUrls` policy. |
 
 ## Severity Model
 
@@ -32,4 +37,3 @@
 - The scanner does not upload configs.
 - Detection is heuristic and will miss some risks.
 - A clean report is not a security guarantee.
-

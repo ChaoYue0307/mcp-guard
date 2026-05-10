@@ -4,7 +4,9 @@ Use the `mcp-guard` action to scan MCP and AI agent tool configuration in pull r
 
 The action runs the CLI from the pinned GitHub Action tag, generates Markdown, HTML, JSON, and SARIF reports, writes a job summary, uploads reports as an artifact, and fails the job when findings meet your selected severity threshold.
 
-It can also use a committed baseline to accept known findings and optionally post a pull request comment with only the active findings.
+It can also use a committed baseline to accept known findings, enforce a committed policy file, and optionally post a pull request comment with only the active findings.
+
+If `.mcp-guard-policy.json` is committed at the repository root, the CLI auto-loads it. Use the `policy` input when the policy file lives elsewhere.
 
 Marketplace/action repository: <https://github.com/ChaoYue0307/mcp-guard-action>
 
@@ -35,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ChaoYue0307/mcp-guard-action@v0.4.3
+      - uses: ChaoYue0307/mcp-guard-action@v0.4.4
         with:
           config: .mcp.json
           fail-on: high
@@ -63,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ChaoYue0307/mcp-guard-action@v0.4.3
+      - uses: ChaoYue0307/mcp-guard-action@v0.4.4
         with:
           config: .mcp.json
           fail-on: high
@@ -75,7 +77,7 @@ jobs:
 Use `fail-on: none` when you want artifacts and summaries without blocking a pull request.
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.3
+- uses: ChaoYue0307/mcp-guard-action@v0.4.4
   with:
     fail-on: none
 ```
@@ -91,7 +93,7 @@ mcp-guard scan --config .mcp.json --write-baseline .mcp-guard-baseline.json
 Commit `.mcp-guard-baseline.json`, then reference it from the action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.3
+- uses: ChaoYue0307/mcp-guard-action@v0.4.4
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json
@@ -100,6 +102,20 @@ Commit `.mcp-guard-baseline.json`, then reference it from the action:
 
 Reports will show active findings separately from findings accepted by the baseline.
 
+## Policy Mode
+
+Use a policy when you want CI to enforce approved commands, packages, directories, and remote URLs.
+
+```yaml
+- uses: ChaoYue0307/mcp-guard-action@v0.4.4
+  with:
+    config: .mcp.json
+    policy: .mcp-guard-policy.json
+    fail-on: high
+```
+
+See [Policy files](policy.md) for the file format.
+
 ## Inputs
 
 | Input | Default | Description |
@@ -107,6 +123,7 @@ Reports will show active findings separately from findings accepted by the basel
 | `config` | empty | Optional MCP config path. Empty scans default project and user config locations. |
 | `fail-on` | `high` | Fails the job for `critical`, `high`, `medium`, or `low` findings. Use `none` for report-only mode. |
 | `baseline` | empty | Optional baseline/allowlist JSON path. Matching findings are accepted and do not fail the workflow. |
+| `policy` | empty | Optional policy JSON path. Empty auto-loads `.mcp-guard-policy.json` when present. |
 | `comment-pr` | `false` | Posts or updates a pull request comment with the scan summary. Requires `pull-requests: write`. |
 | `output-dir` | `mcp-guard-report` | Directory for generated reports. |
 | `upload-artifact` | `true` | Uploads generated reports as a workflow artifact. |

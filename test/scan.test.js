@@ -89,3 +89,46 @@ test("invalid JSON becomes a high severity finding", async () => {
   assert.equal(result.findings[0].id, "MCP003");
   assert.equal(result.findings[0].severity, "high");
 });
+
+test("scan enforces policy files for commands, packages, directories, and remote URLs", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-policy-"));
+  const configPath = path.join(dir, ".mcp.json");
+  const policyPath = path.join(dir, ".mcp-guard-policy.json");
+  await fs.writeFile(configPath, JSON.stringify({
+    mcpServers: {
+      unapprovedPackage: {
+        command: "npx",
+        args: ["@unapproved/server@1.2.3", "/tmp"],
+        cwd: "/tmp"
+      },
+      unapprovedRemote: {
+        url: "https://unapproved.example.com/sse"
+      }
+    }
+  }), "utf8");
+  await fs.writeFile(policyPath, JSON.stringify({
+    version: 1,
+    allowedCommands: ["node"],
+    allowedPackages: ["@approved/server"],
+    allowedDirectories: ["./approved-workspace"],
+    allowedRemoteUrls: ["https://approved.example.com"]
+  }), "utf8");
+
+  const result = await scan({
+    cwd: dir,
+    env: { HOME: path.join(dir, "home") },
+    configPaths: [configPath],
+    includeDefaults: false,
+    policyPath,
+    toolVersion: "test"
+  });
+
+  const ids = result.findings.map((finding) => finding.id);
+  assert.ok(ids.includes("MCP070"));
+  assert.ok(ids.includes("MCP071"));
+  assert.ok(ids.includes("MCP072"));
+  assert.ok(ids.includes("MCP073"));
+  assert.ok(ids.includes("MCP074"));
+  assert.equal(result.metadata.policyEnabled, true);
+  assert.equal(result.policy.path, policyPath);
+});

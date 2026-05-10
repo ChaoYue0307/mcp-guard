@@ -14,7 +14,7 @@ test("CLI help exits successfully", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /mcp-guard 0\.4\.3/);
+  assert.match(result.stdout, /mcp-guard 0\.4\.4/);
   assert.match(result.stdout, /mcp-guard init \[options\]/);
 });
 
@@ -83,12 +83,46 @@ test("CLI can emit SARIF report for GitHub code scanning", () => {
   const parsed = JSON.parse(result.stdout);
   assert.equal(parsed.version, "2.1.0");
   assert.equal(parsed.runs[0].tool.driver.name, "mcp-guard");
-  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.4.3");
+  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.4.4");
   assert.ok(parsed.runs[0].tool.driver.rules.some((rule) => rule.id === "MCP010"));
   assert.ok(parsed.runs[0].results.some((finding) => finding.ruleId === "MCP010"));
   assert.equal(parsed.runs[0].results[0].locations[0].physicalLocation.region.startLine, 1);
   assert.doesNotMatch(result.stdout, /exampleSecretValue/);
   assert.doesNotMatch(result.stdout, /example-secret-token/);
+});
+
+test("CLI auto-loads .mcp-guard-policy.json when present", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-policy-cli-"));
+  fs.writeFileSync(path.join(dir, ".mcp.json"), JSON.stringify({
+    mcpServers: {
+      blocked: {
+        command: "bash",
+        args: ["./server.sh"]
+      }
+    }
+  }), "utf8");
+  fs.writeFileSync(path.join(dir, ".mcp-guard-policy.json"), JSON.stringify({
+    version: 1,
+    allowedCommands: ["node"]
+  }), "utf8");
+
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "scan",
+    "--cwd",
+    dir,
+    "--format",
+    "json"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  const parsed = JSON.parse(result.stdout);
+  assert.equal(parsed.metadata.policyEnabled, true);
+  assert.equal(parsed.metadata.policyPath, ".mcp-guard-policy.json");
+  assert.ok(parsed.findings.some((finding) => finding.id === "MCP070"));
 });
 
 test("CLI exits 2 when fail threshold is reached", () => {
@@ -169,6 +203,10 @@ test("CLI init writes a GitHub Action workflow", () => {
       }
     }
   }), "utf8");
+  fs.writeFileSync(path.join(dir, ".mcp-guard-policy.json"), JSON.stringify({
+    version: 1,
+    allowedCommands: ["node"]
+  }), "utf8");
 
   const result = spawnSync(process.execPath, [
     CLI,
@@ -182,12 +220,14 @@ test("CLI init writes a GitHub Action workflow", () => {
 
   assert.equal(result.status, 0);
   assert.match(result.stdout, /mcp-guard init completed/);
+  assert.match(result.stdout, /Policy: \.mcp-guard-policy\.json/);
   assert.match(result.stdout, /Created: \.github\/workflows\/mcp-guard\.yml/);
 
   const workflow = fs.readFileSync(path.join(dir, ".github", "workflows", "mcp-guard.yml"), "utf8");
   assert.match(workflow, /actions\/checkout@v6/);
-  assert.match(workflow, /ChaoYue0307\/mcp-guard-action@v0\.4\.3/);
+  assert.match(workflow, /ChaoYue0307\/mcp-guard-action@v0\.4\.4/);
   assert.match(workflow, /config: \.mcp\.json/);
+  assert.match(workflow, /policy: \.mcp-guard-policy\.json/);
   assert.match(workflow, /pull-requests: write/);
   assert.match(workflow, /comment-pr: "true"/);
   assert.doesNotMatch(workflow, /security-events: write/);
@@ -227,7 +267,7 @@ test("CLI init can generate a baseline and SARIF workflow", () => {
   const baseline = JSON.parse(fs.readFileSync(path.join(dir, ".mcp-guard-baseline.json"), "utf8"));
   assert.equal(baseline.version, 1);
   assert.ok(baseline.findings.length >= 1);
-  assert.equal(baseline.toolVersion, "0.4.3");
+  assert.equal(baseline.toolVersion, "0.4.4");
 
   const workflow = fs.readFileSync(path.join(dir, ".github", "workflows", "mcp-guard.yml"), "utf8");
   assert.match(workflow, /baseline: \.mcp-guard-baseline\.json/);

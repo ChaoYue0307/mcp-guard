@@ -82,16 +82,17 @@ Code quality
 Current release title:
 
 ```text
-v0.4.3
+v0.4.4
 ```
 
 Release notes:
 
 ```text
-Trusted Publishing readiness release.
+Policy enforcement release.
 
-- Adds a GitHub Actions workflow for npm Trusted Publishing readiness.
-- Keeps `mcp-guard init` for generating a GitHub Action workflow and baseline.
+- Adds `.mcp-guard-policy.json` support for approved commands, packages, directories, and remote URLs.
+- Adds the `policy` GitHub Action input and automatic root policy discovery.
+- Adds MCP070-MCP074 policy findings.
 - Keeps Node.js 24, PR comments, artifacts, and SARIF upload support.
 ```
 
@@ -105,7 +106,7 @@ Completed:
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.3
+- uses: ChaoYue0307/mcp-guard-action@v0.4.4
 ```
 
 Remaining Marketplace web step:

@@ -19,7 +19,7 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.3"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.4"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -71,6 +71,12 @@ Use in CI:
 mcp-guard scan --config .mcp.json --fail-on high
 ```
 
+Enforce a team policy for approved commands, packages, directories, and remote URLs:
+
+```bash
+mcp-guard scan --config .mcp.json --policy .mcp-guard-policy.json --fail-on high
+```
+
 Accept known findings and fail only on new risk:
 
 ```bash
@@ -81,9 +87,10 @@ mcp-guard scan --config .mcp.json --baseline .mcp-guard-baseline.json --fail-on 
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.3
+- uses: ChaoYue0307/mcp-guard-action@v0.4.4
   with:
     config: .mcp.json
+    # policy: .mcp-guard-policy.json
     baseline: .mcp-guard-baseline.json
     fail-on: high
     comment-pr: "true"
@@ -117,6 +124,7 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 | Broad filesystem access | Home, root, Desktop, Documents, and Downloads are high-blast-radius paths. |
 | Remote MCP URLs | Data may leave the local trust boundary. |
 | Dangerous command patterns | `rm -rf`, `sudo`, `chmod 777`, and curl-pipe-shell should block review. |
+| Policy violations | Teams can enforce approved commands, packages, directories, and remote URLs. |
 
 ## Team Workflow
 
@@ -128,6 +136,8 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 4. Fail pull requests only when new high-risk MCP changes appear.
 
 The GitHub Action can also post an optional pull request comment with the active finding summary.
+
+For stricter governance, commit `.mcp-guard-policy.json` and define the commands, remote packages, filesystem roots, and remote MCP endpoints the team has approved. See [Policy files](docs/policy.md).
 
 For a guided setup, run:
 
@@ -193,6 +203,7 @@ Typical scope:
 
 - install and run the CLI against redacted local MCP configs;
 - create the GitHub Action workflow;
+- define an initial `.mcp-guard-policy.json`;
 - generate and review an initial baseline;
 - enable PR comments and optional GitHub code scanning;
 - record missing rules or config shapes as product feedback.
@@ -203,6 +214,7 @@ Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
 
 - [Rule reference](docs/rules.md)
 - [Baseline and allowlist](docs/baseline.md)
+- [Policy files](docs/policy.md)
 - [GitHub Action](docs/github-action.md)
 - [Marketplace publishing plan](docs/marketplace.md)
 - [Privacy and security](docs/privacy-and-security.md)
