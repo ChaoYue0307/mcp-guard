@@ -79,21 +79,20 @@ Secondary category:
 Code quality
 ```
 
-Release title:
+Current release title:
 
 ```text
-v0.4.1
+v0.4.2
 ```
 
 Release notes:
 
 ```text
-Node 24 compatibility release.
+CI bootstrap release.
 
-- Keeps the v0.4 baseline and pull request comment workflow.
-- Uses Node.js 24 for the scanner runtime.
-- Updates first-party GitHub Actions dependencies to current major versions.
-- Uses CodeQL SARIF upload v4.
+- Adds `mcp-guard init` for generating a GitHub Action workflow.
+- Can generate and reference an initial baseline.
+- Keeps Node.js 24, PR comments, artifacts, and SARIF upload support.
 ```
 
 ## Manual Publishing Steps
@@ -102,11 +101,11 @@ Completed:
 
 - Public repository created: <https://github.com/ChaoYue0307/mcp-guard-action>
 - `dist/mcp-guard-action/` exported, committed, and pushed.
-- Release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.4.1>
+- Initial release created: <https://github.com/ChaoYue0307/mcp-guard-action/releases/tag/v0.4.1>
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.1
+- uses: ChaoYue0307/mcp-guard-action@v0.4.2
 ```
 
 Remaining Marketplace web step:

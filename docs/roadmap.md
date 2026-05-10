@@ -11,6 +11,7 @@
 - GitHub Action wrapper that writes a job summary, uploads Markdown/HTML/JSON/SARIF artifacts, and can upload SARIF to GitHub code scanning.
 - Baseline/allowlist mode for accepting known findings and failing only on new risks.
 - Optional GitHub pull request comments from the Marketplace Action.
+- `mcp-guard init` for bootstrapping a GitHub Action workflow and optional baseline.
 
 ## Next
 

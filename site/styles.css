@@ -903,6 +903,39 @@ code {
   max-width: 760px;
 }
 
+.pilot-options {
+  display: grid;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.pilot-options div {
+  display: grid;
+  grid-template-columns: 140px 140px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+
+.pilot-options span {
+  color: var(--teal-dark);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.pilot-options strong {
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.pilot-options p {
+  margin: 0;
+  font-size: 15px;
+}
+
 .audit-card {
   padding: 28px;
   background: var(--white);
@@ -1092,6 +1125,11 @@ footer a {
 
   .example-side {
     position: static;
+  }
+
+  .pilot-options div {
+    grid-template-columns: 1fr;
+    gap: 6px;
   }
 }
 

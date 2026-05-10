@@ -19,7 +19,7 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
   <a href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner"><img alt="GitHub Marketplace" src="https://img.shields.io/badge/Marketplace-mcp--guard-0f766e?logo=github"></a>
   <a href="https://github.com/ChaoYue0307/mcp-guard/actions"><img alt="CI" src="https://github.com/ChaoYue0307/mcp-guard/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-111827"></a>
-  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.1"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
+  <a href="https://github.com/ChaoYue0307/mcp-guard/releases/tag/v0.4.2"><img alt="Release" src="https://img.shields.io/github/v/release/ChaoYue0307/mcp-guard?color=7c2d12"></a>
 </p>
 
 ## Install
@@ -27,6 +27,18 @@ Live demo PR: [mcp-guard-demo#1](https://github.com/ChaoYue0307/mcp-guard-demo/p
 ```bash
 npm install -g agent-mcp-guard
 mcp-guard scan
+```
+
+Bootstrap a repository with a GitHub Action:
+
+```bash
+mcp-guard init
+```
+
+Bootstrap CI and accept current reviewed findings as a baseline:
+
+```bash
+mcp-guard init --write-baseline --upload-sarif
 ```
 
 Scan a specific config:
@@ -69,7 +81,7 @@ mcp-guard scan --config .mcp.json --baseline .mcp-guard-baseline.json --fail-on 
 Use the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.1
+- uses: ChaoYue0307/mcp-guard-action@v0.4.2
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json
@@ -117,6 +129,14 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 
 The GitHub Action can also post an optional pull request comment with the active finding summary.
 
+For a guided setup, run:
+
+```bash
+mcp-guard init --write-baseline --upload-sarif
+```
+
+This writes `.github/workflows/mcp-guard.yml` and `.mcp-guard-baseline.json`, using `actions/checkout@v6`, the current Marketplace Action tag, PR comments, and optional SARIF upload.
+
 ## Example Output
 
 ```text
@@ -163,11 +183,19 @@ MCP configs often contain sensitive local paths, internal hostnames, tokens, and
 - secret-like values redacted in reports;
 - text, Markdown, HTML, JSON, and SARIF output for local review, CI artifacts, and GitHub code scanning.
 
-## Early Access and Feedback
+## Setup Pilot
 
 Want to try `mcp-guard` on a real AI agent or MCP setup?
 
-The project is currently an automated local scanner. I am collecting early users, real-world config examples, CI setup feedback, baseline workflow feedback, and rule requests to improve coverage.
+The project is an automated local scanner. Paid setup help is available for teams that want the CLI, GitHub Action, baseline workflow, PR comments, and SARIF reporting wired into a real repository.
+
+Typical scope:
+
+- install and run the CLI against redacted local MCP configs;
+- create the GitHub Action workflow;
+- generate and review an initial baseline;
+- enable PR comments and optional GitHub code scanning;
+- record missing rules or config shapes as product feedback.
 
 Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
 

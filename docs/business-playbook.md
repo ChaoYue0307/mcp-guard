@@ -15,6 +15,7 @@ This is setup and product onboarding, not a manual security audit.
 Deliverables:
 
 - install the CLI and GitHub Action;
+- run `mcp-guard init` or generate an equivalent workflow manually;
 - generate Markdown, HTML, JSON, and SARIF reports;
 - create an initial baseline for accepted known findings;
 - enable PR comments and optional SARIF upload;
@@ -35,6 +36,8 @@ Deliverables:
 I built mcp-guard, an open-source local scanner for MCP and AI agent tool configs.
 
 It checks for risky shell access, unpinned npx packages, broad filesystem permissions, exposed secrets, and remote MCP servers.
+
+It now includes `mcp-guard init`, which creates a GitHub Action workflow and can generate a baseline for accepted current findings.
 
 I am collecting real-world MCP and AI agent config patterns from teams using Claude, Cursor, Codex, or MCP in production-like workflows. If you can share a redacted config or run the CLI locally, your feedback can help improve the scanner's rules and reports.
 ```
