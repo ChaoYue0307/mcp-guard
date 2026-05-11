@@ -45,7 +45,7 @@ export const RULE_CATALOG = [
     id: "MCP020",
     severity: "medium",
     title: "Remote package runner is used",
-    detects: "Remote package runners such as npx, uvx, bunx, pipx, or package-manager dlx commands.",
+    detects: "Remote package runners such as npx, uvx, bunx, pipx run, npm exec, or package-manager dlx commands.",
     recommendation: "Pin the package version and prefer a reviewed lockfile or vendored executable for sensitive tools."
   },
   {

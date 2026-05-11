@@ -48,6 +48,64 @@ test("scan flags common risky MCP config patterns", async () => {
   assert.equal(result.summary.acceptedFindingCount, 0);
 });
 
+test("scan parses package runner package options", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-package-runner-"));
+  const configPath = path.join(dir, "mcp.json");
+  await fs.writeFile(configPath, JSON.stringify({
+    mcpServers: {
+      npxPackageOption: {
+        command: "npx",
+        args: ["--yes", "--package=@vendor/mcp-server", "mcp-server"]
+      },
+      pipxRun: {
+        command: "pipx",
+        args: ["run", "untrusted-mcp"]
+      },
+      pipxPinnedSpec: {
+        command: "pipx",
+        args: ["run", "--spec", "tool-server==1.2.3", "tool-server"]
+      },
+      pnpmDlxPinned: {
+        command: "pnpm",
+        args: ["dlx", "@pnpm/mcp@2.0.0"]
+      },
+      uvxFromPinned: {
+        command: "uvx",
+        args: ["--from", "uv-mcp==1.0.0", "uv-mcp"]
+      },
+      npmExecPinned: {
+        command: "npm",
+        args: ["exec", "@trusted/mcp@1.2.3", "--", "--stdio"]
+      }
+    }
+  }), "utf8");
+
+  const result = await scan({
+    cwd: dir,
+    env: { HOME: path.join(dir, "home") },
+    configPaths: [configPath],
+    includeDefaults: false,
+    toolVersion: "test"
+  });
+
+  const remoteRunnerFindings = result.findings.filter((finding) => finding.id === "MCP020");
+  assert.equal(remoteRunnerFindings.length, 6);
+  assert.ok(remoteRunnerFindings.some((finding) => finding.evidence.includes("package=@vendor/mcp-server")));
+  assert.ok(remoteRunnerFindings.some((finding) => finding.evidence.includes("package=untrusted-mcp")));
+  assert.ok(remoteRunnerFindings.some((finding) => finding.evidence.includes("package=tool-server==1.2.3")));
+  assert.ok(remoteRunnerFindings.some((finding) => finding.evidence.includes("package=@pnpm/mcp@2.0.0")));
+  assert.ok(remoteRunnerFindings.some((finding) => finding.evidence.includes("package=uv-mcp==1.0.0")));
+  assert.ok(remoteRunnerFindings.some((finding) => finding.evidence.includes("package=@trusted/mcp@1.2.3")));
+
+  const unpinnedEvidence = result.findings
+    .filter((finding) => finding.id === "MCP021")
+    .map((finding) => finding.evidence);
+  assert.deepEqual(unpinnedEvidence.sort(), [
+    "package=@vendor/mcp-server",
+    "package=untrusted-mcp"
+  ]);
+});
+
 test("scan discovers project .mcp.json by default", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-"));
   const configPath = path.join(dir, ".mcp.json");
@@ -98,7 +156,7 @@ test("scan enforces policy files for commands, packages, directories, and remote
     mcpServers: {
       unapprovedPackage: {
         command: "npx",
-        args: ["@unapproved/server@1.2.3", "/tmp"],
+        args: ["--yes", "--package=@unapproved/server@1.2.3", "server", "/tmp"],
         cwd: "/tmp"
       },
       unapprovedRemote: {

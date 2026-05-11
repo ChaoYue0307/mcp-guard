@@ -1,10 +1,9 @@
 import path from "node:path";
+import { commandBase, remotePackageSpec } from "./package-runner.js";
 import { isSecretLikeName, redactValue } from "./redact.js";
 
 const SHELL_COMMANDS = new Set(["sh", "bash", "zsh", "fish", "pwsh", "powershell", "cmd", "cmd.exe"]);
 const EVAL_COMMANDS = new Set(["node", "python", "python3", "ruby", "perl", "php", "deno", "bun"]);
-const REMOTE_EXEC_COMMANDS = new Set(["npx", "bunx", "uvx", "pipx"]);
-const PACKAGE_MANAGER_COMMANDS = new Set(["npm", "pnpm", "yarn"]);
 const BROAD_DIR_NAMES = new Set(["Desktop", "Documents", "Downloads"]);
 
 export function evaluateServer(server, context) {
@@ -73,35 +72,31 @@ function ruleEvalExecution(server) {
 }
 
 function ruleRemotePackageExecution(server) {
-  const command = commandBase(server.command);
-  const firstArg = firstPackageArg(server.args);
-  const usesDlx = PACKAGE_MANAGER_COMMANDS.has(command) && server.args[0] === "dlx";
-  if (!REMOTE_EXEC_COMMANDS.has(command) && !usesDlx) return [];
+  const packageSpec = remotePackageSpec(server);
+  if (!packageSpec) return [];
 
   return [finding({
     id: "MCP020",
     severity: "medium",
     title: "MCP server is launched through a remote package runner",
     server,
-    evidence: `command=${server.command} package=${firstArg || "<unknown>"}`,
+    evidence: `command=${server.command} package=${packageSpec.packageArg || "<unknown>"}`,
     recommendation: "Pin the package version, review the package source, and prefer a local lockfile or vendored executable for sensitive tools."
   })];
 }
 
 function ruleUnpinnedPackage(server) {
-  const command = commandBase(server.command);
-  const usesRemoteRunner = REMOTE_EXEC_COMMANDS.has(command) || (PACKAGE_MANAGER_COMMANDS.has(command) && server.args[0] === "dlx");
-  if (!usesRemoteRunner) return [];
+  const packageSpec = remotePackageSpec(server);
+  if (!packageSpec) return [];
 
-  const packageArg = firstPackageArg(server.args);
-  if (!packageArg || isPinnedPackage(packageArg)) return [];
+  if (!packageSpec.packageArg || packageSpec.isPinned) return [];
 
   return [finding({
     id: "MCP021",
     severity: "high",
     title: "Remote MCP package is not version pinned",
     server,
-    evidence: `package=${packageArg}`,
+    evidence: `package=${packageSpec.packageArg}`,
     recommendation: "Pin the package to an exact version such as package@1.2.3 and review updates before changing it."
   })];
 }
@@ -246,14 +241,12 @@ function rulePolicyAllowedPackage(server, context) {
   const policy = context.policy;
   if (!policy || policy.allowedPackages.size === 0) return [];
 
-  const command = commandBase(server.command);
-  const usesRemoteRunner = REMOTE_EXEC_COMMANDS.has(command) || (PACKAGE_MANAGER_COMMANDS.has(command) && server.args[0] === "dlx");
-  if (!usesRemoteRunner) return [];
+  const packageSpec = remotePackageSpec(server);
+  if (!packageSpec) return [];
 
-  const packageArg = firstPackageArg(server.args);
-  if (!packageArg) return [];
+  if (!packageSpec.packageArg) return [];
 
-  const packageName = packageIdentity(packageArg);
+  const packageName = packageSpec.packageName;
   if (policy.allowedPackages.has(packageName)) return [];
 
   return [finding({
@@ -332,35 +325,6 @@ function finding({ id, severity, title, server, evidence, recommendation }) {
     evidence,
     recommendation
   };
-}
-
-function commandBase(command) {
-  if (!command) return "";
-  return path.basename(command).toLowerCase();
-}
-
-function firstPackageArg(args) {
-  const cleaned = args.filter((arg) => arg && !arg.startsWith("-"));
-  if (cleaned[0] === "dlx") return cleaned[1] || "";
-  return cleaned[0] || "";
-}
-
-function isPinnedPackage(packageName) {
-  if (packageName.startsWith("@")) {
-    const secondAt = packageName.indexOf("@", 1);
-    return secondAt > 1 && secondAt < packageName.length - 1;
-  }
-  const at = packageName.lastIndexOf("@");
-  return at > 0 && at < packageName.length - 1;
-}
-
-function packageIdentity(packageName) {
-  if (packageName.startsWith("@")) {
-    const secondAt = packageName.indexOf("@", 1);
-    return secondAt > 1 ? packageName.slice(0, secondAt) : packageName;
-  }
-  const at = packageName.lastIndexOf("@");
-  return at > 0 ? packageName.slice(0, at) : packageName;
 }
 
 function valueFromArg(arg) {

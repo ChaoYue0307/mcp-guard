@@ -13,6 +13,7 @@
 - Optional GitHub pull request comments from the Marketplace Action.
 - `mcp-guard init` for bootstrapping a GitHub Action workflow and optional baseline.
 - Policy file enforcement for approved commands, packages, directories, and remote URLs.
+- Conservative policy draft generation with `mcp-guard policy`.
 - `mcp-guard audit` and `mcp-guard verify-audit` for review-ready summaries, remediation plans, checklists, reports, and verifiable manifests.
 - npm Trusted Publishing workflow prepared for tokenless release publishing.
 

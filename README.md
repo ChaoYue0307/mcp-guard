@@ -158,7 +158,7 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 | Risk | Why it matters |
 | --- | --- |
 | Shell wrappers and inline scripts | Agent startup can become arbitrary code execution. |
-| `npx`, `uvx`, `bunx`, `pnpm dlx` | Remote package execution expands supply-chain risk. |
+| `npx`, `uvx`, `bunx`, `pipx run`, `npm exec`, package-manager `dlx` | Remote package execution expands supply-chain risk. |
 | Unpinned packages | A trusted MCP server can change underneath you. |
 | Secret-like env vars and headers | Long-lived tokens leak into tool runtimes and reports. |
 | Broad filesystem access | Home, root, Desktop, Documents, and Downloads are high-blast-radius paths. |

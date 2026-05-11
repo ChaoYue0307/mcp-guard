@@ -1,11 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { displayPath } from "./fingerprint.js";
+import { commandBase, remotePackageSpec } from "./package-runner.js";
 import { DEFAULT_POLICY_FILE } from "./policy.js";
 
 const SHELL_COMMANDS = new Set(["sh", "bash", "zsh", "fish", "pwsh", "powershell", "cmd", "cmd.exe"]);
-const REMOTE_EXEC_COMMANDS = new Set(["npx", "bunx", "uvx", "pipx"]);
-const PACKAGE_MANAGER_COMMANDS = new Set(["npm", "pnpm", "yarn"]);
 const BROAD_DIR_NAMES = new Set(["Desktop", "Documents", "Downloads"]);
 
 export function defaultPolicyOutputPath(cwd) {
@@ -128,33 +127,9 @@ export function renderPolicySuggestionPreview(suggestion) {
   return `${JSON.stringify(suggestion.policy, null, 2)}\n`;
 }
 
-function commandBase(command) {
-  if (!command) return "";
-  return path.basename(command).toLowerCase();
-}
-
 function remotePackageIdentity(server) {
-  const command = commandBase(server.command);
-  const usesRemoteRunner = REMOTE_EXEC_COMMANDS.has(command) || (PACKAGE_MANAGER_COMMANDS.has(command) && server.args[0] === "dlx");
-  if (!usesRemoteRunner) return "";
-
-  const packageArg = firstPackageArg(server.args);
-  return packageArg ? packageIdentity(packageArg) : "";
-}
-
-function firstPackageArg(args) {
-  const cleaned = args.filter((arg) => arg && !arg.startsWith("-"));
-  if (cleaned[0] === "dlx") return cleaned[1] || "";
-  return cleaned[0] || "";
-}
-
-function packageIdentity(packageName) {
-  if (packageName.startsWith("@")) {
-    const secondAt = packageName.indexOf("@", 1);
-    return secondAt > 1 ? packageName.slice(0, secondAt) : packageName;
-  }
-  const at = packageName.lastIndexOf("@");
-  return at > 0 ? packageName.slice(0, at) : packageName;
+  const packageSpec = remotePackageSpec(server);
+  return packageSpec?.packageName || "";
 }
 
 function candidateDirectories(server) {

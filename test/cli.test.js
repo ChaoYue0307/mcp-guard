@@ -134,6 +134,44 @@ test("CLI policy suggestion skips shell and root access by default", () => {
   assert.equal(policy.allowedDirectories.includes("/"), false);
 });
 
+test("CLI policy suggestion extracts package option identities", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-policy-package-option-"));
+  fs.mkdirSync(path.join(dir, "workspace"), { recursive: true });
+  fs.writeFileSync(path.join(dir, ".mcp.json"), JSON.stringify({
+    mcpServers: {
+      remotePackage: {
+        command: "npx",
+        args: ["--yes", "--package=@vendor/mcp-server@1.2.3", "mcp-server", "./workspace"],
+        cwd: dir
+      },
+      pythonPackage: {
+        command: "pipx",
+        args: ["run", "--spec", "tool-server==1.2.3", "tool-server"]
+      }
+    }
+  }), "utf8");
+
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "policy",
+    "--cwd",
+    dir,
+    "--config",
+    ".mcp.json",
+    "--output",
+    "-"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  const policy = JSON.parse(result.stdout);
+  assert.deepEqual(policy.allowedCommands, ["npx", "pipx"]);
+  assert.deepEqual(policy.allowedPackages, ["@vendor/mcp-server", "tool-server"]);
+  assert.deepEqual(policy.allowedDirectories, [".", "./workspace"]);
+});
+
 test("CLI policy suggestion dry run can inspect an existing policy file", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-policy-dry-run-"));
   fs.writeFileSync(path.join(dir, ".mcp.json"), JSON.stringify({
