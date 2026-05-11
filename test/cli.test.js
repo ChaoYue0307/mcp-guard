@@ -52,6 +52,126 @@ test("CLI can list the rule catalog", () => {
   assert.match(markdown.stdout, /\| MCP070 \| high \| Command is outside policy \|/);
 });
 
+test("CLI can suggest a conservative policy file", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-policy-suggest-"));
+  fs.mkdirSync(path.join(dir, "data"), { recursive: true });
+  fs.writeFileSync(path.join(dir, ".mcp.json"), JSON.stringify({
+    mcpServers: {
+      local: {
+        command: "node",
+        args: ["server.js", "./data"],
+        cwd: dir
+      }
+    }
+  }), "utf8");
+
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "policy",
+    "--cwd",
+    dir,
+    "--config",
+    ".mcp.json"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /mcp-guard policy suggestion/);
+  assert.match(result.stdout, /Created: \.mcp-guard-policy\.json/);
+
+  const policy = JSON.parse(fs.readFileSync(path.join(dir, ".mcp-guard-policy.json"), "utf8"));
+  assert.deepEqual(policy.allowedCommands, ["node"]);
+  assert.deepEqual(policy.allowedPackages, []);
+  assert.deepEqual(policy.allowedDirectories, [".", "./data"]);
+  assert.deepEqual(policy.allowedRemoteUrls, []);
+
+  const enforced = spawnSync(process.execPath, [
+    CLI,
+    "scan",
+    "--cwd",
+    dir,
+    "--config",
+    ".mcp.json",
+    "--policy",
+    ".mcp-guard-policy.json",
+    "--format",
+    "json"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(enforced.status, 0);
+  const parsed = JSON.parse(enforced.stdout);
+  assert.equal(parsed.metadata.policyEnabled, true);
+  assert.ok(!parsed.findings.some((finding) => finding.id.startsWith("MCP07")));
+});
+
+test("CLI policy suggestion skips shell and root access by default", () => {
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "policy",
+    "--config",
+    "examples/unsafe-claude_desktop_config.json",
+    "--output",
+    "-"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stderr, /Skipped 2 risky values/);
+
+  const policy = JSON.parse(result.stdout);
+  assert.deepEqual(policy.allowedCommands, ["npx"]);
+  assert.deepEqual(policy.allowedPackages, ["@modelcontextprotocol/server-filesystem"]);
+  assert.deepEqual(policy.allowedDirectories, []);
+  assert.deepEqual(policy.allowedRemoteUrls, ["https://mcp.example.com/sse"]);
+  assert.equal(policy.allowedCommands.includes("bash"), false);
+  assert.equal(policy.allowedDirectories.includes("/"), false);
+});
+
+test("CLI policy suggestion dry run can inspect an existing policy file", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-policy-dry-run-"));
+  fs.writeFileSync(path.join(dir, ".mcp.json"), JSON.stringify({
+    mcpServers: {
+      local: {
+        command: "node",
+        args: ["server.js"],
+        cwd: dir
+      }
+    }
+  }), "utf8");
+  fs.writeFileSync(path.join(dir, ".mcp-guard-policy.json"), JSON.stringify({
+    version: 1,
+    allowedCommands: ["python"],
+    allowedPackages: [],
+    allowedDirectories: [],
+    allowedRemoteUrls: []
+  }, null, 2), "utf8");
+
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "policy",
+    "--cwd",
+    dir,
+    "--config",
+    ".mcp.json",
+    "--dry-run"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Would overwrite: \.mcp-guard-policy\.json/);
+  const policy = JSON.parse(fs.readFileSync(path.join(dir, ".mcp-guard-policy.json"), "utf8"));
+  assert.deepEqual(policy.allowedCommands, ["python"]);
+});
+
 test("CLI can emit JSON report", () => {
   const result = spawnSync(process.execPath, [
     CLI,

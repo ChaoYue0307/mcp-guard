@@ -10,6 +10,7 @@ const sampleReportPath = path.join(outputDir, "sample-report.md");
 const sampleHtmlReportPath = path.join(outputDir, "sample-report.html");
 const sampleJsonReportPath = path.join(outputDir, "sample-report.json");
 const policyJsonReportPath = path.join(outputDir, "policy-report.json");
+const suggestedPolicyPath = path.join(outputDir, "suggested-policy.json");
 const sampleSarifReportPath = path.join(outputDir, "mcp-guard.sarif");
 const e2eJsonReportPath = path.join(outputDir, "e2e-report.json");
 const auditOutputDir = path.join(outputDir, "audit-pack");
@@ -103,6 +104,19 @@ const checks = [
       "json",
       "--output",
       policyJsonReportPath
+    ]
+  },
+  {
+    name: "unsafe example policy suggestion",
+    command: process.execPath,
+    args: [
+      "bin/mcp-guard.js",
+      "policy",
+      "--config",
+      "examples/unsafe-claude_desktop_config.json",
+      "--output",
+      suggestedPolicyPath,
+      "--force"
     ]
   },
   {
@@ -302,6 +316,21 @@ const policyMissing = policyRequired.filter((item) => !policyIds.has(item));
 
 if (!policyReport.metadata?.policyEnabled || policyMissing.length > 0) {
   process.stderr.write(`Policy report is missing expected policy enforcement: ${policyMissing.join(", ")}\n`);
+  process.exit(1);
+}
+
+const suggestedPolicy = JSON.parse(fs.readFileSync(suggestedPolicyPath, "utf8"));
+const policySuggestionExpected = [
+  suggestedPolicy.version === 1,
+  suggestedPolicy.allowedCommands?.includes("npx"),
+  !suggestedPolicy.allowedCommands?.includes("bash"),
+  suggestedPolicy.allowedPackages?.includes("@modelcontextprotocol/server-filesystem"),
+  suggestedPolicy.allowedRemoteUrls?.includes("https://mcp.example.com/sse"),
+  !suggestedPolicy.allowedDirectories?.includes("/")
+];
+
+if (!policySuggestionExpected.every(Boolean)) {
+  process.stderr.write("suggested policy did not keep expected approved values or skip risky access.\n");
   process.exit(1);
 }
 

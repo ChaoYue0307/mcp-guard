@@ -109,6 +109,7 @@ mcp-guard scan --config .mcp.json --fail-on high
 Enforce a team policy for approved commands, packages, directories, and remote URLs:
 
 ```bash
+mcp-guard policy --config .mcp.json --output .mcp-guard-policy.json
 mcp-guard scan --config .mcp.json --policy .mcp-guard-policy.json --fail-on high
 ```
 
@@ -185,6 +186,13 @@ For paid setup or internal review handoff, `mcp-guard audit` writes a complete e
 - machine-readable audit manifest with artifact hashes and a CLI verifier.
 
 For stricter governance, commit `.mcp-guard-policy.json` and define the commands, remote packages, filesystem roots, and remote MCP endpoints the team has approved. See [Policy files](docs/policy.md).
+
+To bootstrap that file from existing config without silently approving shell wrappers or root/home access:
+
+```bash
+mcp-guard policy --config .mcp.json --dry-run
+mcp-guard policy --config .mcp.json --output .mcp-guard-policy.json
+```
 
 For a guided setup, run:
 

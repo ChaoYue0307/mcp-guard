@@ -1,8 +1,10 @@
 import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { generateAuditSummary, generateAuditVerificationSummary, verifyAuditPack, writeAuditPack } from "./audit.js";
 import { applyBaseline, loadBaselineFile, writeBaselineFile } from "./baseline.js";
 import { initProject, renderInitSummary } from "./init.js";
+import { defaultPolicyOutputPath, renderPolicySuggestionPreview, renderPolicySuggestionSummary, suggestPolicy, writeSuggestedPolicyFile } from "./policy-suggest.js";
 import { scan } from "./scan.js";
 import { generateHtmlReport, generateJsonReport, generateMarkdownReport, generateSarifReport, generateTextReport } from "./report.js";
 import { generateRulesJson, generateRulesMarkdown, generateRulesText } from "./rule-catalog.js";
@@ -32,6 +34,55 @@ export async function runCli(argv, io) {
 
     const options = parseRulesArgs(args.slice(1));
     io.stdout.write(renderRules(options.format));
+    return 0;
+  }
+
+  if (command === "policy") {
+    if (args.includes("--help") || args.includes("-h")) {
+      io.stdout.write(helpText());
+      return 0;
+    }
+
+    const options = parsePolicyArgs(args.slice(1), io.cwd);
+    const result = await scan({
+      cwd: options.cwd,
+      env: io.env,
+      configPaths: options.configPaths,
+      includeDefaults: options.includeDefaults,
+      includePolicy: false,
+      toolVersion: VERSION
+    });
+    const home = io.env.HOME || io.env.USERPROFILE || os.homedir();
+    const suggestion = suggestPolicy(result, {
+      cwd: options.cwd,
+      home,
+      includeRisky: options.includeRisky
+    });
+
+    if (options.outputPath === "-") {
+      io.stdout.write(renderPolicySuggestionPreview(suggestion));
+      if (suggestion.skipped.length > 0) {
+        io.stderr.write(`Skipped ${suggestion.skipped.length} risky values; rerun without --output - for review details.\n`);
+      }
+      return 0;
+    }
+
+    const writeResult = await writeSuggestedPolicyFile(options.outputPath, suggestion, {
+      force: options.force,
+      dryRun: options.dryRun
+    });
+    io.stdout.write(renderPolicySuggestionSummary({
+      scanResult: result,
+      suggestion,
+      writeResult,
+      outputPath: options.outputPath,
+      cwd: options.cwd,
+      dryRun: options.dryRun
+    }));
+    if (options.dryRun) {
+      io.stdout.write("\nPolicy preview:\n");
+      io.stdout.write(renderPolicySuggestionPreview(suggestion));
+    }
     return 0;
   }
 
@@ -313,6 +364,50 @@ function parseScanArgs(args, defaultCwd) {
   return options;
 }
 
+function parsePolicyArgs(args, defaultCwd) {
+  const options = {
+    cwd: defaultCwd,
+    configPaths: [],
+    includeDefaults: true,
+    outputPath: defaultPolicyOutputPath(defaultCwd),
+    force: false,
+    dryRun: false,
+    includeRisky: false
+  };
+  let outputPathProvided = false;
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg === "--config" || arg === "-c") {
+      options.configPaths.push(resolveInputPath(readValue(args, index, arg), options.cwd));
+      index += 1;
+    } else if (arg === "--output" || arg === "-o") {
+      const output = readValue(args, index, arg);
+      options.outputPath = output === "-" ? "-" : resolveInputPath(output, options.cwd);
+      outputPathProvided = true;
+      index += 1;
+    } else if (arg === "--cwd") {
+      options.cwd = path.resolve(readValue(args, index, arg));
+      if (!outputPathProvided) {
+        options.outputPath = defaultPolicyOutputPath(options.cwd);
+      }
+      index += 1;
+    } else if (arg === "--no-defaults") {
+      options.includeDefaults = false;
+    } else if (arg === "--force") {
+      options.force = true;
+    } else if (arg === "--dry-run") {
+      options.dryRun = true;
+    } else if (arg === "--include-risky") {
+      options.includeRisky = true;
+    } else {
+      throw new Error(`Unknown policy option: ${arg}`);
+    }
+  }
+
+  return options;
+}
+
 function parseAuditArgs(args, defaultCwd) {
   const options = {
     cwd: defaultCwd,
@@ -457,6 +552,7 @@ Usage:
   mcp-guard scan [options]
   mcp-guard audit [options]
   mcp-guard verify-audit [options]
+  mcp-guard policy [options]
   mcp-guard rules [options]
   mcp-guard init [options]
   mcp-guard version
@@ -513,6 +609,16 @@ Verify audit options:
                             Default: mcp-guard-audit/mcp-guard-audit-manifest.json.
       --cwd <path>          Working directory for resolving relative artifact paths.
 
+Policy options:
+  -c, --config <path>       Read a specific MCP config file. Can be repeated.
+  -o, --output <path>       Write suggested policy file. Default: .mcp-guard-policy.json.
+                            Use - to print JSON to stdout.
+      --cwd <path>          Working directory for project config discovery.
+      --no-defaults         Only read paths passed with --config.
+      --force               Overwrite an existing policy file.
+      --dry-run             Print planned file and policy preview without writing.
+      --include-risky       Include shell wrappers and broad directories in the policy draft.
+
 Rules options:
   -f, --format <format>     text, markdown, or json. Default: text.
 
@@ -520,6 +626,7 @@ Examples:
   mcp-guard init
   mcp-guard init --write-baseline --upload-sarif
   mcp-guard scan
+  mcp-guard policy --config .mcp.json --output .mcp-guard-policy.json
   mcp-guard rules --format markdown
   mcp-guard audit --config .mcp.json --output-dir mcp-guard-audit
   mcp-guard verify-audit --manifest mcp-guard-audit/mcp-guard-audit-manifest.json

@@ -8,6 +8,15 @@ Use a policy file when a team wants an explicit approval boundary for MCP server
 mcp-guard scan --config .mcp.json --policy .mcp-guard-policy.json --fail-on high
 ```
 
+Generate a conservative draft from existing MCP config:
+
+```bash
+mcp-guard policy --config .mcp.json --dry-run
+mcp-guard policy --config .mcp.json --output .mcp-guard-policy.json
+```
+
+The generator adds observed commands, remote packages, directories, and remote URLs to a reviewable policy draft. By default it skips shell wrapper commands and broad root/home-style directories instead of approving them automatically. Use `--include-risky` only when those values have been explicitly reviewed.
+
 Disable automatic policy loading with:
 
 ```bash

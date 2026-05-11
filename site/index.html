@@ -141,10 +141,12 @@
           <pre><code>npm i -g agent-mcp-guard
 mcp-guard init
 mcp-guard rules --format markdown
+mcp-guard policy --config .mcp.json --dry-run
 mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
           <ul>
             <li>Bootstrap a GitHub Action in one command</li>
             <li>Inspect the rule catalog from the CLI</li>
+            <li>Generate conservative policy drafts for review</li>
             <li>Detect risky shell commands and broad access</li>
             <li>Enforce approved commands, packages, directories, and URLs</li>
             <li>Redact secret-like env vars and headers</li>
