@@ -82,18 +82,18 @@ Code quality
 Current release title:
 
 ```text
-v0.4.10
+v0.4.11
 ```
 
 Release notes:
 
 ```text
-Rule catalog and MCP education release.
+Subscription lifecycle release.
 
-- Adds `mcp-guard rules` so users can inspect every scanner rule from the CLI in text, Markdown, or JSON.
-- Adds MCP basics to the README and website so new readers can understand clients, servers, configs, and review points.
-- Keeps audit pack verification, remediation checklist, first remediation steps in PR comments, executive summary, remediation plan, Markdown, HTML, JSON, SARIF, policy, baseline, artifacts, and SARIF upload support.
-- Improves product transparency by making both the documented E2E example and the scanner rule catalog visible before adoption.
+- Updates the Stripe fulfillment worker example so Pro licenses follow subscription lifecycle events.
+- Handles `invoice.payment_failed`, `invoice.payment_succeeded`, and `customer.subscription.deleted`.
+- Pauses license verification on failed payment, restores it after recovered payment, and marks it inactive after subscription deletion.
+- Keeps the Pro license gate available from both the CLI and GitHub Action.
 ```
 
 ## Manual Publishing Steps
@@ -106,7 +106,7 @@ Completed:
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.10
+- uses: ChaoYue0307/mcp-guard-action@v0.4.11
 ```
 
 Remaining Marketplace web step:

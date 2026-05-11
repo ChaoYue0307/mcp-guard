@@ -8,6 +8,7 @@ Use it after the first paid purchases prove that self-serve checkout is worth au
 
 - Verifies Stripe webhook signatures before trusting an event.
 - Handles `checkout.session.completed`.
+- Handles `invoice.payment_failed`, `invoice.payment_succeeded`, and `customer.subscription.deleted` for Pro license status.
 - Reads the purchased product from Checkout Session metadata.
 - Generates deterministic license keys for Pro purchases.
 - Stores Pro license records in a KV namespace when configured.
@@ -72,7 +73,7 @@ mcp-guard license verify \
 With the GitHub Action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.10
+- uses: ChaoYue0307/mcp-guard-action@v0.4.11
   with:
     license-endpoint: https://YOUR_WORKER_URL/license/verify
     license-key: ${{ secrets.MCP_GUARD_LICENSE_KEY }}
@@ -91,12 +92,14 @@ Successful response:
 }
 ```
 
+If a Pro invoice fails, verification returns `license_past_due`. If the subscription is deleted, verification returns `license_inactive`. A later `invoice.payment_succeeded` event can restore the license to active.
+
 ## Deploy Shape
 
 1. Deploy `worker.js` as a Cloudflare Worker or adapt the same functions to Vercel/Netlify.
 2. Create and bind the `LICENSES` KV namespace if you want Pro license verification.
 3. Add a Stripe webhook endpoint for the worker URL.
-4. Subscribe to `checkout.session.completed`.
+4. Subscribe to `checkout.session.completed`, `invoice.payment_failed`, `invoice.payment_succeeded`, and `customer.subscription.deleted`.
 5. Configure live Payment Links with the metadata above.
 6. Send a Stripe test event and confirm the worker returns `{"received":true}`.
 7. Verify the generated Pro license with `POST /license/verify`.

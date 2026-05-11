@@ -197,6 +197,160 @@ test("Pro fulfillment stores a license record that can be verified", async () =>
   });
 });
 
+test("subscription payment failure pauses and later restores a Pro license", async () => {
+  const licenseStore = new MemoryKV();
+  const session = {
+    id: "cs_test_123",
+    customer: "cus_test_123",
+    subscription: "sub_test_123",
+    metadata: {
+      mcp_guard_product: "pro-monthly"
+    },
+    customer_details: {
+      email: "buyer@example.com"
+    }
+  };
+  const env = {
+    LICENSE_SIGNING_SECRET: "license-secret",
+    LICENSES: licenseStore
+  };
+  const licenseKey = await createLicenseKey({
+    product: "pro-monthly",
+    sessionId: session.id,
+    email: "buyer@example.com",
+    secret: "license-secret"
+  });
+
+  await handleStripeEvent({
+    type: "checkout.session.completed",
+    data: {
+      object: session
+    }
+  }, env);
+
+  const failed = await handleStripeEvent({
+    type: "invoice.payment_failed",
+    created: 1778478600,
+    data: {
+      object: {
+        id: "in_test_failed",
+        subscription: "sub_test_123"
+      }
+    }
+  }, env);
+  const failedBody = await failed.json();
+
+  assert.equal(failed.status, 200);
+  assert.equal(failedBody.license.updated, true);
+  assert.equal(failedBody.license.status, "past_due");
+  assert.deepEqual(await verifyLicense({
+    licenseKey,
+    email: "buyer@example.com"
+  }, env), {
+    valid: false,
+    error: "license_past_due"
+  });
+
+  const recovered = await handleStripeEvent({
+    type: "invoice.payment_succeeded",
+    created: 1778479600,
+    data: {
+      object: {
+        id: "in_test_paid",
+        subscription: {
+          id: "sub_test_123"
+        }
+      }
+    }
+  }, env);
+  const recoveredBody = await recovered.json();
+
+  assert.equal(recovered.status, 200);
+  assert.equal(recoveredBody.license.updated, true);
+  assert.equal(recoveredBody.license.status, "active");
+  assert.equal((await verifyLicense({
+    licenseKey,
+    email: "buyer@example.com"
+  }, env)).valid, true);
+});
+
+test("subscription deletion makes a Pro license inactive", async () => {
+  const licenseStore = new MemoryKV();
+  const session = {
+    id: "cs_test_123",
+    subscription: "sub_test_123",
+    metadata: {
+      mcp_guard_product: "pro-monthly"
+    },
+    customer_details: {
+      email: "buyer@example.com"
+    }
+  };
+  const env = {
+    LICENSE_SIGNING_SECRET: "license-secret",
+    LICENSES: licenseStore
+  };
+  const licenseKey = await createLicenseKey({
+    product: "pro-monthly",
+    sessionId: session.id,
+    email: "buyer@example.com",
+    secret: "license-secret"
+  });
+
+  await handleStripeEvent({
+    type: "checkout.session.completed",
+    data: {
+      object: session
+    }
+  }, env);
+
+  const response = await handleStripeEvent({
+    type: "customer.subscription.deleted",
+    created: 1778480600,
+    data: {
+      object: {
+        id: "sub_test_123",
+        status: "canceled"
+      }
+    }
+  }, env);
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(body.license.updated, true);
+  assert.equal(body.license.status, "inactive");
+  assert.deepEqual(await verifyLicense({
+    licenseKey,
+    email: "buyer@example.com"
+  }, env), {
+    valid: false,
+    error: "license_inactive"
+  });
+});
+
+test("subscription lifecycle events report missing license records without failing Stripe delivery", async () => {
+  const response = await handleStripeEvent({
+    type: "invoice.payment_failed",
+    data: {
+      object: {
+        subscription: "sub_missing"
+      }
+    }
+  }, {
+    LICENSES: new MemoryKV()
+  });
+  const body = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(body, {
+    received: true,
+    license: {
+      updated: false,
+      reason: "license_not_found"
+    }
+  });
+});
+
 test("license verification rejects mismatched buyer email", async () => {
   const licenseStore = new MemoryKV();
   const session = {

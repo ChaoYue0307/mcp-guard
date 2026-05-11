@@ -107,6 +107,7 @@ The automated path is:
 - signed license key generation;
 - `LICENSES` KV storage for Pro license records;
 - private `POST /license/verify` endpoint;
+- subscription lifecycle handling for failed payment, recovered payment, and deleted subscriptions;
 - Resend email delivery when credentials are configured.
 
 Add Stripe Customer Portal when paid subscriptions need self-service cancellation, payment method changes, or invoice access.
@@ -133,7 +134,7 @@ mcp-guard license verify \
 Or in GitHub Actions:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.10
+- uses: ChaoYue0307/mcp-guard-action@v0.4.11
   with:
     license-endpoint: https://YOUR_WORKER_URL/license/verify
     license-key: ${{ secrets.MCP_GUARD_LICENSE_KEY }}

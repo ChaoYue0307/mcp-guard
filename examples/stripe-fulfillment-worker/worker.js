@@ -99,6 +99,18 @@ async function licenseStorageKey(licenseKey) {
   return `license:${await sha256Hex(licenseKey)}`;
 }
 
+function subscriptionStorageKey(subscriptionId) {
+  return `subscription:${subscriptionId}`;
+}
+
+function stripeId(value) {
+  if (!value) {
+    return "";
+  }
+
+  return typeof value === "string" ? value : value.id || "";
+}
+
 function productFromSession(session) {
   return session?.metadata?.mcp_guard_product || session?.metadata?.product || "";
 }
@@ -210,19 +222,103 @@ async function storeLicenseRecord({ licenseKey, session, product, email, env }) 
     return { stored: false, reason: "missing_license_store" };
   }
 
+  const licenseKeyStorage = await licenseStorageKey(licenseKey);
+  const subscriptionId = stripeId(session.subscription);
   const record = {
     status: "active",
     product,
     email: email.toLowerCase(),
     stripeSessionId: session.id,
-    stripeCustomerId: session.customer || "",
-    stripeSubscriptionId: session.subscription || "",
-    createdAt: session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString()
+    stripeCustomerId: stripeId(session.customer),
+    stripeSubscriptionId: subscriptionId,
+    stripeSubscriptionStatus: "active",
+    createdAt: session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString(),
+    updatedAt: session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString()
   };
 
-  await env.LICENSES.put(await licenseStorageKey(licenseKey), JSON.stringify(record));
+  await env.LICENSES.put(licenseKeyStorage, JSON.stringify(record));
+
+  if (subscriptionId) {
+    await env.LICENSES.put(subscriptionStorageKey(subscriptionId), JSON.stringify({
+      licenseKeyStorage,
+      product,
+      email: email.toLowerCase()
+    }));
+  }
 
   return { stored: true };
+}
+
+async function readLicenseRecord(storageKey, env) {
+  const stored = await env.LICENSES.get(storageKey);
+  if (!stored) {
+    return {
+      ok: false,
+      error: "license_not_found"
+    };
+  }
+
+  try {
+    return {
+      ok: true,
+      record: JSON.parse(stored)
+    };
+  } catch {
+    return {
+      ok: false,
+      error: "invalid_license_record"
+    };
+  }
+}
+
+async function updateLicenseForSubscription({ subscriptionId, status, stripeSubscriptionStatus, reason, eventCreated, env }) {
+  if (!subscriptionId) {
+    return { updated: false, reason: "missing_subscription_id" };
+  }
+
+  if (!env.LICENSES?.get || !env.LICENSES?.put) {
+    return { updated: false, reason: "missing_license_store" };
+  }
+
+  const indexRaw = await env.LICENSES.get(subscriptionStorageKey(subscriptionId));
+  if (!indexRaw) {
+    return { updated: false, reason: "license_not_found" };
+  }
+
+  let index;
+  try {
+    index = JSON.parse(indexRaw);
+  } catch {
+    return { updated: false, reason: "invalid_subscription_index" };
+  }
+
+  if (!index.licenseKeyStorage) {
+    return { updated: false, reason: "invalid_subscription_index" };
+  }
+
+  const existing = await readLicenseRecord(index.licenseKeyStorage, env);
+  if (!existing.ok) {
+    return { updated: false, reason: existing.error };
+  }
+
+  const updated = {
+    ...existing.record,
+    status,
+    stripeSubscriptionStatus,
+    statusReason: reason,
+    updatedAt: eventCreated ? new Date(eventCreated * 1000).toISOString() : new Date().toISOString()
+  };
+
+  await env.LICENSES.put(index.licenseKeyStorage, JSON.stringify(updated));
+
+  return {
+    updated: true,
+    status,
+    stripeSubscriptionStatus,
+    email: updated.email,
+    product: updated.product,
+    stripeSubscriptionId: subscriptionId
+  };
 }
 
 export async function verifyLicense({ licenseKey, email, product = "pro-monthly" }, env = {}) {
@@ -240,22 +336,20 @@ export async function verifyLicense({ licenseKey, email, product = "pro-monthly"
     };
   }
 
-  const stored = await env.LICENSES.get(await licenseStorageKey(licenseKey));
-
-  if (!stored) {
+  const existing = await readLicenseRecord(await licenseStorageKey(licenseKey), env);
+  if (!existing.ok) {
     return {
       valid: false,
-      error: "license_not_found"
+      error: existing.error
     };
   }
 
-  let record;
-  try {
-    record = JSON.parse(stored);
-  } catch {
+  const { record } = existing;
+
+  if (record.status === "past_due") {
     return {
       valid: false,
-      error: "invalid_license_record"
+      error: "license_past_due"
     };
   }
 
@@ -335,6 +429,51 @@ async function sendFulfillmentEmail(email, env) {
 }
 
 export async function handleStripeEvent(event, env) {
+  if (event.type === "customer.subscription.deleted") {
+    const subscription = event.data?.object || {};
+    const subscriptionId = stripeId(subscription);
+    const license = await updateLicenseForSubscription({
+      subscriptionId,
+      status: "inactive",
+      stripeSubscriptionStatus: subscription.status || "canceled",
+      reason: "subscription_deleted",
+      eventCreated: event.created,
+      env
+    });
+
+    return jsonResponse({ received: true, license });
+  }
+
+  if (event.type === "invoice.payment_failed") {
+    const invoice = event.data?.object || {};
+    const subscriptionId = stripeId(invoice.subscription);
+    const license = await updateLicenseForSubscription({
+      subscriptionId,
+      status: "past_due",
+      stripeSubscriptionStatus: "past_due",
+      reason: "invoice_payment_failed",
+      eventCreated: event.created,
+      env
+    });
+
+    return jsonResponse({ received: true, license });
+  }
+
+  if (event.type === "invoice.payment_succeeded") {
+    const invoice = event.data?.object || {};
+    const subscriptionId = stripeId(invoice.subscription);
+    const license = await updateLicenseForSubscription({
+      subscriptionId,
+      status: "active",
+      stripeSubscriptionStatus: "active",
+      reason: "invoice_payment_succeeded",
+      eventCreated: event.created,
+      env
+    });
+
+    return jsonResponse({ received: true, license });
+  }
+
   if (event.type !== "checkout.session.completed") {
     return jsonResponse({ received: true, ignored: event.type });
   }

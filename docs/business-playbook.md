@@ -14,7 +14,7 @@ The business is not the open-source CLI alone. The CLI creates trust and distrib
 | mcp-guard Pro | USD 19/month | Team using private repos | Private repo license gate, maintained policy templates, priority MCP examples, and recurring updates. |
 | Team Setup Package | USD 199 one-time | Startup team | One repo setup package with CLI, Action, policy, baseline, SARIF, PR comments, and verified audit pack. |
 
-Use Stripe Payment Links first so customers can pay without a sales call. The website reads live checkout URLs from `site/checkout.js`, and `npm run payments:check -- --live` verifies the links, success page, legal/refund page, and Starter Kit deliverables before launch. `examples/stripe-fulfillment-worker/` is the starter backend for webhook signature verification, fulfillment email, Pro license storage, and private license verification. The CLI and GitHub Action can now call `mcp-guard license verify` so Pro has a concrete private-repo entitlement path.
+Use Stripe Payment Links first so customers can pay without a sales call. The website reads live checkout URLs from `site/checkout.js`, and `npm run payments:check -- --live` verifies the links, success page, legal/refund page, and Starter Kit deliverables before launch. `examples/stripe-fulfillment-worker/` is the starter backend for webhook signature verification, fulfillment email, Pro license storage, private license verification, and subscription lifecycle updates. The CLI and GitHub Action can now call `mcp-guard license verify` so Pro has a concrete private-repo entitlement path.
 
 ## Near-Term Paid Offer
 
