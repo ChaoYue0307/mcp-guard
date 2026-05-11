@@ -3,7 +3,7 @@ export const RULE_CATALOG = [
     id: "MCP000",
     severity: "low",
     title: "No MCP config files found",
-    detects: "No MCP config files were found in common project or user locations.",
+    detects: "No MCP config files were found in common project, Cursor, VS Code, or Claude Desktop locations.",
     recommendation: "Pass --config when the MCP config lives outside default discovery paths."
   },
   {

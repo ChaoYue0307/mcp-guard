@@ -12,7 +12,7 @@ mcp-guard rules --format json
 
 | Rule | Severity | Title | What it detects | Recommended response |
 | --- | --- | --- | --- | --- |
-| MCP000 | Low | No MCP config files found | No MCP config files were found in common project or user locations. | Pass `--config` when the MCP config lives outside default discovery paths. |
+| MCP000 | Low | No MCP config files found | No MCP config files were found in common project, Cursor, VS Code, or Claude Desktop locations. | Pass `--config` when the MCP config lives outside default discovery paths. |
 | MCP001 | High | Server has no command or URL | An MCP server entry has neither `command` nor `url`. | Remove the server or define an explicit command or URL with reviewed settings. |
 | MCP002 | Medium | Config has no MCP servers object | A config file does not contain an `mcpServers` or `servers` object. | Check that the file is the intended MCP config before relying on the scan. |
 | MCP003 | High | Config cannot be parsed as JSON | A config file could not be parsed as JSON. | Fix the JSON syntax so the scanner and MCP client can read the same config. |

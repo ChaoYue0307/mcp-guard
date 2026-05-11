@@ -237,7 +237,9 @@ See the full sample report: [examples/sample-report.md](examples/sample-report.m
 }
 ```
 
-`mcp-guard` supports the common `mcpServers` shape used by Claude Desktop, Cursor, and project-level MCP configs. It also accepts `servers` as an alternative top-level key.
+`mcp-guard` supports the common `mcpServers` shape used by Claude Desktop, Cursor, and project-level MCP configs. It also accepts `servers` as an alternative top-level key for VS Code-style MCP configs.
+
+Default discovery checks the current directory and parent directories for `.mcp.json`, `mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`. It also checks common user-level Cursor, VS Code, and Claude Desktop config locations. Pass `--config path/to/mcp.json` when a config lives somewhere else.
 
 ## Why Local-First
 

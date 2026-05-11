@@ -131,6 +131,70 @@ test("scan discovers project .mcp.json by default", async () => {
   assert.equal(result.summary.serverCount, 1);
 });
 
+test("scan discovers parent Cursor and VS Code workspace configs", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-parent-discovery-"));
+  const nested = path.join(dir, "packages", "app");
+  await fs.mkdir(path.join(dir, ".cursor"), { recursive: true });
+  await fs.mkdir(path.join(dir, ".vscode"), { recursive: true });
+  await fs.mkdir(nested, { recursive: true });
+
+  const cursorConfigPath = path.join(dir, ".cursor", "mcp.json");
+  const vscodeConfigPath = path.join(dir, ".vscode", "mcp.json");
+  await fs.writeFile(cursorConfigPath, JSON.stringify({
+    mcpServers: {
+      cursorSafe: {
+        command: "node",
+        args: ["cursor-server.js"]
+      }
+    }
+  }), "utf8");
+  await fs.writeFile(vscodeConfigPath, JSON.stringify({
+    servers: {
+      vscodeSafe: {
+        command: "node",
+        args: ["vscode-server.js"]
+      }
+    }
+  }), "utf8");
+
+  const result = await scan({
+    cwd: nested,
+    env: { HOME: path.join(dir, "home") },
+    configPaths: [],
+    includeDefaults: true,
+    toolVersion: "test"
+  });
+
+  assert.deepEqual(result.scannedFiles, [cursorConfigPath, vscodeConfigPath]);
+  assert.deepEqual(result.servers.map((server) => server.name).sort(), ["cursorSafe", "vscodeSafe"]);
+});
+
+test("scan discovers common VS Code user profile configs", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-vscode-user-"));
+  const home = path.join(dir, "home");
+  const configPath = path.join(home, ".config", "Code", "User", "mcp.json");
+  await fs.mkdir(path.dirname(configPath), { recursive: true });
+  await fs.writeFile(configPath, JSON.stringify({
+    servers: {
+      vscodeUser: {
+        command: "node",
+        args: ["user-server.js"]
+      }
+    }
+  }), "utf8");
+
+  const result = await scan({
+    cwd: path.join(dir, "workspace"),
+    env: { HOME: home },
+    configPaths: [],
+    includeDefaults: true,
+    toolVersion: "test"
+  });
+
+  assert.deepEqual(result.scannedFiles, [configPath]);
+  assert.equal(result.servers[0].name, "vscodeUser");
+});
+
 test("invalid JSON becomes a high severity finding", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-"));
   const configPath = path.join(dir, "bad.json");

@@ -5,6 +5,7 @@
 ## Now
 
 - CLI config scanning.
+- Default discovery for project, parent, Cursor, VS Code, and Claude Desktop MCP config paths.
 - Text, Markdown, HTML, redacted JSON, and SARIF output.
 - Rules for shell wrappers, remote package runners, unpinned packages, broad filesystem access, secret-like env vars/headers, and remote MCP URLs.
 - CI usage with `--fail-on`.
@@ -19,7 +20,7 @@
 
 ## Next
 
-1. More MCP client discovery paths.
+1. Additional MCP client discovery paths from real user configs.
 2. Rule packs mapped to MCP security best practices.
 3. Safer default remediation snippets for common MCP servers.
 4. Package metadata checks for remote MCP server packages.
