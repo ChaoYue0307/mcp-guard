@@ -90,21 +90,26 @@ Do not commit secret keys, restricted keys, webhook signing secrets, or customer
 
 ## Fulfillment Path
 
-Use this sequence before building a backend:
+Use this sequence for the first live launch:
 
 1. Customer pays through Stripe Payment Link.
 2. Stripe sends a successful payment receipt.
-3. The confirmation page or receipt links to a private download or onboarding page.
-4. For Pro, manually issue a first license key until automated webhooks are implemented.
-5. For Team Setup, direct the buyer to `https://chaoyue0307.github.io/mcp-guard/intake/`.
-6. Track buyers in Stripe Dashboard and a private operations sheet.
+3. Stripe redirects the buyer to `https://chaoyue0307.github.io/mcp-guard/thanks/`.
+4. The fulfillment worker receives `checkout.session.completed`.
+5. Starter buyers receive kit delivery instructions.
+6. Pro buyers receive a deterministic license key and can verify it from private CI.
+7. Team Setup buyers go to `https://chaoyue0307.github.io/mcp-guard/intake/`.
+8. Track buyers in Stripe Dashboard and a private operations sheet until a hosted dashboard is justified.
 
-When manual license creation becomes painful, add:
+The automated path is:
 
 - Stripe webhook for `checkout.session.completed`;
 - signed license key generation;
-- a private license verification endpoint;
-- Stripe Customer Portal for subscription management.
+- `LICENSES` KV storage for Pro license records;
+- private `POST /license/verify` endpoint;
+- Resend email delivery when credentials are configured.
+
+Add Stripe Customer Portal when paid subscriptions need self-service cancellation, payment method changes, or invoice access.
 
 An implementation starter is available in:
 
@@ -113,6 +118,8 @@ examples/stripe-fulfillment-worker/
 ```
 
 It verifies Stripe webhook signatures, reads `mcp_guard_product` metadata, creates deterministic Pro license keys, and can send fulfillment email through Resend. Keep it separate from the static GitHub Pages site because webhook secrets and signing secrets must live only in a backend or worker runtime.
+
+For Pro, the worker can store license records in a `LICENSES` KV namespace and expose `POST /license/verify` for private CI license checks.
 
 Set this metadata on each Payment Link before using the worker:
 

@@ -10,6 +10,8 @@ Use it after the first paid purchases prove that self-serve checkout is worth au
 - Handles `checkout.session.completed`.
 - Reads the purchased product from Checkout Session metadata.
 - Generates deterministic license keys for Pro purchases.
+- Stores Pro license records in a KV namespace when configured.
+- Exposes `POST /license/verify` for private CI license checks.
 - Sends a fulfillment email through Resend when email credentials are configured.
 - Falls back to a manual fulfillment response when email sending is not configured.
 
@@ -32,6 +34,12 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 LICENSE_SIGNING_SECRET=long-random-secret
 ```
 
+For license verification, bind a KV namespace as:
+
+```text
+LICENSES
+```
+
 For automatic email delivery, also configure:
 
 ```text
@@ -40,14 +48,38 @@ FULFILLMENT_FROM=mcp-guard <delivery@example.com>
 SUPPORT_EMAIL=hechaoyue0307@gmail.com
 ```
 
-Without Resend credentials, the worker still verifies and classifies the purchase but returns `manual_email_required`.
+Without Resend credentials, the worker still verifies and classifies the purchase but returns `manual_email_required`. Without the `LICENSES` binding, Pro fulfillment still generates the license email but license verification returns `missing_license_store`.
+
+## License Verification
+
+Pro buyers can verify a license from private CI without exposing Stripe secrets:
+
+```sh
+curl -X POST https://YOUR_WORKER_URL/license/verify \
+  -H "content-type: application/json" \
+  -d '{"licenseKey":"MCPG-PRO-MONTHLY-...","email":"buyer@example.com"}'
+```
+
+Successful response:
+
+```json
+{
+  "valid": true,
+  "product": "pro-monthly",
+  "email": "buyer@example.com",
+  "stripeSessionId": "cs_...",
+  "stripeSubscriptionId": "sub_..."
+}
+```
 
 ## Deploy Shape
 
 1. Deploy `worker.js` as a Cloudflare Worker or adapt the same functions to Vercel/Netlify.
-2. Add a Stripe webhook endpoint for the worker URL.
-3. Subscribe to `checkout.session.completed`.
-4. Configure live Payment Links with the metadata above.
-5. Send a Stripe test event and confirm the worker returns `{"received":true}`.
+2. Create and bind the `LICENSES` KV namespace if you want Pro license verification.
+3. Add a Stripe webhook endpoint for the worker URL.
+4. Subscribe to `checkout.session.completed`.
+5. Configure live Payment Links with the metadata above.
+6. Send a Stripe test event and confirm the worker returns `{"received":true}`.
+7. Verify the generated Pro license with `POST /license/verify`.
 
 Do not put `STRIPE_WEBHOOK_SECRET`, `LICENSE_SIGNING_SECRET`, Resend keys, raw customer data, or Stripe event payloads into this repository.

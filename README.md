@@ -254,6 +254,18 @@ MCP configs often contain sensitive local paths, internal hostnames, tokens, and
 - secret-like values redacted in reports;
 - text, Markdown, HTML, JSON, and SARIF output for local review, CI artifacts, and GitHub code scanning.
 
+## Self-Serve Paid Products
+
+`mcp-guard` is designed so revenue does not have to start with sales calls.
+
+Recommended first products:
+
+- MCP Audit Starter Kit: USD 49 one-time digital kit with policy templates, baseline review template, GitHub Action checklist, audit handoff template, and private repo rollout guide.
+- mcp-guard Pro: USD 19/month for private CI license verification, maintained policy templates, priority MCP examples, and recurring rule/report updates.
+- Team Setup Package: USD 199 productized setup package paid through Stripe, followed by a safe intake form for one repository.
+
+The website supports Stripe Payment Links through `site/checkout.js`. The fulfillment worker example in [examples/stripe-fulfillment-worker](examples/stripe-fulfillment-worker/README.md) verifies Stripe webhooks, sends fulfillment email, stores Pro license records, and exposes `POST /license/verify` for private CI.
+
 ## Setup Pilot
 
 Want to try `mcp-guard` on a real AI agent or MCP setup?

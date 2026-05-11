@@ -5,10 +5,26 @@ import test from "node:test";
 import {
   buildFulfillment,
   createLicenseKey,
+  handleLicenseVerify,
   handleStripeEvent,
   renderFulfillmentEmail,
+  verifyLicense,
   verifyStripeSignature
 } from "../examples/stripe-fulfillment-worker/worker.js";
+
+class MemoryKV {
+  constructor() {
+    this.items = new Map();
+  }
+
+  async put(key, value) {
+    this.items.set(key, value);
+  }
+
+  async get(key) {
+    return this.items.get(key) || null;
+  }
+}
 
 function stripeSignature({ body, secret, timestamp }) {
   const digest = createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex");
@@ -131,6 +147,108 @@ test("event handler ignores unrelated Stripe events", async () => {
   assert.deepEqual(body, {
     received: true,
     ignored: "customer.created"
+  });
+});
+
+test("Pro fulfillment stores a license record that can be verified", async () => {
+  const licenseStore = new MemoryKV();
+  const session = {
+    id: "cs_test_123",
+    customer: "cus_test_123",
+    subscription: "sub_test_123",
+    created: 1778477600,
+    metadata: {
+      mcp_guard_product: "pro-monthly"
+    },
+    customer_details: {
+      email: "buyer@example.com"
+    }
+  };
+  const env = {
+    LICENSE_SIGNING_SECRET: "license-secret",
+    LICENSES: licenseStore
+  };
+  const response = await handleStripeEvent({
+    type: "checkout.session.completed",
+    data: {
+      object: session
+    }
+  }, env);
+  const body = await response.json();
+  const licenseKey = await createLicenseKey({
+    product: "pro-monthly",
+    sessionId: session.id,
+    email: "buyer@example.com",
+    secret: "license-secret"
+  });
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(body.license, { stored: true });
+  assert.equal(body.licenseKey, undefined);
+  assert.deepEqual(await verifyLicense({
+    licenseKey,
+    email: "buyer@example.com"
+  }, env), {
+    valid: true,
+    product: "pro-monthly",
+    email: "buyer@example.com",
+    stripeSessionId: "cs_test_123",
+    stripeSubscriptionId: "sub_test_123"
+  });
+});
+
+test("license verification rejects mismatched buyer email", async () => {
+  const licenseStore = new MemoryKV();
+  const session = {
+    id: "cs_test_123",
+    metadata: {
+      mcp_guard_product: "pro-monthly"
+    },
+    customer_details: {
+      email: "buyer@example.com"
+    }
+  };
+  const env = {
+    LICENSE_SIGNING_SECRET: "license-secret",
+    LICENSES: licenseStore
+  };
+  const licenseKey = await createLicenseKey({
+    product: "pro-monthly",
+    sessionId: session.id,
+    email: "buyer@example.com",
+    secret: "license-secret"
+  });
+
+  await handleStripeEvent({
+    type: "checkout.session.completed",
+    data: {
+      object: session
+    }
+  }, env);
+
+  assert.deepEqual(await verifyLicense({
+    licenseKey,
+    email: "other@example.com"
+  }, env), {
+    valid: false,
+    error: "license_mismatch"
+  });
+});
+
+test("license verification endpoint reports missing storage as unavailable", async () => {
+  const response = await handleLicenseVerify(new Request("https://example.com/license/verify", {
+    method: "POST",
+    body: JSON.stringify({
+      licenseKey: "MCPG-PRO-MONTHLY-TEST",
+      email: "buyer@example.com"
+    })
+  }), {});
+  const body = await response.json();
+
+  assert.equal(response.status, 503);
+  assert.deepEqual(body, {
+    valid: false,
+    error: "missing_license_store"
   });
 });
 

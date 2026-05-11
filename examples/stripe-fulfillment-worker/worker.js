@@ -62,6 +62,11 @@ async function hmacHex(secret, message) {
   return [...new Uint8Array(signature)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+async function sha256Hex(message) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(message));
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
 export async function verifyStripeSignature(rawBody, signatureHeader, webhookSecret, options = {}) {
   if (!webhookSecret) {
     return false;
@@ -88,6 +93,10 @@ export async function createLicenseKey({ product, sessionId, email, secret }) {
   const payload = [product, sessionId, email || "unknown"].join(":");
   const signature = await hmacHex(secret, payload);
   return `MCPG-${product.toUpperCase().replace(/[^A-Z0-9]+/g, "-")}-${signature.slice(0, 24).toUpperCase()}`;
+}
+
+async function licenseStorageKey(licenseKey) {
+  return `license:${await sha256Hex(licenseKey)}`;
 }
 
 function productFromSession(session) {
@@ -149,6 +158,7 @@ export async function buildFulfillment(session, env = {}) {
   return {
     ok: true,
     status: 200,
+    licenseKey,
     body: {
       received: true,
       product,
@@ -195,6 +205,104 @@ export function renderFulfillmentEmail({ product, productName, licenseKey, suppo
 </html>`;
 }
 
+async function storeLicenseRecord({ licenseKey, session, product, email, env }) {
+  if (!licenseKey || !env.LICENSES?.put) {
+    return { stored: false, reason: "missing_license_store" };
+  }
+
+  const record = {
+    status: "active",
+    product,
+    email: email.toLowerCase(),
+    stripeSessionId: session.id,
+    stripeCustomerId: session.customer || "",
+    stripeSubscriptionId: session.subscription || "",
+    createdAt: session.created ? new Date(session.created * 1000).toISOString() : new Date().toISOString()
+  };
+
+  await env.LICENSES.put(await licenseStorageKey(licenseKey), JSON.stringify(record));
+
+  return { stored: true };
+}
+
+export async function verifyLicense({ licenseKey, email, product = "pro-monthly" }, env = {}) {
+  if (!licenseKey || !email) {
+    return {
+      valid: false,
+      error: "missing_license_or_email"
+    };
+  }
+
+  if (!env.LICENSES?.get) {
+    return {
+      valid: false,
+      error: "missing_license_store"
+    };
+  }
+
+  const stored = await env.LICENSES.get(await licenseStorageKey(licenseKey));
+
+  if (!stored) {
+    return {
+      valid: false,
+      error: "license_not_found"
+    };
+  }
+
+  let record;
+  try {
+    record = JSON.parse(stored);
+  } catch {
+    return {
+      valid: false,
+      error: "invalid_license_record"
+    };
+  }
+
+  if (record.status !== "active") {
+    return {
+      valid: false,
+      error: "license_inactive"
+    };
+  }
+
+  if (record.email !== email.toLowerCase() || record.product !== product) {
+    return {
+      valid: false,
+      error: "license_mismatch"
+    };
+  }
+
+  return {
+    valid: true,
+    product: record.product,
+    email: record.email,
+    stripeSessionId: record.stripeSessionId,
+    stripeSubscriptionId: record.stripeSubscriptionId || ""
+  };
+}
+
+export async function handleLicenseVerify(request, env) {
+  if (request.method !== "POST") {
+    return jsonResponse({ error: "method_not_allowed" }, 405);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ error: "invalid_json" }, 400);
+  }
+
+  const result = await verifyLicense({
+    licenseKey: body.licenseKey,
+    email: body.email,
+    product: body.product || "pro-monthly"
+  }, env);
+
+  return jsonResponse(result, result.valid || result.error !== "missing_license_store" ? 200 : 503);
+}
+
 async function sendFulfillmentEmail(email, env) {
   if (!env.RESEND_API_KEY || !env.FULFILLMENT_FROM) {
     return { sent: false, reason: "missing_email_provider" };
@@ -237,15 +345,31 @@ export async function handleStripeEvent(event, env) {
     return jsonResponse(fulfillment.body, fulfillment.status);
   }
 
+  const license = fulfillment.licenseKey
+    ? await storeLicenseRecord({
+        licenseKey: fulfillment.licenseKey,
+        session: event.data?.object,
+        product: fulfillment.body.product,
+        email: fulfillment.body.email,
+        env
+      })
+    : { stored: false, reason: "not_license_product" };
   const emailResult = await sendFulfillmentEmail(fulfillment.email, env);
   return jsonResponse({
     ...fulfillment.body,
+    license,
     email: emailResult
   });
 }
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+
+    if (url.pathname === "/license/verify") {
+      return handleLicenseVerify(request, env);
+    }
+
     if (request.method !== "POST") {
       return jsonResponse({ error: "method_not_allowed" }, 405);
     }
