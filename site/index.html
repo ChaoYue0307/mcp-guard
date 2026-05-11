@@ -25,6 +25,7 @@
         <a href="#baseline">Baseline</a>
         <a href="#reports">Reports</a>
         <a href="#example">Example</a>
+        <a href="#pricing">Pricing</a>
         <a href="#pilot">Pilot</a>
         <a class="github-link" href="https://github.com/ChaoYue0307/mcp-guard">GitHub</a>
       </nav>
@@ -37,7 +38,7 @@
           <p>Local-first scanner for risky shell commands, leaked secrets, env files, broad filesystem access, Docker runtime risk, remote MCP endpoints, plaintext HTTP, and unpinned packages.</p>
           <div class="hero-actions">
             <a class="button primary" href="https://www.npmjs.com/package/agent-mcp-guard">Install CLI</a>
-            <a class="button secondary" href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner">Marketplace Action</a>
+            <a class="button secondary" href="#pricing">Buy Pro</a>
             <a class="button secondary" href="e2e/">View E2E Example</a>
           </div>
           <div class="trust-row" aria-label="Product properties">
@@ -333,9 +334,68 @@ mcp-guard scan --config .mcp.json \
         </div>
       </section>
 
+      <section class="pricing" id="pricing">
+        <div class="pricing-copy">
+          <h2>Self-serve products built around the open-source scanner.</h2>
+          <p>Keep the CLI and Action free for trust and distribution. Sell faster setup, private-team workflow, and recurring policy support through Stripe-hosted checkout.</p>
+        </div>
+        <div class="pricing-grid" aria-label="mcp-guard pricing">
+          <article class="price-card">
+            <span>Starter kit</span>
+            <h3>$49</h3>
+            <p>One-time download for founders who want the audit workflow ready today.</p>
+            <ul>
+              <li>Policy and baseline templates</li>
+              <li>GitHub Action setup checklist</li>
+              <li>Audit pack handoff template</li>
+              <li>Private repo rollout guide</li>
+            </ul>
+            <a class="button secondary" data-stripe-product="starter-kit" data-stripe-link="REPLACE_WITH_STARTER_PAYMENT_LINK" href="mailto:hechaoyue0307@gmail.com?subject=mcp-guard%20Starter%20Kit">Buy starter kit</a>
+          </article>
+          <article class="price-card featured">
+            <span>Pro</span>
+            <h3>$19<span>/mo</span></h3>
+            <p>Recurring plan for teams running mcp-guard in private repositories.</p>
+            <ul>
+              <li>Private CI license key workflow</li>
+              <li>Updated policy templates</li>
+              <li>Priority MCP config examples</li>
+              <li>Monthly rule and report updates</li>
+            </ul>
+            <a class="button primary" data-stripe-product="pro-monthly" data-stripe-link="REPLACE_WITH_PRO_PAYMENT_LINK" href="mailto:hechaoyue0307@gmail.com?subject=mcp-guard%20Pro">Start Pro</a>
+          </article>
+          <article class="price-card">
+            <span>Team setup</span>
+            <h3>$199</h3>
+            <p>One repo setup package for teams that want a clean first rollout.</p>
+            <ul>
+              <li>CLI and Action integration</li>
+              <li>Policy and baseline review</li>
+              <li>SARIF and PR comment setup</li>
+              <li>Verified audit pack closeout</li>
+            </ul>
+            <a class="button secondary" data-stripe-product="team-setup" data-stripe-link="REPLACE_WITH_TEAM_SETUP_PAYMENT_LINK" href="mailto:hechaoyue0307@gmail.com?subject=mcp-guard%20Team%20Setup">Buy setup package</a>
+          </article>
+        </div>
+        <div class="checkout-flow" aria-label="Self-serve checkout flow">
+          <div>
+            <strong>1. Customer pays with Stripe</strong>
+            <p>Use Stripe-hosted checkout for cards, wallets, receipts, and subscription billing without collecting payment details on this site.</p>
+          </div>
+          <div>
+            <strong>2. Delivery happens after payment</strong>
+            <p>Starter buyers receive the kit. Pro buyers get a license workflow for private repositories and recurring policy updates.</p>
+          </div>
+          <div>
+            <strong>3. Product grows into SaaS</strong>
+            <p>Keep open-source scanning free while paid plans unlock private-team workflows, policy packs, and dashboard history.</p>
+          </div>
+        </div>
+      </section>
+
       <section class="audit" id="pilot">
         <div class="audit-copy">
-          <h2>Need help wiring this into a real repo?</h2>
+          <h2>Need a deeper setup beyond self-serve?</h2>
           <p>mcp-guard is an automated local scanner. Paid setup pilots are available for teams that want the CLI, GitHub Action, baseline, PR comments, and SARIF reporting wired into a real repository without sending configs to a hosted service.</p>
           <div class="pilot-options" aria-label="Setup pilot options">
             <div>

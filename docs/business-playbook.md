@@ -4,7 +4,17 @@
 
 `mcp-guard` is the local-first security scanner for teams adopting AI agents and MCP servers.
 
-The business is not the open-source CLI alone. The CLI creates trust and distribution. Near-term validation comes from early users running the scanner on real setups. Revenue can start with setup help and team workflow integration before offering broader manual audits.
+The business is not the open-source CLI alone. The CLI creates trust and distribution. Revenue should start with a self-serve Stripe checkout for packaged deliverables, then expand into setup help and team workflow integration.
+
+## Self-Serve Product Ladder
+
+| Offer | Price | Buyer | What they get |
+| --- | ---: | --- | --- |
+| MCP Audit Starter Kit | USD 49 one-time | Solo founder or indie hacker | Templates, GitHub Action setup checklist, audit handoff template, and rollout guide. |
+| mcp-guard Pro | USD 19/month | Team using private repos | Private repo license workflow, maintained policy templates, priority MCP examples, and recurring updates. |
+| Team Setup Package | USD 199 one-time | Startup team | One repo setup package with CLI, Action, policy, baseline, SARIF, PR comments, and verified audit pack. |
+
+Use Stripe Payment Links first so customers can pay without a sales call. Move to Stripe Checkout plus webhooks and license keys when paid usage is proven.
 
 ## Near-Term Paid Offer
 

@@ -283,6 +283,7 @@ Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
 - [Trusted publishing](docs/trusted-publishing.md)
 - [Roadmap](docs/roadmap.md)
 - [Operator runbook](docs/operator-runbook.md)
+- [Self-serve payments](docs/self-serve-payments.md)
 
 ## Exit Codes
 
