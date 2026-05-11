@@ -4,6 +4,22 @@ This is the first self-serve monetization path for `mcp-guard`.
 
 The short-term goal is not a full SaaS dashboard. The short-term goal is a checkout path where a buyer can pay without a sales call, receive a clear deliverable, and later upgrade into a recurring product.
 
+## Starter Kit Deliverables
+
+The Starter Kit files live in:
+
+```text
+docs/starter-kit/
+```
+
+They include:
+
+- `policy-template.json`;
+- `baseline-review-template.md`;
+- `github-action-setup-checklist.md`;
+- `audit-handoff-template.md`;
+- `private-repo-rollout-guide.md`.
+
 ## Recommended Stripe Setup
 
 Start with Stripe Payment Links because they are the fastest hosted checkout path for one-time products and subscriptions.

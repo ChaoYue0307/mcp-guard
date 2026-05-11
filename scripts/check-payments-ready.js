@@ -58,6 +58,8 @@ const checkoutJs = read("site/checkout.js");
 const thanksHtml = read("site/thanks/index.html");
 const legalHtml = read("site/legal/index.html");
 const paymentsDoc = read("docs/self-serve-payments.md");
+const starterKitReadme = read("docs/starter-kit/README.md");
+const starterKitPolicy = read("docs/starter-kit/policy-template.json");
 
 if (!indexHtml.includes('<script src="checkout.js" defer></script>')) {
   errors.push("site/index.html must load site/checkout.js.");
@@ -112,6 +114,7 @@ for (const [source, file, expected] of requiredSiteContent) {
 
 const requiredDocContent = [
   "site/checkout.js",
+  "docs/starter-kit/",
   "npm run payments:check -- --live",
   "https://chaoyue0307.github.io/mcp-guard/thanks/",
   "https://chaoyue0307.github.io/mcp-guard/legal/",
@@ -121,6 +124,36 @@ const requiredDocContent = [
 for (const expected of requiredDocContent) {
   if (!paymentsDoc.includes(expected)) {
     errors.push(`docs/self-serve-payments.md is missing expected content: ${expected}`);
+  }
+}
+
+const requiredStarterKitFiles = [
+  "docs/starter-kit/README.md",
+  "docs/starter-kit/policy-template.json",
+  "docs/starter-kit/baseline-review-template.md",
+  "docs/starter-kit/github-action-setup-checklist.md",
+  "docs/starter-kit/audit-handoff-template.md",
+  "docs/starter-kit/private-repo-rollout-guide.md"
+];
+
+for (const relativePath of requiredStarterKitFiles) {
+  if (!fs.existsSync(path.join(root, relativePath))) {
+    errors.push(`Starter kit deliverable is missing: ${relativePath}`);
+  }
+}
+
+const requiredStarterKitContent = [
+  [starterKitReadme, "docs/starter-kit/README.md", "policy-template.json"],
+  [starterKitReadme, "docs/starter-kit/README.md", "github-action-setup-checklist.md"],
+  [starterKitReadme, "docs/starter-kit/README.md", "audit-handoff-template.md"],
+  [starterKitReadme, "docs/starter-kit/README.md", "private-repo-rollout-guide.md"],
+  [starterKitPolicy, "docs/starter-kit/policy-template.json", "allowedCommands"],
+  [starterKitPolicy, "docs/starter-kit/policy-template.json", "allowedDirectories"]
+];
+
+for (const [source, file, expected] of requiredStarterKitContent) {
+  if (!source.includes(expected)) {
+    errors.push(`${file} is missing expected starter kit content: ${expected}`);
   }
 }
 

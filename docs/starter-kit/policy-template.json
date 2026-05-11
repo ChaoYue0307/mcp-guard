@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "allowedCommands": [
+    "node",
+    "uvx"
+  ],
+  "allowedPackages": [],
+  "allowedDirectories": [
+    "./workspace"
+  ],
+  "allowedRemoteUrls": [],
+  "notes": {
+    "reviewBeforeUse": [
+      "Add exact MCP package names only after source review.",
+      "Add exact remote MCP URLs only after provider review.",
+      "Do not allow shell wrapper commands such as bash, sh, zsh, or powershell by default.",
+      "Do not allow broad paths such as /, ~, $HOME, or /Users/* by default.",
+      "Do not allow Docker socket mounts or privileged container runtimes by policy exception."
+    ]
+  }
+}
