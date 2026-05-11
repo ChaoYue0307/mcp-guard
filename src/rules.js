@@ -25,6 +25,7 @@ export function evaluateServer(server, context) {
   findings.push(...ruleRemotePackageExecution(server));
   findings.push(...ruleUnpinnedPackage(server));
   findings.push(...ruleSecretEnvironment(server));
+  findings.push(...ruleEnvironmentFile(server));
   findings.push(...ruleBroadWorkingDirectory(server, context));
   findings.push(...ruleBroadFilesystemArgs(server, context));
   findings.push(...ruleDangerousCommandPattern(server));
@@ -115,6 +116,19 @@ function ruleSecretEnvironment(server) {
     }));
   }
   return findings;
+}
+
+function ruleEnvironmentFile(server) {
+  if (!server.envFile) return [];
+
+  return [finding({
+    id: "MCP031",
+    severity: "medium",
+    title: "Environment file is loaded into MCP server",
+    server,
+    evidence: `envFile=${server.envFile}`,
+    recommendation: "Review the env file before enabling this server. Keep credentials least-privileged, scoped, and rotated."
+  })];
 }
 
 function ruleBroadWorkingDirectory(server, context) {

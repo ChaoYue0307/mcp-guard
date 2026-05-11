@@ -63,6 +63,13 @@ export const RULE_CATALOG = [
     recommendation: "Use least-privilege, short-lived credentials and dedicated service accounts."
   },
   {
+    id: "MCP031",
+    severity: "medium",
+    title: "Environment file is loaded into MCP server",
+    detects: "An MCP server uses envFile to load environment variables from a file.",
+    recommendation: "Review the env file before enabling this server and keep credentials least-privileged, scoped, and rotated."
+  },
+  {
     id: "MCP040",
     severity: "medium/high",
     title: "MCP server has a broad working directory",

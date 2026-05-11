@@ -16,6 +16,7 @@ test("scan flags common risky MCP config patterns", async () => {
         env: {
           OPENAI_API_KEY: "sk-test1234567890"
         },
+        envFile: ".env",
         cwd: os.homedir()
       },
       filesystem: {
@@ -38,6 +39,7 @@ test("scan flags common risky MCP config patterns", async () => {
   assert.ok(ids.includes("MCP020"));
   assert.ok(ids.includes("MCP021"));
   assert.ok(ids.includes("MCP030"));
+  assert.ok(ids.includes("MCP031"));
   assert.ok(ids.includes("MCP040"));
   assert.ok(ids.includes("MCP041"));
   assert.ok(ids.includes("MCP050"));
