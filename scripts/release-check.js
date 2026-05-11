@@ -160,6 +160,11 @@ const checks = [
     ]
   },
   {
+    name: "payment checkout readiness",
+    command: process.execPath,
+    args: ["scripts/check-payments-ready.js"]
+  },
+  {
     name: "npm pack dry run",
     command: "npm",
     args: ["--cache", "./.npm-cache", "pack", "--dry-run"]

@@ -295,6 +295,7 @@ Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
 
 ```bash
 npm test
+npm run payments:check
 npm run release:check
 ```
 

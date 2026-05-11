@@ -17,6 +17,7 @@
   "scripts": {
     "test": "node --test",
     "scan:example": "node ./bin/mcp-guard.js scan --config examples/unsafe-claude_desktop_config.json --output examples/sample-report.md",
+    "payments:check": "node ./scripts/check-payments-ready.js",
     "release:check": "node ./scripts/release-check.js",
     "launch:github": "node ./scripts/launch-github.js",
     "marketplace:prepare": "node ./scripts/prepare-marketplace-action.js",

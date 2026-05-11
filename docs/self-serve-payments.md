@@ -22,15 +22,21 @@ Use Stripe Checkout or Payment Links with Stripe Tax enabled when you are ready 
 
 The GitHub Pages site already has a pricing section in `site/index.html`.
 
+Checkout URLs are configured in one place:
+
+```text
+site/checkout.js
+```
+
 After creating live Stripe Payment Links, replace these values:
 
-| Product | HTML marker | Replace with |
+| Product | Checkout marker | Replace with |
 | --- | --- | --- |
 | Starter kit | `REPLACE_WITH_STARTER_PAYMENT_LINK` | Starter kit Payment Link |
 | Pro monthly | `REPLACE_WITH_PRO_PAYMENT_LINK` | Pro subscription Payment Link |
 | Team setup | `REPLACE_WITH_TEAM_SETUP_PAYMENT_LINK` | Team setup Payment Link |
 
-Also replace each matching `href="mailto:..."` with the live Stripe URL.
+The website buttons keep a `mailto:` fallback in the static HTML. When `site/checkout.js` contains a live Stripe URL, the page automatically points the button to Stripe checkout.
 
 Use links that start with:
 
@@ -43,6 +49,20 @@ Set each Payment Link's post-payment redirect URL to:
 ```text
 https://chaoyue0307.github.io/mcp-guard/thanks/
 ```
+
+Use this page for checkout policy links:
+
+```text
+https://chaoyue0307.github.io/mcp-guard/legal/
+```
+
+Before going live, run:
+
+```sh
+npm run payments:check -- --live
+```
+
+Without `--live`, the same check verifies that the draft checkout wiring, fallback links, success page, and policy page are present while placeholders are still expected.
 
 Do not commit secret keys, restricted keys, webhook signing secrets, or customer data to the repo.
 
@@ -91,5 +111,6 @@ Paid plans should sell convenience and team workflow:
 - Refund policy written.
 - Basic terms and privacy page linked from checkout or website.
 - Test payment completed in Stripe test mode.
-- Live Payment Links pasted into `site/index.html`.
+- Live Payment Links pasted into `site/checkout.js`.
+- `npm run payments:check -- --live` passes.
 - GitHub Pages deployment verified.
