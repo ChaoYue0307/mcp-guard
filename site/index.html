@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>mcp-guard | Secure MCP tools before agents run them</title>
-    <meta name="description" content="mcp-guard scans MCP and AI agent tool configs for risky shell access, leaked secrets, broad filesystem permissions, remote MCP endpoints, and unpinned packages.">
+    <meta name="description" content="mcp-guard scans MCP and AI agent tool configs for risky shell access, leaked secrets, env files, broad filesystem permissions, remote MCP endpoints, plaintext HTTP, and unpinned packages.">
     <meta property="og:title" content="mcp-guard">
     <meta property="og:description" content="Local-first MCP and AI agent config security scanner with CLI, GitHub Action, SARIF, HTML, and JSON reports.">
     <meta property="og:type" content="website">
@@ -19,6 +19,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#mcp-basics">MCP</a>
+        <a href="#coverage">Coverage</a>
         <a href="#scan">Scan</a>
         <a href="#action">Action</a>
         <a href="#baseline">Baseline</a>
@@ -33,7 +34,7 @@
       <section class="hero">
         <div class="hero-copy">
           <h1>Secure MCP tools before agents run them.</h1>
-          <p>Local-first scanner for risky shell commands, leaked secrets, broad filesystem access, remote MCP endpoints, and unpinned packages.</p>
+          <p>Local-first scanner for risky shell commands, leaked secrets, env files, broad filesystem access, remote MCP endpoints, plaintext HTTP, and unpinned packages.</p>
           <div class="hero-actions">
             <a class="button primary" href="https://www.npmjs.com/package/agent-mcp-guard">Install CLI</a>
             <a class="button secondary" href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner">Marketplace Action</a>
@@ -107,7 +108,7 @@
           <span class="eyebrow">MCP basics</span>
           <h2>Understand the config before an agent uses it.</h2>
           <p>MCP connects AI clients to tool servers. That connection is powerful because a server can expose file access, shell commands, SaaS APIs, databases, browser tools, or remote endpoints.</p>
-          <p>The config is the review point. It shows what command starts, which package runs, what paths are mounted, and what secrets or headers are passed into the server.</p>
+          <p>The config is the review point. It shows what command starts, which package runs, what paths are mounted, which env files load, and what secrets or headers are passed into the server.</p>
         </div>
         <div class="basics-grid" aria-label="MCP basics">
           <div class="basics-card">
@@ -122,13 +123,42 @@
           </div>
           <div class="basics-card">
             <span>Config</span>
-            <strong>Commands, URLs, args, env, headers</strong>
-            <p>This is where shell wrappers, unpinned packages, broad filesystem paths, and credentials usually enter.</p>
+            <strong>Commands, URLs, args, env, envFile, headers</strong>
+            <p>This is where shell wrappers, unpinned packages, broad filesystem paths, plaintext HTTP, and credentials usually enter.</p>
           </div>
           <div class="basics-card">
             <span>Guardrail</span>
             <strong>Review before merge or local install</strong>
             <p>Scan the config before the agent runs it, then commit policy and baseline files for repeatable team review.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="coverage" id="coverage">
+        <div class="coverage-copy">
+          <h2>Find the configs teams actually use.</h2>
+          <p>Run from a repo root or a nested package. mcp-guard checks project, parent, editor, and user-level MCP configuration without uploading local paths or secrets.</p>
+        </div>
+        <div class="coverage-grid" aria-label="MCP config coverage">
+          <div>
+            <span>Project tree</span>
+            <strong>Repo and parent discovery</strong>
+            <p>Checks `.mcp.json`, `mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json` from the current directory upward.</p>
+          </div>
+          <div>
+            <span>Editor profiles</span>
+            <strong>Cursor, VS Code, Claude Desktop</strong>
+            <p>Scans common user-level config paths so local agent setup is visible before it becomes team risk.</p>
+          </div>
+          <div>
+            <span>Secret flow</span>
+            <strong>Env vars, env files, headers</strong>
+            <p>Redacts secret-like values while still showing where credentials enter MCP server runtime.</p>
+          </div>
+          <div>
+            <span>Remote trust</span>
+            <strong>URLs, HTTP, approved endpoints</strong>
+            <p>Flags remote MCP servers, plaintext HTTP endpoints, and policy violations against approved URLs.</p>
           </div>
         </div>
       </section>
@@ -146,8 +176,9 @@ mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
           <ul>
             <li>Bootstrap a GitHub Action in one command</li>
             <li>Inspect the rule catalog from the CLI</li>
+            <li>Discover project, parent, Cursor, VS Code, and Claude configs</li>
             <li>Generate conservative policy drafts for review</li>
-            <li>Detect risky shell commands and broad access</li>
+            <li>Detect risky shell commands, env files, plaintext HTTP, and broad access</li>
             <li>Enforce approved commands, packages, directories, and URLs</li>
             <li>Redact secret-like env vars and headers</li>
             <li>Output text, Markdown, HTML, JSON, and SARIF</li>

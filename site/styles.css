@@ -447,6 +447,64 @@ code {
   font-size: 15px;
 }
 
+.coverage {
+  display: grid;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+  gap: 48px;
+  align-items: start;
+  padding: 76px 40px;
+  background: #eef6f4;
+  border-top: 1px solid var(--line);
+}
+
+.coverage h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 44px;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.coverage p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.coverage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.coverage-grid div {
+  min-height: 176px;
+  padding: 22px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, .05);
+}
+
+.coverage-grid span {
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.coverage-grid strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--ink);
+  font-size: 21px;
+  line-height: 1.25;
+}
+
+.coverage-grid p {
+  font-size: 15px;
+}
+
 .workflows {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1039,6 +1097,7 @@ footer a {
 
   .workflows,
   .mcp-basics,
+  .coverage,
   .reports,
   .baseline-section,
   .e2e-proof,
@@ -1075,6 +1134,7 @@ footer a {
   .hero,
   .workflows,
   .mcp-basics,
+  .coverage,
   .reports,
   .baseline-section,
   .e2e-proof,
@@ -1155,6 +1215,7 @@ footer a {
   }
 
   .mcp-basics h2,
+  .coverage h2,
   .reports h2,
   .baseline-copy h2,
   .e2e-proof h2,
@@ -1168,6 +1229,10 @@ footer a {
   }
 
   .basics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .coverage-grid {
     grid-template-columns: 1fr;
   }
 
