@@ -72,6 +72,12 @@ Use this page for checkout policy links:
 https://chaoyue0307.github.io/mcp-guard/legal/
 ```
 
+Use this page for Team Setup onboarding after payment:
+
+```text
+https://chaoyue0307.github.io/mcp-guard/intake/
+```
+
 Before going live, run:
 
 ```sh
@@ -90,7 +96,8 @@ Use this sequence before building a backend:
 2. Stripe sends a successful payment receipt.
 3. The confirmation page or receipt links to a private download or onboarding page.
 4. For Pro, manually issue a first license key until automated webhooks are implemented.
-5. Track buyers in Stripe Dashboard and a private operations sheet.
+5. For Team Setup, direct the buyer to `https://chaoyue0307.github.io/mcp-guard/intake/`.
+6. Track buyers in Stripe Dashboard and a private operations sheet.
 
 When manual license creation becomes painful, add:
 

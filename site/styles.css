@@ -1243,6 +1243,7 @@ code {
 }
 
 .legal-grid article {
+  min-width: 0;
   padding: 30px;
   background: var(--white);
   border: 1px solid var(--line);
@@ -1265,6 +1266,16 @@ code {
 .legal-grid a {
   color: var(--teal-strong);
   font-weight: 800;
+}
+
+.legal-grid pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.legal-grid code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .audit {

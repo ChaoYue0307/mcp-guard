@@ -57,6 +57,7 @@ const indexHtml = read("site/index.html");
 const checkoutJs = read("site/checkout.js");
 const thanksHtml = read("site/thanks/index.html");
 const legalHtml = read("site/legal/index.html");
+const intakeHtml = read("site/intake/index.html");
 const paymentsDoc = read("docs/self-serve-payments.md");
 const starterKitReadme = read("docs/starter-kit/README.md");
 const starterKitPolicy = read("docs/starter-kit/policy-template.json");
@@ -103,6 +104,11 @@ const requiredSiteContent = [
   [legalHtml, "site/legal/index.html", "Refunds"],
   [legalHtml, "site/legal/index.html", "Privacy"],
   [legalHtml, "site/legal/index.html", "Stripe-hosted checkout"],
+  [intakeHtml, "site/intake/index.html", "Setup intake"],
+  [intakeHtml, "site/intake/index.html", "Do not send secrets"],
+  [intakeHtml, "site/intake/index.html", "Redacted MCP config"],
+  [intakeHtml, "site/intake/index.html", "Email setup intake"],
+  [thanksHtml, "site/thanks/index.html", "../intake/"],
   [indexHtml, "site/index.html", "Terms, privacy, and refunds"]
 ];
 
@@ -118,6 +124,7 @@ const requiredDocContent = [
   "npm run payments:check -- --live",
   "https://chaoyue0307.github.io/mcp-guard/thanks/",
   "https://chaoyue0307.github.io/mcp-guard/legal/",
+  "https://chaoyue0307.github.io/mcp-guard/intake/",
   "https://buy.stripe.com/"
 ];
 

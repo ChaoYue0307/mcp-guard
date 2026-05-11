@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>mcp-guard | Setup intake</title>
+    <meta name="description" content="Safe setup intake checklist for mcp-guard Team Setup customers.">
+    <link rel="icon" href="../assets/brand-mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="mcp-guard home">
+        <img src="../assets/brand-mark.svg" alt="">
+        <span>mcp-guard</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="../#pricing">Pricing</a>
+        <a href="../#example">Example</a>
+        <a href="../legal/">Legal</a>
+        <a href="https://github.com/ChaoYue0307/mcp-guard">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="legal-page">
+      <section class="legal-hero">
+        <span class="eyebrow">Team setup</span>
+        <h1>Setup intake</h1>
+        <p>Use this checklist after purchasing the Team Setup package. Share enough context to configure the scanner, but keep credentials and raw private MCP config values out of email.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="mailto:hechaoyue0307@gmail.com?subject=mcp-guard%20setup%20intake&body=Purchase%20email%3A%0ARepository%20URL%20or%20host%3A%0AMCP%20config%20paths%3A%0ACI%20provider%3A%0ARedacted%20config%20snippet%3A%0AGoal%20for%20setup%3A">Email setup intake</a>
+          <a class="button secondary" href="../#pricing">Back to pricing</a>
+        </div>
+      </section>
+
+      <section class="legal-grid" aria-label="mcp-guard setup intake checklist">
+        <article>
+          <h2>Send</h2>
+          <p>Purchase email, repository URL or host, CI provider, MCP config paths, preferred branch, and whether SARIF upload is available.</p>
+          <p>Include a redacted MCP config snippet with commands, args, package names, URLs, and broad paths preserved where possible.</p>
+        </article>
+        <article>
+          <h2>Do not send</h2>
+          <p>Do not send secrets, API tokens, OAuth refresh tokens, private keys, raw `.env` files, full customer data, or production-only credentials.</p>
+          <p>Replace credential values with placeholders such as `REDACTED_GITHUB_TOKEN` before sharing.</p>
+        </article>
+        <article>
+          <h2>Redacted MCP config</h2>
+          <pre><code>{
+  "env": {
+    "GITHUB_TOKEN": "REDACTED_GITHUB_TOKEN"
+  },
+  "args": ["--repo", "owner/private-repo"]
+}</code></pre>
+        </article>
+        <article>
+          <h2>Delivery target</h2>
+          <p>The setup package targets one repository and includes CLI wiring, GitHub Action configuration, policy and baseline review, SARIF or PR comment setup, and an audit pack closeout.</p>
+          <p>Support continues through the email used at checkout unless another contact is explicitly provided.</p>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <p>mcp-guard is Apache-2.0 open source. Support: <a href="mailto:hechaoyue0307@gmail.com">hechaoyue0307@gmail.com</a>. <a href="../legal/">Terms, privacy, and refunds</a>.</p>
+    </footer>
+  </body>
+</html>
