@@ -39,7 +39,7 @@ For product operations, npm Trusted Publishing should be used after the package 
 ```text
 I built mcp-guard, an open-source local scanner for MCP and AI agent tool configs.
 
-It checks for risky shell access, unpinned npx packages, broad filesystem permissions, exposed secrets, and remote MCP servers.
+It checks for risky shell access, unpinned npx packages, broad filesystem permissions, exposed secrets, high-risk Docker/Podman runtime options, and remote MCP servers.
 
 It now includes `mcp-guard init`, which creates a GitHub Action workflow, can generate a baseline for accepted current findings, can enforce a committed policy for approved MCP commands, packages, directories, and URLs, and can export a review-ready audit pack.
 

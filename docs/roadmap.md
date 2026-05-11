@@ -7,7 +7,7 @@
 - CLI config scanning.
 - Default discovery for project, parent, Cursor, VS Code, and Claude Desktop MCP config paths.
 - Text, Markdown, HTML, redacted JSON, and SARIF output.
-- Rules for shell wrappers, remote package runners, unpinned packages, broad filesystem access, secret-like env vars/env files/headers, and remote MCP URLs including plaintext HTTP.
+- Rules for shell wrappers, remote package runners, unpinned packages, broad filesystem access, high-risk Docker/Podman runtime options, secret-like env vars/env files/headers, and remote MCP URLs including plaintext HTTP.
 - CI usage with `--fail-on`.
 - GitHub Action wrapper that writes a job summary, uploads Markdown/HTML/JSON/SARIF artifacts, and can upload SARIF to GitHub code scanning.
 - Baseline/allowlist mode for accepting known findings and failing only on new risks.

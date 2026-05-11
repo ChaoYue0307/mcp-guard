@@ -1,17 +1,17 @@
 # mcp-guard Executive Summary
 
-Generated: 2026-05-10T20:51:28.472Z
+Generated: 2026-05-11T04:45:49.380Z
 Status: **Needs review**
-Risk score: **98**
+Risk score: **100**
 Fail threshold: **none**
 
 ## Scope
 
 - Scanned files: 1
-- MCP servers: 3
-- Active findings: 9
-- Critical: 2
-- High: 5
+- MCP servers: 4
+- Active findings: 13
+- Critical: 4
+- High: 7
 - Medium: 2
 - Low: 0
 
@@ -28,12 +28,12 @@ Fail threshold: **none**
 | --- | --- | --- | --- |
 | critical | MCP010 | shell-installer | Shell command executes inline script |
 | critical | MCP050 | shell-installer | MCP server command includes a dangerous operation |
+| critical | MCP080 | docker-host-control | Container MCP server runs in privileged mode |
+| critical | MCP081 | docker-host-control | Container MCP server mounts the Docker socket |
 | high | MCP021 | filesystem-all-home | Remote MCP package is not version pinned |
 | high | MCP030 | filesystem-all-home | Secret-like environment variable is exposed to MCP server |
 | high | MCP040 | filesystem-all-home | MCP server has a broad working directory |
 | high | MCP041 | filesystem-all-home | MCP server argument grants broad filesystem access |
-| high | MCP061 | remote-prod | Secret-like header is configured for remote MCP server |
-| medium | MCP020 | filesystem-all-home | MCP server is launched through a remote package runner |
 
 ## Review Notes
 

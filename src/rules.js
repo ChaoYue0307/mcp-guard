@@ -4,7 +4,9 @@ import { isSecretLikeName, redactValue } from "./redact.js";
 
 const SHELL_COMMANDS = new Set(["sh", "bash", "zsh", "fish", "pwsh", "powershell", "cmd", "cmd.exe"]);
 const EVAL_COMMANDS = new Set(["node", "python", "python3", "ruby", "perl", "php", "deno", "bun"]);
+const CONTAINER_COMMANDS = new Set(["docker", "podman"]);
 const BROAD_DIR_NAMES = new Set(["Desktop", "Documents", "Downloads"]);
+const DOCKER_SOCKET_PATHS = new Set(["/var/run/docker.sock", "/run/docker.sock"]);
 
 export function evaluateServer(server, context) {
   const findings = [];
@@ -29,6 +31,10 @@ export function evaluateServer(server, context) {
   findings.push(...ruleBroadWorkingDirectory(server, context));
   findings.push(...ruleBroadFilesystemArgs(server, context));
   findings.push(...ruleDangerousCommandPattern(server));
+  findings.push(...ruleContainerPrivileges(server));
+  findings.push(...ruleContainerDockerSocketMount(server));
+  findings.push(...ruleContainerHostNetwork(server));
+  findings.push(...ruleContainerBroadVolumeMount(server, context));
   findings.push(...ruleRemoteUrl(server));
   findings.push(...rulePlainHttpRemoteUrl(server));
   findings.push(...ruleHeaders(server));
@@ -206,6 +212,104 @@ function ruleDangerousCommandPattern(server) {
     }));
 }
 
+function ruleContainerPrivileges(server) {
+  if (!isContainerCommand(server)) return [];
+
+  const privilegedArg = server.args.find((arg) => arg === "--privileged" || /^--privileged=(true|1)$/i.test(arg));
+  if (!privilegedArg) return [];
+
+  return [finding({
+    id: "MCP080",
+    severity: "critical",
+    title: "Container MCP server runs in privileged mode",
+    server,
+    evidence: privilegedArg,
+    recommendation: "Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs."
+  })];
+}
+
+function ruleContainerDockerSocketMount(server) {
+  if (!isContainerCommand(server)) return [];
+
+  const socketMount = containerMountSpecs(server.args)
+    .find((mount) => mountPaths(mount).some((mountPath) => DOCKER_SOCKET_PATHS.has(mountPath)));
+  if (!socketMount) return [];
+
+  return [finding({
+    id: "MCP081",
+    severity: "critical",
+    title: "Container MCP server mounts the Docker socket",
+    server,
+    evidence: socketMount.evidence,
+    recommendation: "Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization."
+  })];
+}
+
+function ruleContainerHostNetwork(server) {
+  if (!isContainerCommand(server)) return [];
+
+  for (let index = 0; index < server.args.length; index += 1) {
+    const arg = server.args[index];
+    if ((arg === "--network" || arg === "--net") && server.args[index + 1] === "host") {
+      return [finding({
+        id: "MCP082",
+        severity: "high",
+        title: "Container MCP server uses host networking",
+        server,
+        evidence: `${arg} host`,
+        recommendation: "Use a dedicated bridge network and expose only the ports required by the MCP server."
+      })];
+    }
+
+    if (/^--(?:network|net)=host$/i.test(arg)) {
+      return [finding({
+        id: "MCP082",
+        severity: "high",
+        title: "Container MCP server uses host networking",
+        server,
+        evidence: arg,
+        recommendation: "Use a dedicated bridge network and expose only the ports required by the MCP server."
+      })];
+    }
+  }
+
+  return [];
+}
+
+function ruleContainerBroadVolumeMount(server, context) {
+  if (!isContainerCommand(server)) return [];
+
+  const findings = [];
+  const home = normalizePath(context.home, context);
+  const seen = new Set();
+
+  for (const mount of containerMountSpecs(server.args)) {
+    const source = containerMountSource(mount);
+    if (!source || seen.has(source)) continue;
+    seen.add(source);
+
+    const normalized = normalizePath(source, context);
+    const base = path.basename(normalized);
+    const isRoot = normalized === path.parse(normalized).root;
+    const isHome = normalized === home;
+    const isHomePrefix = normalized.startsWith(`${home}${path.sep}`) && normalized.split(path.sep).length <= home.split(path.sep).length + 2;
+    const isSensitiveHomeChild = BROAD_DIR_NAMES.has(base);
+
+    if (isRoot || isHome || isHomePrefix || isSensitiveHomeChild || source === "~") {
+      findings.push(finding({
+        id: "MCP083",
+        severity: isRoot || isHome ? "high" : "medium",
+        title: "Container volume grants broad host filesystem access",
+        server,
+        evidence: mount.evidence,
+        recommendation: "Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders."
+      }));
+    }
+  }
+
+  return findings;
+}
+
 function ruleRemoteUrl(server) {
   if (!server.url || !/^https?:\/\//i.test(server.url)) return [];
 
@@ -309,9 +413,8 @@ function rulePolicyAllowedFilesystemArgs(server, context) {
   if (!policy || policy.allowedDirectoryPaths.length === 0) return [];
 
   const findings = [];
-  for (const arg of server.args) {
-    const value = filesystemPathFromArg(arg);
-    if (!value) continue;
+  for (const item of filesystemPolicyArgs(server)) {
+    const value = item.value;
 
     const normalized = normalizePath(value, context);
     if (isAllowedPath(normalized, policy.allowedDirectoryPaths)) continue;
@@ -321,7 +424,7 @@ function rulePolicyAllowedFilesystemArgs(server, context) {
       severity: "high",
       title: "MCP server filesystem argument is outside policy",
       server,
-      evidence: `arg=${arg} allowed=${policy.allowedDirectories.join(", ")}`,
+      evidence: `${item.evidence} allowed=${policy.allowedDirectories.join(", ")}`,
       recommendation: "Limit filesystem arguments to approved directories, or update allowedDirectories only after review."
     }));
   }
@@ -358,7 +461,13 @@ function finding({ id, severity, title, server, evidence, recommendation }) {
 function valueFromArg(arg) {
   if (!arg) return "";
   const equalIndex = arg.indexOf("=");
-  if (equalIndex > -1) return arg.slice(equalIndex + 1);
+  if (equalIndex > -1) {
+    const value = arg.slice(equalIndex + 1);
+    if (value.startsWith("/") || value.startsWith("~") || value.startsWith("./") || value.startsWith("../")) {
+      return value;
+    }
+    return "";
+  }
   if (arg.startsWith("/") || arg.startsWith("~")) return arg;
   return "";
 }
@@ -369,6 +478,30 @@ function filesystemPathFromArg(arg) {
   if (value === "~" || value.startsWith("~/")) return value;
   if (value.startsWith("/") || value.startsWith("./") || value.startsWith("../")) return value;
   return "";
+}
+
+function filesystemPolicyArgs(server) {
+  const items = [];
+  const seen = new Set();
+  const addItem = (value, evidence) => {
+    if (!value) return;
+    const key = `${value}\u0000${evidence}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    items.push({ value, evidence });
+  };
+
+  for (const arg of server.args) {
+    addItem(filesystemPathFromArg(arg), `arg=${arg}`);
+  }
+
+  if (isContainerCommand(server)) {
+    for (const mount of containerMountSpecs(server.args)) {
+      addItem(containerMountSource(mount), `mount=${mount.evidence}`);
+    }
+  }
+
+  return items;
 }
 
 function normalizePath(value, context) {
@@ -401,4 +534,100 @@ function isAllowedRemoteUrl(value, allowedUrls) {
 
 function listSet(items) {
   return [...items].join(", ");
+}
+
+function isContainerCommand(server) {
+  return CONTAINER_COMMANDS.has(commandBase(server.command));
+}
+
+function containerMountSpecs(args) {
+  const mounts = [];
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (!arg) continue;
+
+    if (arg === "-v" || arg === "--volume" || arg === "--mount") {
+      const value = args[index + 1] || "";
+      if (value) {
+        mounts.push({
+          kind: arg === "--mount" ? "mount" : "volume",
+          value,
+          evidence: `${arg} ${value}`
+        });
+      }
+      index += 1;
+      continue;
+    }
+
+    const volumeValue = optionValue(arg, ["-v", "--volume"]);
+    if (volumeValue) {
+      mounts.push({
+        kind: "volume",
+        value: volumeValue,
+        evidence: arg
+      });
+      continue;
+    }
+
+    const mountValue = optionValue(arg, ["--mount"]);
+    if (mountValue) {
+      mounts.push({
+        kind: "mount",
+        value: mountValue,
+        evidence: arg
+      });
+    }
+  }
+  return mounts;
+}
+
+function containerMountSource(mount) {
+  if (mount.kind === "mount") {
+    const fields = keyValueFields(mount.value);
+    if (fields.type && fields.type !== "bind") return "";
+    return fields.source || fields.src || "";
+  }
+
+  const source = mount.value.split(":")[0] || "";
+  if (source === "~" || source.startsWith("~/")) return source;
+  if (source.startsWith("/") || source.startsWith("./") || source.startsWith("../")) return source;
+  return "";
+}
+
+function mountPaths(mount) {
+  if (mount.kind === "mount") {
+    const fields = keyValueFields(mount.value);
+    return [
+      fields.source,
+      fields.src,
+      fields.target,
+      fields.dst,
+      fields.destination
+    ].filter(Boolean);
+  }
+
+  return mount.value.split(":").filter(Boolean);
+}
+
+function keyValueFields(value) {
+  const fields = {};
+  for (const part of value.split(",")) {
+    const equalIndex = part.indexOf("=");
+    if (equalIndex === -1) continue;
+    const key = part.slice(0, equalIndex).trim().toLowerCase();
+    const fieldValue = part.slice(equalIndex + 1).trim();
+    if (key && fieldValue) {
+      fields[key] = fieldValue;
+    }
+  }
+  return fields;
+}
+
+function optionValue(arg, options) {
+  for (const option of options) {
+    if (arg.startsWith(`${option}=`)) {
+      return arg.slice(option.length + 1);
+    }
+  }
+  return "";
 }

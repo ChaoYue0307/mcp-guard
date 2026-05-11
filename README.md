@@ -149,7 +149,7 @@ Use the transparent example to evaluate what the scanner actually does:
 - generated remediation checklist: [site/e2e/audit/mcp-guard-remediation-checklist.md](site/e2e/audit/mcp-guard-remediation-checklist.md)
 - generated audit manifest: [site/e2e/audit/mcp-guard-audit-manifest.json](site/e2e/audit/mcp-guard-audit-manifest.json)
 
-The example scans 3 MCP servers and reports 9 active findings with a risk score of 98. It is synthetic, but fully reproducible from committed files. The audit manifest can be verified with `mcp-guard verify-audit` to confirm the generated reports still match their recorded SHA-256 hashes.
+The example scans 4 MCP servers and reports 13 active findings with a risk score of 100. It is synthetic, but fully reproducible from committed files. The audit manifest can be verified with `mcp-guard verify-audit` to confirm the generated reports still match their recorded SHA-256 hashes.
 
 For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307/mcp-guard-demo](https://github.com/ChaoYue0307/mcp-guard-demo).
 
@@ -163,6 +163,7 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 | Secret-like env vars, env files, and headers | Long-lived tokens leak into tool runtimes and reports. |
 | Broad filesystem access | Home, root, Desktop, Documents, and Downloads are high-blast-radius paths. |
 | Remote MCP URLs and plaintext HTTP | Data may leave the local trust boundary or cross the network without transport encryption. |
+| High-risk Docker and Podman runtime options | Privileged containers, Docker socket mounts, host networking, and broad host volume mounts can expose the host. |
 | Dangerous command patterns | `rm -rf`, `sudo`, `chmod 777`, and curl-pipe-shell should block review. |
 | Policy violations | Teams can enforce approved commands, packages, directories, and remote URLs. |
 
@@ -207,12 +208,14 @@ This writes `.github/workflows/mcp-guard.yml` and `.mcp-guard-baseline.json`, us
 ```text
 mcp-guard scan report
 Scanned files: 1
-MCP servers: 3
-Active findings: 9
-Risk score: 98
-Critical: 2  High: 5  Medium: 2  Low: 0
+MCP servers: 4
+Active findings: 13
+Risk score: 100
+Critical: 4  High: 7  Medium: 2  Low: 0
 
 - [CRITICAL] MCP010 Shell command executes inline script
+- [CRITICAL] MCP080 Container MCP server runs in privileged mode
+- [CRITICAL] MCP081 Container MCP server mounts the Docker socket
 - [HIGH] MCP021 Remote MCP package is not version pinned
 - [HIGH] MCP030 Secret-like environment variable is exposed to MCP server
 - [HIGH] MCP041 MCP server argument grants broad filesystem access

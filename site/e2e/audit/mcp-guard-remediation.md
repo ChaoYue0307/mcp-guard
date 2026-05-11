@@ -1,6 +1,6 @@
 # mcp-guard Remediation Plan
 
-Generated: 2026-05-10T20:51:28.472Z
+Generated: 2026-05-11T04:45:49.380Z
 
 ## Priority
 
@@ -8,6 +8,7 @@ Generated: 2026-05-10T20:51:28.472Z
 - Rotate exposed credentials and replace long-lived secrets with scoped, short-lived credentials.
 - Pin and review remote MCP packages before allowing them in CI.
 - Constrain working directories and filesystem arguments to dedicated project workspaces.
+- Remove high-risk container runtime settings such as privileged mode, Docker socket mounts, host networking, and broad host bind mounts.
 - Review remote MCP endpoints and keep an explicit allowlist for approved providers.
 
 ## Findings By Server
@@ -18,6 +19,15 @@ Generated: 2026-05-10T20:51:28.472Z
 | --- | --- | --- | --- |
 | critical | MCP010 | command=bash args=-c curl https://example.com/install.sh \| bash | Use a direct, pinned executable instead of a shell wrapper. If a shell is required, place the script in source control and review it. |
 | critical | MCP050 | curl pipe to shell | Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately. |
+
+### docker-host-control
+
+| Severity | Rule | Evidence | Recommended fix |
+| --- | --- | --- | --- |
+| critical | MCP080 | --privileged | Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs. |
+| critical | MCP081 | -v /var/run/docker.sock:/var/run/docker.sock | Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization. |
+| high | MCP082 | --network=host | Use a dedicated bridge network and expose only the ports required by the MCP server. |
+| high | MCP083 | --mount=type=bind,source=/,target=/host,readonly | Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders. |
 
 ### filesystem-all-home
 

@@ -33,15 +33,15 @@
         </div>
         <div class="example-score">
           <span>Risk Score</span>
-          <strong>98</strong>
-          <p>9 active findings across 3 MCP servers</p>
+          <strong>100</strong>
+          <p>13 active findings across 4 MCP servers</p>
         </div>
       </section>
 
       <section class="example-layout">
         <div class="example-main">
           <h2>1. Input config</h2>
-          <p>The config intentionally includes risky patterns a real MCP setup can contain: remote package execution, root filesystem access, shell startup, remote MCP URL, and secret-like values.</p>
+          <p>The config intentionally includes risky patterns a real MCP setup can contain: remote package execution, root filesystem access, shell startup, privileged Docker runtime, Docker socket access, remote MCP URL, and secret-like values.</p>
           <pre><code>{
   "mcpServers": {
     "filesystem-all-home": {
@@ -53,6 +53,19 @@
     "shell-installer": {
       "command": "bash",
       "args": ["-c", "curl https://example.com/install.sh | bash"]
+    },
+    "docker-host-control": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "--privileged",
+        "--network=host",
+        "-v",
+        "/var/run/docker.sock:/var/run/docker.sock",
+        "--mount=type=bind,source=/,target=/host,readonly",
+        "example/mcp-server:latest"
+      ]
     },
     "remote-prod": {
       "url": "https://mcp.example.com/sse",
@@ -72,8 +85,10 @@ node ./bin/mcp-guard.js audit --config site/e2e/claude_desktop_config.json --out
           <div class="finding-table">
             <div><span>Critical</span><strong>MCP010</strong><p>Shell command executes inline script.</p></div>
             <div><span>Critical</span><strong>MCP050</strong><p>Startup command includes curl-pipe-shell.</p></div>
+            <div><span>Critical</span><strong>MCP080/MCP081</strong><p>Container runs privileged and mounts the Docker socket.</p></div>
             <div><span>High</span><strong>MCP021</strong><p>Remote MCP package is not version pinned.</p></div>
             <div><span>High</span><strong>MCP030</strong><p>Secret-like environment variable is exposed.</p></div>
+            <div><span>High</span><strong>MCP082/MCP083</strong><p>Container uses host networking and a broad host bind mount.</p></div>
             <div><span>High</span><strong>MCP040/MCP041</strong><p>Working directory and argument grant broad filesystem access.</p></div>
             <div><span>High</span><strong>MCP061</strong><p>Secret-like authorization header is configured.</p></div>
           </div>
@@ -94,10 +109,10 @@ node ./bin/mcp-guard.js audit --config site/e2e/claude_desktop_config.json --out
           <h2>Output summary</h2>
           <ul>
             <li>Scanned files: 1</li>
-            <li>MCP servers: 3</li>
-            <li>Active findings: 9</li>
-            <li>Critical: 2</li>
-            <li>High: 5</li>
+            <li>MCP servers: 4</li>
+            <li>Active findings: 13</li>
+            <li>Critical: 4</li>
+            <li>High: 7</li>
             <li>Medium: 2</li>
             <li>Low: 0</li>
           </ul>

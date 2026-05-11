@@ -151,7 +151,6 @@ export function generateMarkdownReport(result) {
   lines.push("- This report is an assistive security review, not a guarantee that all issues were found.");
   lines.push("- Secret-like values are redacted by default.");
   lines.push("- Review each MCP server before granting access to files, shells, SaaS accounts, or production systems.");
-  lines.push("");
 
   return `${lines.join("\n")}\n`;
 }

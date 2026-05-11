@@ -39,8 +39,9 @@ test("CLI can list the rule catalog", () => {
 
   assert.equal(json.status, 0);
   const parsed = JSON.parse(json.stdout);
-  assert.ok(parsed.rules.length >= 19);
+  assert.ok(parsed.rules.length >= 24);
   assert.ok(parsed.rules.some((rule) => rule.id === "MCP074"));
+  assert.ok(parsed.rules.some((rule) => rule.id === "MCP083"));
 
   const markdown = spawnSync(process.execPath, [CLI, "rules", "--format", "markdown"], {
     cwd: path.resolve("."),
@@ -123,7 +124,7 @@ test("CLI policy suggestion skips shell and root access by default", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stderr, /Skipped 2 risky values/);
+  assert.match(result.stderr, /Skipped 5 risky values/);
 
   const policy = JSON.parse(result.stdout);
   assert.deepEqual(policy.allowedCommands, ["npx"]);
@@ -131,6 +132,7 @@ test("CLI policy suggestion skips shell and root access by default", () => {
   assert.deepEqual(policy.allowedDirectories, []);
   assert.deepEqual(policy.allowedRemoteUrls, ["https://mcp.example.com/sse"]);
   assert.equal(policy.allowedCommands.includes("bash"), false);
+  assert.equal(policy.allowedCommands.includes("docker"), false);
   assert.equal(policy.allowedDirectories.includes("/"), false);
 });
 
@@ -170,6 +172,48 @@ test("CLI policy suggestion extracts package option identities", () => {
   assert.deepEqual(policy.allowedCommands, ["npx", "pipx"]);
   assert.deepEqual(policy.allowedPackages, ["@vendor/mcp-server", "tool-server"]);
   assert.deepEqual(policy.allowedDirectories, [".", "./workspace"]);
+});
+
+test("CLI policy suggestion skips high-risk container runtime approvals", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mcp-guard-policy-container-"));
+  fs.writeFileSync(path.join(dir, ".mcp.json"), JSON.stringify({
+    mcpServers: {
+      dockerHostControl: {
+        command: "docker",
+        args: [
+          "run",
+          "--privileged",
+          "--network",
+          "host",
+          "--volume",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "--mount=type=bind,source=/,target=/host,readonly",
+          "example/mcp-server:latest"
+        ]
+      }
+    }
+  }), "utf8");
+
+  const result = spawnSync(process.execPath, [
+    CLI,
+    "policy",
+    "--cwd",
+    dir,
+    "--config",
+    ".mcp.json",
+    "--output",
+    "-"
+  ], {
+    cwd: path.resolve("."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stderr, /Skipped 3 risky values/);
+
+  const policy = JSON.parse(result.stdout);
+  assert.deepEqual(policy.allowedCommands, []);
+  assert.deepEqual(policy.allowedDirectories, []);
 });
 
 test("CLI policy suggestion dry run can inspect an existing policy file", () => {
@@ -225,7 +269,7 @@ test("CLI can emit JSON report", () => {
 
   assert.equal(result.status, 0);
   const parsed = JSON.parse(result.stdout);
-  assert.equal(parsed.summary.serverCount, 3);
+  assert.equal(parsed.summary.serverCount, 4);
   assert.ok(parsed.summary.findingCount >= 1);
   assert.equal(parsed.metadata.cwd, ".");
   assert.equal(parsed.metadata.home, "~");

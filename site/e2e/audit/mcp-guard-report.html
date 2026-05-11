@@ -295,15 +295,15 @@
         <p class="lead">Local-first review of MCP server configuration, startup commands, remote endpoints, filesystem scope, and secret-like values.</p>
         <div class="grid">
           <div class="metric"><strong>1</strong><span>Scanned files</span></div>
-          <div class="metric"><strong>3</strong><span>MCP servers</span></div>
-          <div class="metric"><strong>9</strong><span>Active findings</span></div>
-          <div class="metric"><strong>2026-05-10 20:51 UTC</strong><span>Generated</span></div>
+          <div class="metric"><strong>4</strong><span>MCP servers</span></div>
+          <div class="metric"><strong>13</strong><span>Active findings</span></div>
+          <div class="metric"><strong>2026-05-11 04:45 UTC</strong><span>Generated</span></div>
         </div>
       </div>
       <aside class="scorecard" aria-label="Risk score">
         <div>
           <p class="score-label">Risk score</p>
-          <p class="score-value">98</p>
+          <p class="score-value">100</p>
         </div>
         <p class="score-caption">Critical review recommended before enabling these tools.</p>
       </aside>
@@ -312,8 +312,8 @@
     <section>
       <h2>Severity Summary</h2>
       <div class="severity-row">
-        <div class="severity critical"><b>2</b><span>critical</span></div>
-        <div class="severity high"><b>5</b><span>high</span></div>
+        <div class="severity critical"><b>4</b><span>critical</span></div>
+        <div class="severity high"><b>7</b><span>high</span></div>
         <div class="severity medium"><b>2</b><span>medium</span></div>
         <div class="severity low"><b>0</b><span>low</span></div>
       </div>
@@ -329,12 +329,13 @@
     <section>
       <h2>MCP Server Inventory</h2>
       <div class="table-wrap"><table>
-    <thead><tr><th>Server</th><th>Command</th><th>Args</th><th>CWD</th><th>URL</th><th>Env</th><th>Headers</th></tr></thead>
+    <thead><tr><th>Server</th><th>Command</th><th>Args</th><th>CWD</th><th>URL</th><th>Env file</th><th>Env</th><th>Headers</th></tr></thead>
     <tbody><tr>
       <td><strong>filesystem-all-home</strong><br><code>site/e2e/claude_desktop_config.json</code></td>
       <td><code>npx</code></td>
       <td><code>@modelcontextprotocol/server-filesystem /</code></td>
       <td><code>/</code></td>
+      <td>-</td>
       <td>-</td>
       <td><code>GITHUB_TOKEN=ghp...890 (32 chars)</code></td>
       <td>-</td>
@@ -346,12 +347,23 @@
       <td>-</td>
       <td>-</td>
       <td>-</td>
+      <td>-</td>
+    </tr><tr>
+      <td><strong>docker-host-control</strong><br><code>site/e2e/claude_desktop_config.json</code></td>
+      <td><code>docker</code></td>
+      <td><code>run --rm --privileged --network=host -v /var/run/docker.sock:/var/run/docker.sock --mount=type=bind,source=/,target=/host,readonly example/mcp-server:latest</code></td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
+      <td>-</td>
     </tr><tr>
       <td><strong>remote-prod</strong><br><code>site/e2e/claude_desktop_config.json</code></td>
       <td>-</td>
       <td>-</td>
       <td>-</td>
       <td><code>https://mcp.example.com/sse</code></td>
+      <td>-</td>
       <td>-</td>
       <td><code>Authorization=Bea...ken (27 chars)</code></td>
     </tr></tbody>
@@ -378,6 +390,22 @@
     <td><code>curl pipe to shell</code></td>
     <td><code>mcpg_73e1a0da</code></td>
     <td>Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately.</td>
+  </tr><tr>
+    <td><span class="pill critical">critical</span></td>
+    <td><code>MCP080</code></td>
+    <td>docker-host-control</td>
+    <td>Container MCP server runs in privileged mode</td>
+    <td><code>--privileged</code></td>
+    <td><code>mcpg_ebd84499</code></td>
+    <td>Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs.</td>
+  </tr><tr>
+    <td><span class="pill critical">critical</span></td>
+    <td><code>MCP081</code></td>
+    <td>docker-host-control</td>
+    <td>Container MCP server mounts the Docker socket</td>
+    <td><code>-v /var/run/docker.sock:/var/run/docker.sock</code></td>
+    <td><code>mcpg_06c8469d</code></td>
+    <td>Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization.</td>
   </tr><tr>
     <td><span class="pill high">high</span></td>
     <td><code>MCP021</code></td>
@@ -418,6 +446,22 @@
     <td><code>Authorization=Bea...ken (27 chars)</code></td>
     <td><code>mcpg_ad4db81f</code></td>
     <td>Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files.</td>
+  </tr><tr>
+    <td><span class="pill high">high</span></td>
+    <td><code>MCP082</code></td>
+    <td>docker-host-control</td>
+    <td>Container MCP server uses host networking</td>
+    <td><code>--network=host</code></td>
+    <td><code>mcpg_41352804</code></td>
+    <td>Use a dedicated bridge network and expose only the ports required by the MCP server.</td>
+  </tr><tr>
+    <td><span class="pill high">high</span></td>
+    <td><code>MCP083</code></td>
+    <td>docker-host-control</td>
+    <td>Container volume grants broad host filesystem access</td>
+    <td><code>--mount=type=bind,source=/,target=/host,readonly</code></td>
+    <td><code>mcpg_75b91643</code></td>
+    <td>Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders.</td>
   </tr><tr>
     <td><span class="pill medium">medium</span></td>
     <td><code>MCP020</code></td>

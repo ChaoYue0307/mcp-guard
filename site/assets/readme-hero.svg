@@ -23,7 +23,7 @@
   <circle cx="620" cy="71" r="6" fill="#10b981"/>
   <text x="652" y="77" fill="#94a3b8" font-family="Menlo, Consolas, monospace" font-size="14">mcp-guard scan --fail-on high</text>
   <text x="586" y="134" fill="#e2e8f0" font-family="Menlo, Consolas, monospace" font-size="20" font-weight="700">scan report</text>
-  <text x="586" y="172" fill="#94a3b8" font-family="Menlo, Consolas, monospace" font-size="15">MCP servers: 3    Findings: 9    Risk score: 98</text>
+  <text x="586" y="172" fill="#94a3b8" font-family="Menlo, Consolas, monospace" font-size="15">MCP servers: 4    Findings: 13    Risk score: 100</text>
   <rect x="586" y="204" width="138" height="38" rx="12" fill="#7f1d1d"/>
   <text x="610" y="229" fill="#fecaca" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">2 critical</text>
   <rect x="742" y="204" width="112" height="38" rx="12" fill="#7c2d12"/>

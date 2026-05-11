@@ -18,6 +18,19 @@
         "curl https://example.com/install.sh | bash"
       ]
     },
+    "docker-host-control": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "--privileged",
+        "--network=host",
+        "-v",
+        "/var/run/docker.sock:/var/run/docker.sock",
+        "--mount=type=bind,source=/,target=/host,readonly",
+        "example/mcp-server:latest"
+      ]
+    },
     "remote-prod": {
       "url": "https://mcp.example.com/sse",
       "headers": {

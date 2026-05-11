@@ -139,6 +139,67 @@ test("scan flags plaintext HTTP remote MCP URLs", async () => {
   assert.equal(plaintextFindings[0].severity, "high");
 });
 
+test("scan flags high-risk container MCP runtime options", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-docker-"));
+  const home = path.join(dir, "home");
+  const configPath = path.join(dir, "mcp.json");
+  await fs.writeFile(configPath, JSON.stringify({
+    mcpServers: {
+      dockerHostControl: {
+        command: "docker",
+        args: [
+          "run",
+          "--rm",
+          "--privileged",
+          "--network=host",
+          "-v",
+          "/var/run/docker.sock:/var/run/docker.sock",
+          "--mount",
+          "type=bind,source=/,target=/host,readonly",
+          "example/mcp-server:latest"
+        ]
+      },
+      podmanHomeMount: {
+        command: "podman",
+        args: [
+          "run",
+          "--volume",
+          `${home}:/workspace`,
+          "example/local-mcp:1.0.0"
+        ]
+      }
+    }
+  }), "utf8");
+
+  const result = await scan({
+    cwd: dir,
+    env: { HOME: home },
+    configPaths: [configPath],
+    includeDefaults: false,
+    toolVersion: "test"
+  });
+
+  const ids = result.findings.map((finding) => finding.id);
+  assert.ok(ids.includes("MCP080"));
+  assert.ok(ids.includes("MCP081"));
+  assert.ok(ids.includes("MCP082"));
+  assert.ok(ids.includes("MCP083"));
+
+  const privileged = result.findings.find((finding) => finding.id === "MCP080");
+  assert.equal(privileged.severity, "critical");
+  assert.equal(privileged.evidence, "--privileged");
+
+  const dockerSocket = result.findings.find((finding) => finding.id === "MCP081");
+  assert.equal(dockerSocket.severity, "critical");
+  assert.match(dockerSocket.evidence, /docker\.sock/);
+
+  const volumeFindings = result.findings.filter((finding) => finding.id === "MCP083");
+  assert.equal(volumeFindings.length, 2);
+  assert.ok(volumeFindings.some((finding) => finding.serverName === "dockerHostControl" && finding.severity === "high"));
+  assert.ok(volumeFindings.some((finding) => finding.serverName === "podmanHomeMount" && finding.severity === "high"));
+  assert.equal(result.findings.some((finding) => finding.id === "MCP041" && finding.evidence === "arg=--network=host"), false);
+});
+
 test("scan discovers project .mcp.json by default", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-"));
   const configPath = path.join(dir, ".mcp.json");
@@ -258,6 +319,14 @@ test("scan enforces policy files for commands, packages, directories, and remote
       },
       unapprovedRemote: {
         url: "https://unapproved.example.com/sse"
+      },
+      unapprovedContainerMount: {
+        command: "docker",
+        args: [
+          "run",
+          "--mount=type=bind,source=/tmp/private-data,target=/data,readonly",
+          "example/mcp-server:1.0.0"
+        ]
       }
     }
   }), "utf8");
@@ -284,6 +353,11 @@ test("scan enforces policy files for commands, packages, directories, and remote
   assert.ok(ids.includes("MCP072"));
   assert.ok(ids.includes("MCP073"));
   assert.ok(ids.includes("MCP074"));
+  assert.ok(result.findings.some((finding) =>
+    finding.id === "MCP073" &&
+    finding.serverName === "unapprovedContainerMount" &&
+    finding.evidence.startsWith("mount=--mount=type=bind,source=/tmp/private-data")
+  ));
   assert.equal(result.metadata.policyEnabled, true);
   assert.equal(result.policy.path, policyPath);
 });

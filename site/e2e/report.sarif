@@ -60,6 +60,56 @@
               }
             },
             {
+              "id": "MCP080",
+              "name": "MCP080",
+              "shortDescription": {
+                "text": "Container MCP server runs in privileged mode"
+              },
+              "fullDescription": {
+                "text": "Container MCP server runs in privileged mode"
+              },
+              "help": {
+                "text": "Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs.",
+                "markdown": "Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "critical",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP081",
+              "name": "MCP081",
+              "shortDescription": {
+                "text": "Container MCP server mounts the Docker socket"
+              },
+              "fullDescription": {
+                "text": "Container MCP server mounts the Docker socket"
+              },
+              "help": {
+                "text": "Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization.",
+                "markdown": "Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "critical",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
               "id": "MCP021",
               "name": "MCP021",
               "shortDescription": {
@@ -171,6 +221,56 @@
               "help": {
                 "text": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files.",
                 "markdown": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "high",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP082",
+              "name": "MCP082",
+              "shortDescription": {
+                "text": "Container MCP server uses host networking"
+              },
+              "fullDescription": {
+                "text": "Container MCP server uses host networking"
+              },
+              "help": {
+                "text": "Use a dedicated bridge network and expose only the ports required by the MCP server.",
+                "markdown": "Use a dedicated bridge network and expose only the ports required by the MCP server."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "severity": "high",
+                "tags": [
+                  "mcp",
+                  "ai-agent",
+                  "security"
+                ]
+              }
+            },
+            {
+              "id": "MCP083",
+              "name": "MCP083",
+              "shortDescription": {
+                "text": "Container volume grants broad host filesystem access"
+              },
+              "fullDescription": {
+                "text": "Container volume grants broad host filesystem access"
+              },
+              "help": {
+                "text": "Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders.",
+                "markdown": "Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders."
               },
               "defaultConfiguration": {
                 "level": "error"
@@ -317,6 +417,76 @@
             "serverName": "shell-installer",
             "evidence": "curl pipe to shell",
             "recommendation": "Remove the dangerous operation from MCP startup. Run destructive setup steps manually and review them separately."
+          }
+        },
+        {
+          "ruleId": "MCP080",
+          "level": "error",
+          "message": {
+            "text": "Container MCP server runs in privileged mode. --privileged Fix: Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "docker-host-control",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "mcpg_ebd84499"
+          },
+          "properties": {
+            "severity": "critical",
+            "serverName": "docker-host-control",
+            "evidence": "--privileged",
+            "recommendation": "Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs."
+          }
+        },
+        {
+          "ruleId": "MCP081",
+          "level": "error",
+          "message": {
+            "text": "Container MCP server mounts the Docker socket. -v /var/run/docker.sock:/var/run/docker.sock Fix: Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "docker-host-control",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "mcpg_06c8469d"
+          },
+          "properties": {
+            "severity": "critical",
+            "serverName": "docker-host-control",
+            "evidence": "-v /var/run/docker.sock:/var/run/docker.sock",
+            "recommendation": "Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization."
           }
         },
         {
@@ -492,6 +662,76 @@
             "serverName": "remote-prod",
             "evidence": "Authorization=Bea...ken (27 chars)",
             "recommendation": "Use scoped, short-lived credentials and avoid placing long-lived secrets directly in MCP config files."
+          }
+        },
+        {
+          "ruleId": "MCP082",
+          "level": "error",
+          "message": {
+            "text": "Container MCP server uses host networking. --network=host Fix: Use a dedicated bridge network and expose only the ports required by the MCP server."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "docker-host-control",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "mcpg_41352804"
+          },
+          "properties": {
+            "severity": "high",
+            "serverName": "docker-host-control",
+            "evidence": "--network=host",
+            "recommendation": "Use a dedicated bridge network and expose only the ports required by the MCP server."
+          }
+        },
+        {
+          "ruleId": "MCP083",
+          "level": "error",
+          "message": {
+            "text": "Container volume grants broad host filesystem access. --mount=type=bind,source=/,target=/host,readonly Fix: Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "site/e2e/claude_desktop_config.json"
+                },
+                "region": {
+                  "startLine": 1,
+                  "startColumn": 1
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "docker-host-control",
+                  "kind": "object"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "mcp-guard/rule-server-evidence": "mcpg_75b91643"
+          },
+          "properties": {
+            "severity": "high",
+            "serverName": "docker-host-control",
+            "evidence": "--mount=type=bind,source=/,target=/host,readonly",
+            "recommendation": "Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders."
           }
         },
         {

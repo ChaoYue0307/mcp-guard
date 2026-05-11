@@ -112,6 +112,34 @@ export const RULE_CATALOG = [
     recommendation: "Use an HTTPS MCP endpoint, or tunnel this connection through a trusted encrypted channel."
   },
   {
+    id: "MCP080",
+    severity: "critical",
+    title: "Container MCP server runs in privileged mode",
+    detects: "Docker or Podman MCP server startup arguments include privileged container mode.",
+    recommendation: "Remove privileged mode and grant only the specific capabilities, devices, and filesystem paths the MCP server needs."
+  },
+  {
+    id: "MCP081",
+    severity: "critical",
+    title: "Container MCP server mounts the Docker socket",
+    detects: "Docker or Podman volume or bind-mount arguments expose /var/run/docker.sock or /run/docker.sock to the MCP server.",
+    recommendation: "Do not mount the Docker socket into an MCP server. Use a narrowly scoped broker or dedicated API with least-privilege authorization."
+  },
+  {
+    id: "MCP082",
+    severity: "high",
+    title: "Container MCP server uses host networking",
+    detects: "Docker or Podman MCP server startup arguments use host networking.",
+    recommendation: "Use a dedicated bridge network and expose only the ports required by the MCP server."
+  },
+  {
+    id: "MCP083",
+    severity: "medium/high",
+    title: "Container volume grants broad host filesystem access",
+    detects: "Docker or Podman volume or bind-mount arguments expose root, home, or broad user folders to the MCP server.",
+    recommendation: "Mount a narrow project directory as read-only where possible, instead of root, home, or broad user folders."
+  },
+  {
     id: "MCP070",
     severity: "high",
     title: "Command is outside policy",

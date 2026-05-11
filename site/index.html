@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>mcp-guard | Secure MCP tools before agents run them</title>
-    <meta name="description" content="mcp-guard scans MCP and AI agent tool configs for risky shell access, leaked secrets, env files, broad filesystem permissions, remote MCP endpoints, plaintext HTTP, and unpinned packages.">
+    <meta name="description" content="mcp-guard scans MCP and AI agent tool configs for risky shell access, leaked secrets, env files, broad filesystem permissions, Docker risk, remote MCP endpoints, plaintext HTTP, and unpinned packages.">
     <meta property="og:title" content="mcp-guard">
     <meta property="og:description" content="Local-first MCP and AI agent config security scanner with CLI, GitHub Action, SARIF, HTML, and JSON reports.">
     <meta property="og:type" content="website">
@@ -34,7 +34,7 @@
       <section class="hero">
         <div class="hero-copy">
           <h1>Secure MCP tools before agents run them.</h1>
-          <p>Local-first scanner for risky shell commands, leaked secrets, env files, broad filesystem access, remote MCP endpoints, plaintext HTTP, and unpinned packages.</p>
+          <p>Local-first scanner for risky shell commands, leaked secrets, env files, broad filesystem access, Docker runtime risk, remote MCP endpoints, plaintext HTTP, and unpinned packages.</p>
           <div class="hero-actions">
             <a class="button primary" href="https://www.npmjs.com/package/agent-mcp-guard">Install CLI</a>
             <a class="button secondary" href="https://github.com/marketplace/actions/mcp-guard-mcp-security-scanner">Marketplace Action</a>
@@ -56,11 +56,11 @@
           <div class="preview-grid">
             <div class="score-panel">
               <span>Risk Score</span>
-              <strong>98</strong>
+              <strong>100</strong>
               <b>Critical</b>
               <ul>
-                <li><i class="dot critical"></i>2 Critical</li>
-                <li><i class="dot high"></i>5 High</li>
+                <li><i class="dot critical"></i>4 Critical</li>
+                <li><i class="dot high"></i>7 High</li>
                 <li><i class="dot medium"></i>2 Medium</li>
               </ul>
             </div>
@@ -76,16 +76,16 @@
                 <strong>Broad filesystem access</strong>
                 <code>args: ["/"]</code>
               </div>
-              <div class="issue high">
-                <span>High</span>
-                <strong>Secret-like header configured</strong>
-                <code>Authorization=Bea...ken</code>
+              <div class="issue critical">
+                <span>Critical</span>
+                <strong>Docker socket mounted</strong>
+                <code>/var/run/docker.sock</code>
               </div>
             </div>
             <aside class="pr-panel">
               <h2>GitHub PR Check</h2>
               <strong>Failed</strong>
-              <p>2 active critical findings. 7 known findings accepted by baseline.</p>
+              <p>4 active critical findings. 9 known findings accepted by baseline.</p>
               <a href="#reports">View reports</a>
             </aside>
           </div>
@@ -107,7 +107,7 @@
         <div class="basics-copy">
           <span class="eyebrow">MCP basics</span>
           <h2>Understand the config before an agent uses it.</h2>
-          <p>MCP connects AI clients to tool servers. That connection is powerful because a server can expose file access, shell commands, SaaS APIs, databases, browser tools, or remote endpoints.</p>
+          <p>MCP connects AI clients to tool servers. That connection is powerful because a server can expose file access, shell commands, SaaS APIs, databases, browser tools, containers, or remote endpoints.</p>
           <p>The config is the review point. It shows what command starts, which package runs, what paths are mounted, which env files load, and what secrets or headers are passed into the server.</p>
         </div>
         <div class="basics-grid" aria-label="MCP basics">
@@ -124,7 +124,7 @@
           <div class="basics-card">
             <span>Config</span>
             <strong>Commands, URLs, args, env, envFile, headers</strong>
-            <p>This is where shell wrappers, unpinned packages, broad filesystem paths, plaintext HTTP, and credentials usually enter.</p>
+            <p>This is where shell wrappers, unpinned packages, broad filesystem paths, Docker socket mounts, plaintext HTTP, and credentials usually enter.</p>
           </div>
           <div class="basics-card">
             <span>Guardrail</span>
@@ -158,7 +158,7 @@
           <div>
             <span>Remote trust</span>
             <strong>URLs, HTTP, approved endpoints</strong>
-            <p>Flags remote MCP servers, plaintext HTTP endpoints, and policy violations against approved URLs.</p>
+            <p>Flags remote MCP servers, plaintext HTTP endpoints, high-risk container flags, and policy violations against approved URLs.</p>
           </div>
         </div>
       </section>
@@ -178,7 +178,7 @@ mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
             <li>Inspect the rule catalog from the CLI</li>
             <li>Discover project, parent, Cursor, VS Code, and Claude configs</li>
             <li>Generate conservative policy drafts for review</li>
-            <li>Detect risky shell commands, env files, plaintext HTTP, and broad access</li>
+            <li>Detect risky shell commands, env files, Docker socket mounts, plaintext HTTP, and broad access</li>
             <li>Enforce approved commands, packages, directories, and URLs</li>
             <li>Redact secret-like env vars and headers</li>
             <li>Output text, Markdown, HTML, JSON, and SARIF</li>
@@ -218,10 +218,10 @@ mcp-guard scan --policy .mcp-guard-policy.json --format html</code></pre>
 
 mcp-guard verify-audit</code></pre>
           <div class="mini-report">
-            <strong>98<span>/100</span></strong>
+            <strong>100<span>/100</span></strong>
             <div>
-              <p><span class="bar critical"></span>Critical 2</p>
-              <p><span class="bar high"></span>High 5</p>
+              <p><span class="bar critical"></span>Critical 4</p>
+              <p><span class="bar high"></span>High 7</p>
               <p><span class="bar medium"></span>Medium 2</p>
             </div>
           </div>
@@ -311,13 +311,13 @@ mcp-guard scan --config .mcp.json \
         <div class="proof-grid" aria-label="End-to-end example summary">
           <div class="proof-card">
             <span>Input</span>
-            <strong>3 MCP servers</strong>
-            <p>Unpinned `npx`, broad `/` filesystem access, shell installer, remote endpoint, and secret-like values.</p>
+            <strong>4 MCP servers</strong>
+            <p>Unpinned `npx`, broad `/` filesystem access, shell installer, Docker socket mount, remote endpoint, and secret-like values.</p>
           </div>
           <div class="proof-card">
             <span>Result</span>
-            <strong>9 findings · score 98</strong>
-            <p>2 critical, 5 high, and 2 medium findings with rule IDs, evidence, and remediation guidance.</p>
+            <strong>13 findings · score 100</strong>
+            <p>4 critical, 7 high, and 2 medium findings with rule IDs, evidence, and remediation guidance.</p>
           </div>
           <div class="proof-card artifact-card">
             <span>Artifacts</span>

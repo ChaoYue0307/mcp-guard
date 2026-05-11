@@ -10,10 +10,11 @@ Config file:
 
 - [`site/e2e/claude_desktop_config.json`](../../site/e2e/claude_desktop_config.json)
 
-It contains three MCP server entries:
+It contains four MCP server entries:
 
 - `filesystem-all-home`: launches an unpinned remote package with broad filesystem access and a secret-like environment variable.
 - `shell-installer`: runs `bash -c` with a curl-pipe-shell installer pattern.
+- `docker-host-control`: starts a container with privileged mode, host networking, Docker socket access, and root bind mount access.
 - `remote-prod`: points at a remote MCP endpoint with a secret-like authorization header.
 
 ## Reproduce the Reports
@@ -31,10 +32,10 @@ node ./bin/mcp-guard.js verify-audit --manifest site/e2e/audit/mcp-guard-audit-m
 
 The current scanner reports:
 
-- Risk score: `98`
-- Findings: `9`
-- Critical: `2`
-- High: `5`
+- Risk score: `100`
+- Findings: `13`
+- Critical: `4`
+- High: `7`
 - Medium: `2`
 - Low: `0`
 
@@ -42,6 +43,10 @@ Important findings include:
 
 - `MCP010`: shell command executes inline script.
 - `MCP050`: curl-pipe-shell startup command.
+- `MCP080`: privileged container runtime.
+- `MCP081`: Docker socket mounted into the MCP server.
+- `MCP082`: host networking enabled for the MCP server container.
+- `MCP083`: broad host filesystem bind mount.
 - `MCP021`: unpinned remote MCP package.
 - `MCP030`: secret-like environment variable.
 - `MCP040` and `MCP041`: broad working directory and filesystem argument.

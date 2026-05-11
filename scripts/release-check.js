@@ -218,6 +218,11 @@ const ruleRequired = [
   "MCP050",
   "MCP060",
   "MCP061",
+  "MCP062",
+  "MCP080",
+  "MCP081",
+  "MCP082",
+  "MCP083",
   "MCP070",
   "MCP071",
   "MCP072",
@@ -226,7 +231,7 @@ const ruleRequired = [
 ];
 const ruleMissing = ruleRequired.filter((item) => !ruleIds.has(item));
 
-if ((ruleCatalog.rules || []).length < 19 || ruleMissing.length > 0) {
+if ((ruleCatalog.rules || []).length < 24 || ruleMissing.length > 0) {
   process.stderr.write(`rule catalog is missing expected entries: ${ruleMissing.join(", ")}\n`);
   process.exit(1);
 }
@@ -252,7 +257,7 @@ if (
 }
 
 const report = fs.readFileSync(sampleReportPath, "utf8");
-const required = ["MCP010", "MCP021", "MCP030", "MCP041", "MCP061"];
+const required = ["MCP010", "MCP021", "MCP030", "MCP041", "MCP061", "MCP080", "MCP081", "MCP082", "MCP083"];
 const missing = required.filter((item) => !report.includes(item));
 
 if (missing.length > 0) {
@@ -261,7 +266,7 @@ if (missing.length > 0) {
 }
 
 const htmlReport = fs.readFileSync(sampleHtmlReportPath, "utf8");
-const htmlRequired = ["<!doctype html>", "Risk score", "MCP010", "MCP061"];
+const htmlRequired = ["<!doctype html>", "Risk score", "MCP010", "MCP061", "MCP081"];
 const htmlMissing = htmlRequired.filter((item) => !htmlReport.includes(item));
 
 if (htmlMissing.length > 0) {
@@ -296,11 +301,11 @@ if (sarifLeaks.length > 0) {
 const e2eReport = JSON.parse(fs.readFileSync(e2eJsonReportPath, "utf8"));
 const e2eSummary = e2eReport.summary || {};
 const e2eExpected = [
-  e2eSummary.serverCount === 3,
-  e2eSummary.findingCount === 9,
-  e2eSummary.riskScore === 98,
-  e2eSummary.counts?.critical === 2,
-  e2eSummary.counts?.high === 5,
+  e2eSummary.serverCount === 4,
+  e2eSummary.findingCount === 13,
+  e2eSummary.riskScore === 100,
+  e2eSummary.counts?.critical === 4,
+  e2eSummary.counts?.high === 7,
   e2eSummary.counts?.medium === 2
 ];
 
@@ -324,6 +329,7 @@ const policySuggestionExpected = [
   suggestedPolicy.version === 1,
   suggestedPolicy.allowedCommands?.includes("npx"),
   !suggestedPolicy.allowedCommands?.includes("bash"),
+  !suggestedPolicy.allowedCommands?.includes("docker"),
   suggestedPolicy.allowedPackages?.includes("@modelcontextprotocol/server-filesystem"),
   suggestedPolicy.allowedRemoteUrls?.includes("https://mcp.example.com/sse"),
   !suggestedPolicy.allowedDirectories?.includes("/")
@@ -400,7 +406,7 @@ const summary = spawnSync(process.execPath, [
   encoding: "utf8"
 });
 
-if (summary.status !== 0 || !summary.stdout.includes("Risk score: **98**") || !summary.stdout.includes("First remediation steps") || !summary.stdout.includes("SARIF") || !summary.stdout.includes("Executive summary") || !summary.stdout.includes("Remediation checklist") || !summary.stdout.includes("Audit manifest")) {
+if (summary.status !== 0 || !summary.stdout.includes("Risk score: **100**") || !summary.stdout.includes("First remediation steps") || !summary.stdout.includes("SARIF") || !summary.stdout.includes("Executive summary") || !summary.stdout.includes("Remediation checklist") || !summary.stdout.includes("Audit manifest")) {
   process.stderr.write("action summary generation failed or missed expected content.\n");
   process.stderr.write(summary.stderr);
   process.exit(summary.status ?? 1);
