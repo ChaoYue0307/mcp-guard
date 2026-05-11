@@ -38,6 +38,12 @@ Use links that start with:
 https://buy.stripe.com/
 ```
 
+Set each Payment Link's post-payment redirect URL to:
+
+```text
+https://chaoyue0307.github.io/mcp-guard/thanks/
+```
+
 Do not commit secret keys, restricted keys, webhook signing secrets, or customer data to the repo.
 
 ## Fulfillment Path
@@ -80,6 +86,7 @@ Paid plans should sell convenience and team workflow:
 - Products and prices created.
 - Payment Links created for all three offers.
 - Confirmation page configured.
+- Success redirect points to `https://chaoyue0307.github.io/mcp-guard/thanks/`.
 - Customer support email set to `hechaoyue0307@gmail.com`.
 - Refund policy written.
 - Basic terms and privacy page linked from checkout or website.
