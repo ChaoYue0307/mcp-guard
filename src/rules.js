@@ -30,6 +30,7 @@ export function evaluateServer(server, context) {
   findings.push(...ruleBroadFilesystemArgs(server, context));
   findings.push(...ruleDangerousCommandPattern(server));
   findings.push(...ruleRemoteUrl(server));
+  findings.push(...rulePlainHttpRemoteUrl(server));
   findings.push(...ruleHeaders(server));
   findings.push(...rulePolicyAllowedCommand(server, context));
   findings.push(...rulePolicyAllowedPackage(server, context));
@@ -215,6 +216,19 @@ function ruleRemoteUrl(server) {
     server,
     evidence: `url=${server.url}`,
     recommendation: "Verify the provider, use HTTPS, document the data sent to this server, and keep an allowlist of approved remote endpoints."
+  })];
+}
+
+function rulePlainHttpRemoteUrl(server) {
+  if (!server.url || !/^http:\/\//i.test(server.url)) return [];
+
+  return [finding({
+    id: "MCP062",
+    severity: "high",
+    title: "Remote MCP server uses plaintext HTTP",
+    server,
+    evidence: `url=${server.url}`,
+    recommendation: "Use an HTTPS MCP endpoint, or tunnel this connection through a trusted encrypted channel."
   })];
 }
 

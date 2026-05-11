@@ -27,6 +27,7 @@ mcp-guard rules --format json
 | MCP050 | Critical | Command includes a dangerous operation | Dangerous command patterns such as `rm -rf`, `sudo`, `chmod 777`, force push, or curl-pipe-shell. | Remove dangerous startup operations and run setup steps manually after review. |
 | MCP060 | Medium | Remote MCP server URL is configured | Remote HTTP or HTTPS MCP server URLs. | Verify the provider, document data sent to the server, and keep an allowlist of approved endpoints. |
 | MCP061 | High | Secret-like header is configured | Secret-like remote MCP headers such as authorization or API key headers. | Use scoped, short-lived credentials and avoid long-lived secrets in MCP config files. |
+| MCP062 | High | Remote MCP server uses plaintext HTTP | A remote MCP server URL starts with `http://` instead of `https://`. | Use an HTTPS MCP endpoint, or tunnel this connection through a trusted encrypted channel. |
 | MCP070 | High | Command is outside policy | An MCP server command that is not listed in `allowedCommands`. | Use an approved command or update policy only after review. |
 | MCP071 | High | Remote package is outside policy | A remote MCP package that is not listed in `allowedPackages`. | Use an approved package or update policy only after package review. |
 | MCP072 | High | Working directory is outside policy | A server working directory outside `allowedDirectories`. | Move the server into an approved workspace or update policy only after review. |

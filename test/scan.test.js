@@ -108,6 +108,37 @@ test("scan parses package runner package options", async () => {
   ]);
 });
 
+test("scan flags plaintext HTTP remote MCP URLs", async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-http-remote-"));
+  const configPath = path.join(dir, "mcp.json");
+  await fs.writeFile(configPath, JSON.stringify({
+    mcpServers: {
+      remotePlaintext: {
+        url: "http://mcp.example.test/sse"
+      },
+      remoteTls: {
+        url: "https://mcp.example.test/sse"
+      }
+    }
+  }), "utf8");
+
+  const result = await scan({
+    cwd: dir,
+    env: { HOME: path.join(dir, "home") },
+    configPaths: [configPath],
+    includeDefaults: false,
+    toolVersion: "test"
+  });
+
+  const remoteFindings = result.findings.filter((finding) => finding.id === "MCP060");
+  assert.equal(remoteFindings.length, 2);
+
+  const plaintextFindings = result.findings.filter((finding) => finding.id === "MCP062");
+  assert.equal(plaintextFindings.length, 1);
+  assert.equal(plaintextFindings[0].serverName, "remotePlaintext");
+  assert.equal(plaintextFindings[0].severity, "high");
+});
+
 test("scan discovers project .mcp.json by default", async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), "mcp-guard-"));
   const configPath = path.join(dir, ".mcp.json");

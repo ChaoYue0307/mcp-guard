@@ -105,6 +105,13 @@ export const RULE_CATALOG = [
     recommendation: "Use scoped, short-lived credentials and avoid long-lived secrets in MCP config files."
   },
   {
+    id: "MCP062",
+    severity: "high",
+    title: "Remote MCP server uses plaintext HTTP",
+    detects: "A remote MCP server URL starts with http:// instead of https://.",
+    recommendation: "Use an HTTPS MCP endpoint, or tunnel this connection through a trusted encrypted channel."
+  },
+  {
     id: "MCP070",
     severity: "high",
     title: "Command is outside policy",

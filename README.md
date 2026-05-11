@@ -162,7 +162,7 @@ For the GitHub Action workflow, inspect the public demo repository: [ChaoYue0307
 | Unpinned packages | A trusted MCP server can change underneath you. |
 | Secret-like env vars, env files, and headers | Long-lived tokens leak into tool runtimes and reports. |
 | Broad filesystem access | Home, root, Desktop, Documents, and Downloads are high-blast-radius paths. |
-| Remote MCP URLs | Data may leave the local trust boundary. |
+| Remote MCP URLs and plaintext HTTP | Data may leave the local trust boundary or cross the network without transport encryption. |
 | Dangerous command patterns | `rm -rf`, `sudo`, `chmod 777`, and curl-pipe-shell should block review. |
 | Policy violations | Teams can enforce approved commands, packages, directories, and remote URLs. |
 
