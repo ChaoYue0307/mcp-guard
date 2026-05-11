@@ -38,7 +38,7 @@ mcp-guard verify-audit --manifest mcp-guard-audit/mcp-guard-audit-manifest.json
 ## GitHub Action Setup
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.9
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json

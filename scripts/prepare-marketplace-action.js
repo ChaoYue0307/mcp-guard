@@ -59,6 +59,7 @@ function validateExport() {
     "bin/mcp-guard.js",
     "src/audit.js",
     "src/cli.js",
+    "src/license.js",
     "src/policy.js",
     "src/report.js",
     "scripts/action-summary.js",

@@ -6,6 +6,8 @@ The action runs the CLI from the pinned GitHub Action tag, generates an audit pa
 
 It can also use a committed baseline to accept known findings, enforce a committed policy file, and optionally post a pull request comment with only the active findings.
 
+For paid private repositories, it can optionally verify a Pro license before scanning. Pass the license key from GitHub Secrets; the action does not print the raw key.
+
 After downloading the artifact, run `mcp-guard verify-audit --manifest mcp-guard-report/mcp-guard-audit-manifest.json` to confirm the generated reports still match the manifest hashes.
 
 If `.mcp-guard-policy.json` is committed at the repository root, the CLI auto-loads it. Use the `policy` input when the policy file lives elsewhere.
@@ -39,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ChaoYue0307/mcp-guard-action@v0.4.9
+      - uses: ChaoYue0307/mcp-guard-action@v0.4.10
         with:
           config: .mcp.json
           fail-on: high
@@ -67,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: ChaoYue0307/mcp-guard-action@v0.4.9
+      - uses: ChaoYue0307/mcp-guard-action@v0.4.10
         with:
           config: .mcp.json
           fail-on: high
@@ -79,7 +81,7 @@ jobs:
 Use `fail-on: none` when you want artifacts and summaries without blocking a pull request.
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.9
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
   with:
     fail-on: none
 ```
@@ -95,7 +97,7 @@ mcp-guard scan --config .mcp.json --write-baseline .mcp-guard-baseline.json
 Commit `.mcp-guard-baseline.json`, then reference it from the action:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.9
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json
@@ -109,7 +111,7 @@ Reports will show active findings separately from findings accepted by the basel
 Use a policy when you want CI to enforce approved commands, packages, directories, and remote URLs.
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.9
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
   with:
     config: .mcp.json
     policy: .mcp-guard-policy.json
@@ -117,6 +119,22 @@ Use a policy when you want CI to enforce approved commands, packages, directorie
 ```
 
 See [Policy files](policy.md) for the file format.
+
+## Pro License Gate
+
+Use this only after the fulfillment worker is deployed and exposes `POST /license/verify`.
+
+```yaml
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
+  with:
+    config: .mcp.json
+    fail-on: high
+    license-endpoint: https://YOUR_WORKER_URL/license/verify
+    license-key: ${{ secrets.MCP_GUARD_LICENSE_KEY }}
+    license-email: buyer@example.com
+```
+
+If any license input is set, the action runs `mcp-guard license verify` before scanning. Invalid, expired, mismatched, or unavailable licenses fail the job.
 
 ## Inputs
 
@@ -131,6 +149,10 @@ See [Policy files](policy.md) for the file format.
 | `upload-artifact` | `true` | Uploads generated reports as a workflow artifact. |
 | `upload-sarif` | `false` | Uploads SARIF to GitHub code scanning. Requires `security-events: write`. |
 | `artifact-name` | `mcp-guard-report` | Name of the uploaded artifact. |
+| `license-endpoint` | empty | Optional Pro license verification endpoint. |
+| `license-key` | empty | Optional Pro license key. Pass from a GitHub Secret. |
+| `license-email` | empty | Optional buyer email for Pro license verification. |
+| `license-product` | `pro-monthly` | Product id sent to the license endpoint. |
 
 ## Outputs
 

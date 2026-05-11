@@ -2,9 +2,9 @@
   "version": 1,
   "tool": {
     "name": "mcp-guard",
-    "version": "0.4.9"
+    "version": "0.4.10"
   },
-  "generatedAt": "2026-05-11T04:45:49.380Z",
+  "generatedAt": "2026-05-11T05:55:24.933Z",
   "status": "needs_review",
   "failOn": "none",
   "outputDir": "site/e2e/audit",
@@ -44,43 +44,43 @@
         "key": "executiveSummary",
         "path": "site/e2e/audit/mcp-guard-executive-summary.md",
         "bytes": 1761,
-        "sha256": "7c2b830005c5e0878f81edfc6c6231a79d9d66d7b3bf8caec014ca622cbdd664"
+        "sha256": "e45ecf75feb7018f3f2944f55e5ac20d4cd70928634a15990840af84ecf72e19"
       },
       {
         "key": "remediation",
         "path": "site/e2e/audit/mcp-guard-remediation.md",
         "bytes": 3652,
-        "sha256": "4575ce6031d499b11727409a99298dc13f1eaeffe032d6539e3dfcdf9613b529"
+        "sha256": "7f05741cde48914c45537f435f308e74b4564e2e8ebeff9d259e2ef8d7b0a377"
       },
       {
         "key": "remediationChecklist",
         "path": "site/e2e/audit/mcp-guard-remediation-checklist.md",
         "bytes": 2786,
-        "sha256": "40f1cfed405807179da4a5a73a3b0c9cacfeec2a797907f9862a27af38759cad"
+        "sha256": "ba76134a7f32eb0a10629e1b31609f286b8d74d9e94053ae22241dd4fa282476"
       },
       {
         "key": "markdownReport",
         "path": "site/e2e/audit/mcp-guard-report.md",
         "bytes": 4542,
-        "sha256": "ce9b27975229dfdb86ac3ea3623a0232f66fb20e066b70bc8e2d2377acaaf957"
+        "sha256": "a7488be65d715bab1e25740d39b4330b9fa11ebd95a1c0cacd53b0bc9b83a9cd"
       },
       {
         "key": "htmlReport",
         "path": "site/e2e/audit/mcp-guard-report.html",
         "bytes": 15124,
-        "sha256": "2d769d2901515762304b49aaed16a93082017f1b90e7452403405b8f32776ec9"
+        "sha256": "72bf73ff8f00a8994af11cea90a9a7b8b7aa0b5b398ec73bbd262e5d3026da08"
       },
       {
         "key": "jsonReport",
         "path": "site/e2e/audit/mcp-guard-report.json",
-        "bytes": 8429,
-        "sha256": "5902c4fc1a6e9a4c8a9cbd7cd2418f4c6a2ba60e15f23ee86c5b5eb37b4c67a8"
+        "bytes": 8430,
+        "sha256": "ba9a92ad5decfc26683067763a2fc2dcb04e50de953c8b5be46812900179953f"
       },
       {
         "key": "sarifReport",
         "path": "site/e2e/audit/mcp-guard.sarif",
-        "bytes": 29858,
-        "sha256": "73484a9e2e80952b1737cc10d51ff56cb3360659c7a66c53e712aecceacf9c12"
+        "bytes": 29859,
+        "sha256": "09cb7fba33906bde2d69767863330227de73f0f3a1b4795cb2e47511bf966b18"
       }
     ]
   }

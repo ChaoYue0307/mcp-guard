@@ -30,7 +30,7 @@ If the scan finds only baseline-accepted findings, the exit code is `0`. If a ne
 ## GitHub Action
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.9
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
   with:
     config: .mcp.json
     baseline: .mcp-guard-baseline.json
@@ -45,7 +45,7 @@ The generated Markdown, HTML, JSON, and PR comment separate active findings from
 {
   "version": 1,
   "generatedAt": "2026-05-10T00:00:00.000Z",
-  "toolVersion": "0.4.9",
+  "toolVersion": "0.4.10",
   "findings": [
     {
       "fingerprint": "mcpg_a009b2c2",

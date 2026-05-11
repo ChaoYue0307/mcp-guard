@@ -121,6 +121,25 @@ It verifies Stripe webhook signatures, reads `mcp_guard_product` metadata, creat
 
 For Pro, the worker can store license records in a `LICENSES` KV namespace and expose `POST /license/verify` for private CI license checks.
 
+Customers can verify the license locally:
+
+```sh
+mcp-guard license verify \
+  --endpoint https://YOUR_WORKER_URL/license/verify \
+  --key "$MCP_GUARD_LICENSE_KEY" \
+  --email buyer@example.com
+```
+
+Or in GitHub Actions:
+
+```yaml
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
+  with:
+    license-endpoint: https://YOUR_WORKER_URL/license/verify
+    license-key: ${{ secrets.MCP_GUARD_LICENSE_KEY }}
+    license-email: buyer@example.com
+```
+
 Set this metadata on each Payment Link before using the worker:
 
 | Product | Metadata key | Metadata value |

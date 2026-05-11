@@ -4,13 +4,14 @@ import path from "node:path";
 import { generateAuditSummary, generateAuditVerificationSummary, verifyAuditPack, writeAuditPack } from "./audit.js";
 import { applyBaseline, loadBaselineFile, writeBaselineFile } from "./baseline.js";
 import { initProject, renderInitSummary } from "./init.js";
+import { normalizeLicenseOptions, verifyRemoteLicense } from "./license.js";
 import { defaultPolicyOutputPath, renderPolicySuggestionPreview, renderPolicySuggestionSummary, suggestPolicy, writeSuggestedPolicyFile } from "./policy-suggest.js";
 import { scan } from "./scan.js";
 import { generateHtmlReport, generateJsonReport, generateMarkdownReport, generateSarifReport, generateTextReport } from "./report.js";
 import { generateRulesJson, generateRulesMarkdown, generateRulesText } from "./rule-catalog.js";
 import { compareSeverity, severityRank } from "./severity.js";
 
-const VERSION = "0.4.9";
+const VERSION = "0.4.10";
 
 export async function runCli(argv, io) {
   const args = argv.slice(2);
@@ -23,6 +24,32 @@ export async function runCli(argv, io) {
 
   if (command === "version" || command === "--version" || command === "-v") {
     io.stdout.write(`${VERSION}\n`);
+    return 0;
+  }
+
+  if (command === "license") {
+    if (args.includes("--help") || args.includes("-h")) {
+      io.stdout.write(helpText());
+      return 0;
+    }
+
+    const subcommand = args[1];
+    if (subcommand !== "verify") {
+      io.stderr.write(`Unknown license command: ${subcommand || ""}\n\n`);
+      io.stderr.write(helpText());
+      process.exitCode = 1;
+      return 1;
+    }
+
+    const options = parseLicenseVerifyArgs(args.slice(2), io.env);
+    const result = await verifyRemoteLicense(options);
+    io.stdout.write(renderLicenseVerification(result, options));
+
+    if (!result.valid) {
+      process.exitCode = 2;
+      return 2;
+    }
+
     return 0;
   }
 
@@ -500,6 +527,38 @@ function parseRulesArgs(args) {
   return options;
 }
 
+function parseLicenseVerifyArgs(args, env = {}) {
+  const options = normalizeLicenseOptions({}, env);
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg === "--endpoint") {
+      options.endpoint = readValue(args, index, arg);
+      index += 1;
+    } else if (arg === "--key" || arg === "--license-key") {
+      options.licenseKey = readValue(args, index, arg);
+      index += 1;
+    } else if (arg === "--email") {
+      options.email = readValue(args, index, arg);
+      index += 1;
+    } else if (arg === "--product") {
+      options.product = readValue(args, index, arg);
+      index += 1;
+    } else if (arg === "--timeout-ms") {
+      const timeout = Number(readValue(args, index, arg));
+      if (!Number.isFinite(timeout) || timeout <= 0) {
+        throw new Error("--timeout-ms must be a positive number");
+      }
+      options.timeoutMs = timeout;
+      index += 1;
+    } else {
+      throw new Error(`Unknown license verify option: ${arg}`);
+    }
+  }
+
+  return options;
+}
+
 function readValue(args, index, optionName) {
   const value = args[index + 1];
   if (!value || value.startsWith("--")) {
@@ -538,6 +597,27 @@ function renderRules(format) {
   return generateRulesText();
 }
 
+function renderLicenseVerification(result, options) {
+  const lines = [];
+  lines.push("mcp-guard license verification");
+  lines.push(`Product: ${options.product}`);
+  lines.push(`Email: ${options.email}`);
+  lines.push(`Status: ${result.valid ? "valid" : "invalid"}`);
+
+  if (result.valid) {
+    if (result.stripeSubscriptionId) {
+      lines.push(`Stripe subscription: ${result.stripeSubscriptionId}`);
+    }
+    if (result.stripeSessionId) {
+      lines.push(`Stripe session: ${result.stripeSessionId}`);
+    }
+  } else {
+    lines.push(`Error: ${result.error || "license_rejected"}`);
+  }
+
+  return `${lines.join("\n")}\n`;
+}
+
 function shouldFail(result, failOn) {
   const threshold = severityRank(failOn);
   return result.findings.some((finding) => compareSeverity(finding.severity, threshold) >= 0);
@@ -552,6 +632,7 @@ Usage:
   mcp-guard scan [options]
   mcp-guard audit [options]
   mcp-guard verify-audit [options]
+  mcp-guard license verify [options]
   mcp-guard policy [options]
   mcp-guard rules [options]
   mcp-guard init [options]
@@ -609,6 +690,13 @@ Verify audit options:
                             Default: mcp-guard-audit/mcp-guard-audit-manifest.json.
       --cwd <path>          Working directory for resolving relative artifact paths.
 
+License verify options:
+      --endpoint <url>      License verification endpoint. Env: MCP_GUARD_LICENSE_ENDPOINT.
+      --key <key>           License key. Env: MCP_GUARD_LICENSE_KEY.
+      --email <email>       Buyer email. Env: MCP_GUARD_LICENSE_EMAIL.
+      --product <id>        Product id. Default: pro-monthly.
+      --timeout-ms <ms>     Request timeout in milliseconds. Default: 10000.
+
 Policy options:
   -c, --config <path>       Read a specific MCP config file. Can be repeated.
   -o, --output <path>       Write suggested policy file. Default: .mcp-guard-policy.json.
@@ -630,6 +718,7 @@ Examples:
   mcp-guard rules --format markdown
   mcp-guard audit --config .mcp.json --output-dir mcp-guard-audit
   mcp-guard verify-audit --manifest mcp-guard-audit/mcp-guard-audit-manifest.json
+  mcp-guard license verify --endpoint https://example.com/license/verify --key "$MCP_GUARD_LICENSE_KEY" --email team@example.com
   mcp-guard audit --config .mcp.json --policy .mcp-guard-policy.json --fail-on high
   mcp-guard scan --format markdown --output mcp-guard-report.md
   mcp-guard scan --format html --output mcp-guard-report.html

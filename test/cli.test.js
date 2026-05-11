@@ -4,6 +4,7 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import test from "node:test";
+import { runCli } from "../src/cli.js";
 
 const CLI = path.resolve("bin/mcp-guard.js");
 
@@ -14,11 +15,89 @@ test("CLI help exits successfully", () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /mcp-guard 0\.4\.9/);
+  assert.match(result.stdout, /mcp-guard 0\.4\.10/);
   assert.match(result.stdout, /mcp-guard init \[options\]/);
   assert.match(result.stdout, /mcp-guard audit \[options\]/);
   assert.match(result.stdout, /mcp-guard verify-audit \[options\]/);
+  assert.match(result.stdout, /mcp-guard license verify \[options\]/);
   assert.match(result.stdout, /mcp-guard rules \[options\]/);
+});
+
+test("CLI can verify a Pro license without printing the key", async () => {
+  const licenseKey = "MCPG-PRO-MONTHLY-SECRET";
+  const requests = [];
+  const result = await runCliWithFetch([
+    "node",
+    "mcp-guard",
+    "license",
+    "verify"
+  ], {
+    env: {
+      MCP_GUARD_LICENSE_ENDPOINT: "https://license.example/license/verify",
+      MCP_GUARD_LICENSE_KEY: licenseKey,
+      MCP_GUARD_LICENSE_EMAIL: "buyer@example.com"
+    },
+    fetchImpl: async (url, options) => {
+      requests.push({
+        url,
+        body: JSON.parse(options.body)
+      });
+      return new Response(JSON.stringify({
+        valid: true,
+        product: "pro-monthly",
+        email: "buyer@example.com",
+        stripeSessionId: "cs_test_123",
+        stripeSubscriptionId: "sub_test_123"
+      }), {
+        status: 200,
+        headers: {
+          "content-type": "application/json"
+        }
+      });
+    }
+  });
+
+  assert.equal(result.status, 0);
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].url, "https://license.example/license/verify");
+  assert.deepEqual(requests[0].body, {
+    licenseKey,
+    email: "buyer@example.com",
+    product: "pro-monthly"
+  });
+  assert.match(result.stdout, /Status: valid/);
+  assert.match(result.stdout, /Stripe subscription: sub_test_123/);
+  assert.doesNotMatch(result.stdout, new RegExp(licenseKey));
+  assert.equal(result.stderr, "");
+});
+
+test("CLI exits 2 when a Pro license is rejected", async () => {
+  const result = await runCliWithFetch([
+    "node",
+    "mcp-guard",
+    "license",
+    "verify",
+    "--endpoint",
+    "https://license.example/license/verify",
+    "--key",
+    "MCPG-PRO-MONTHLY-SECRET",
+    "--email",
+    "other@example.com"
+  ], {
+    fetchImpl: async () => new Response(JSON.stringify({
+      valid: false,
+      error: "license_mismatch"
+    }), {
+      status: 200,
+      headers: {
+        "content-type": "application/json"
+      }
+    })
+  });
+
+  assert.equal(result.status, 2);
+  assert.match(result.stdout, /Status: invalid/);
+  assert.match(result.stdout, /Error: license_mismatch/);
 });
 
 test("CLI can list the rule catalog", () => {
@@ -319,7 +398,7 @@ test("CLI can emit SARIF report for GitHub code scanning", () => {
   const parsed = JSON.parse(result.stdout);
   assert.equal(parsed.version, "2.1.0");
   assert.equal(parsed.runs[0].tool.driver.name, "mcp-guard");
-  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.4.9");
+  assert.equal(parsed.runs[0].tool.driver.semanticVersion, "0.4.10");
   assert.ok(parsed.runs[0].tool.driver.rules.some((rule) => rule.id === "MCP010"));
   assert.ok(parsed.runs[0].results.some((finding) => finding.ruleId === "MCP010"));
   assert.equal(parsed.runs[0].results[0].locations[0].physicalLocation.region.startLine, 1);
@@ -402,7 +481,7 @@ test("CLI audit writes a review-ready audit pack", () => {
 
   const manifest = JSON.parse(fs.readFileSync(path.join(outputDir, "mcp-guard-audit-manifest.json"), "utf8"));
   assert.equal(manifest.version, 1);
-  assert.equal(manifest.tool.version, "0.4.9");
+  assert.equal(manifest.tool.version, "0.4.10");
   assert.equal(manifest.status, "needs_review");
   assert.equal(manifest.summary.riskScore, 100);
   assert.equal(manifest.policy.path, "examples/mcp-guard-policy.json");
@@ -627,7 +706,7 @@ test("CLI init writes a GitHub Action workflow", () => {
 
   const workflow = fs.readFileSync(path.join(dir, ".github", "workflows", "mcp-guard.yml"), "utf8");
   assert.match(workflow, /actions\/checkout@v6/);
-  assert.match(workflow, /ChaoYue0307\/mcp-guard-action@v0\.4\.9/);
+  assert.match(workflow, /ChaoYue0307\/mcp-guard-action@v0\.4\.10/);
   assert.match(workflow, /config: \.mcp\.json/);
   assert.match(workflow, /policy: \.mcp-guard-policy\.json/);
   assert.match(workflow, /pull-requests: write/);
@@ -669,7 +748,7 @@ test("CLI init can generate a baseline and SARIF workflow", () => {
   const baseline = JSON.parse(fs.readFileSync(path.join(dir, ".mcp-guard-baseline.json"), "utf8"));
   assert.equal(baseline.version, 1);
   assert.ok(baseline.findings.length >= 1);
-  assert.equal(baseline.toolVersion, "0.4.9");
+  assert.equal(baseline.toolVersion, "0.4.10");
 
   const workflow = fs.readFileSync(path.join(dir, ".github", "workflows", "mcp-guard.yml"), "utf8");
   assert.match(workflow, /baseline: \.mcp-guard-baseline\.json/);
@@ -711,3 +790,37 @@ test("CLI init baseline refuses home-only configs by default", () => {
   assert.match(result.stderr, /No project MCP config found for baseline generation/);
   assert.equal(fs.existsSync(path.join(project, ".mcp-guard-baseline.json")), false);
 });
+
+async function runCliWithFetch(argv, { env = {}, fetchImpl } = {}) {
+  const stdout = [];
+  const stderr = [];
+  const originalFetch = globalThis.fetch;
+  const originalExitCode = process.exitCode;
+  globalThis.fetch = fetchImpl;
+
+  try {
+    const status = await runCli(argv, {
+      cwd: path.resolve("."),
+      env,
+      stdout: {
+        write(value) {
+          stdout.push(String(value));
+        }
+      },
+      stderr: {
+        write(value) {
+          stderr.push(String(value));
+        }
+      }
+    });
+
+    return {
+      status,
+      stdout: stdout.join(""),
+      stderr: stderr.join("")
+    };
+  } finally {
+    globalThis.fetch = originalFetch;
+    process.exitCode = originalExitCode;
+  }
+}

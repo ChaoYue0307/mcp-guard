@@ -493,7 +493,10 @@ const actionRequired = [
   "remediation-report",
   "remediation-checklist",
   "audit-manifest",
-  "package-manager-cache: false"
+  "package-manager-cache: false",
+  "license-endpoint:",
+  "MCP_GUARD_LICENSE_ENDPOINT",
+  "license verify"
 ];
 const actionMissing = actionRequired.filter((item) => !actionMetadata.includes(item));
 

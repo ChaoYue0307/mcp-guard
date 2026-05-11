@@ -11,10 +11,10 @@ The business is not the open-source CLI alone. The CLI creates trust and distrib
 | Offer | Price | Buyer | What they get |
 | --- | ---: | --- | --- |
 | MCP Audit Starter Kit | USD 49 one-time | Solo founder or indie hacker | Templates, GitHub Action setup checklist, audit handoff template, and rollout guide. |
-| mcp-guard Pro | USD 19/month | Team using private repos | Private repo license workflow, maintained policy templates, priority MCP examples, and recurring updates. |
+| mcp-guard Pro | USD 19/month | Team using private repos | Private repo license gate, maintained policy templates, priority MCP examples, and recurring updates. |
 | Team Setup Package | USD 199 one-time | Startup team | One repo setup package with CLI, Action, policy, baseline, SARIF, PR comments, and verified audit pack. |
 
-Use Stripe Payment Links first so customers can pay without a sales call. The website reads live checkout URLs from `site/checkout.js`, and `npm run payments:check -- --live` verifies the links, success page, legal/refund page, and Starter Kit deliverables before launch. `examples/stripe-fulfillment-worker/` is the starter backend for webhook signature verification, fulfillment email, Pro license storage, and private license verification.
+Use Stripe Payment Links first so customers can pay without a sales call. The website reads live checkout URLs from `site/checkout.js`, and `npm run payments:check -- --live` verifies the links, success page, legal/refund page, and Starter Kit deliverables before launch. `examples/stripe-fulfillment-worker/` is the starter backend for webhook signature verification, fulfillment email, Pro license storage, and private license verification. The CLI and GitHub Action can now call `mcp-guard license verify` so Pro has a concrete private-repo entitlement path.
 
 ## Near-Term Paid Offer
 
@@ -31,6 +31,7 @@ Deliverables:
 - define an initial `.mcp-guard-policy.json` for approved commands, packages, directories, and remote URLs;
 - create an initial baseline for accepted known findings;
 - enable PR comments and optional SARIF upload;
+- configure the Pro license gate when the customer is on a paid private-repo plan;
 - document missing rule requests for future product work;
 - provide a short setup handoff note.
 

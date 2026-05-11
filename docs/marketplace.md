@@ -82,7 +82,7 @@ Code quality
 Current release title:
 
 ```text
-v0.4.9
+v0.4.10
 ```
 
 Release notes:
@@ -106,7 +106,7 @@ Completed:
 - README, docs, and website examples now use:
 
 ```yaml
-- uses: ChaoYue0307/mcp-guard-action@v0.4.9
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
 ```
 
 Remaining Marketplace web step:

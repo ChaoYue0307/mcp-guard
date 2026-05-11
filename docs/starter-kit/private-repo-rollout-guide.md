@@ -33,7 +33,16 @@ mcp-guard scan --format markdown --output mcp-guard-initial-report.md
 2. Start with `fail-on: high`.
 3. Enable PR comments for reviewer visibility.
 4. Enable SARIF upload where code scanning is available.
-5. Confirm a test pull request fails when new high-risk MCP config is introduced.
+5. For Pro, add `license-endpoint`, `license-key`, and `license-email` to verify the private CI license before scanning.
+6. Confirm a test pull request fails when new high-risk MCP config is introduced.
+
+Pro license keys must be stored in GitHub Secrets:
+
+```yaml
+license-endpoint: https://YOUR_WORKER_URL/license/verify
+license-key: ${{ secrets.MCP_GUARD_LICENSE_KEY }}
+license-email: buyer@example.com
+```
 
 ## Phase 5: Operating Rhythm
 

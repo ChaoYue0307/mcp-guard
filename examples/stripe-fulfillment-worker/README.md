@@ -60,6 +60,25 @@ curl -X POST https://YOUR_WORKER_URL/license/verify \
   -d '{"licenseKey":"MCPG-PRO-MONTHLY-...","email":"buyer@example.com"}'
 ```
 
+With the CLI:
+
+```sh
+mcp-guard license verify \
+  --endpoint https://YOUR_WORKER_URL/license/verify \
+  --key "$MCP_GUARD_LICENSE_KEY" \
+  --email buyer@example.com
+```
+
+With the GitHub Action:
+
+```yaml
+- uses: ChaoYue0307/mcp-guard-action@v0.4.10
+  with:
+    license-endpoint: https://YOUR_WORKER_URL/license/verify
+    license-key: ${{ secrets.MCP_GUARD_LICENSE_KEY }}
+    license-email: buyer@example.com
+```
+
 Successful response:
 
 ```json
