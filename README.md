@@ -284,6 +284,7 @@ Contact: [hechaoyue0307@gmail.com](mailto:hechaoyue0307@gmail.com)
 - [Roadmap](docs/roadmap.md)
 - [Operator runbook](docs/operator-runbook.md)
 - [Self-serve payments](docs/self-serve-payments.md)
+- [Stripe fulfillment worker example](examples/stripe-fulfillment-worker/README.md)
 
 ## Exit Codes
 

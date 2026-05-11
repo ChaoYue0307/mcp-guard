@@ -83,6 +83,22 @@ When manual license creation becomes painful, add:
 - a private license verification endpoint;
 - Stripe Customer Portal for subscription management.
 
+An implementation starter is available in:
+
+```text
+examples/stripe-fulfillment-worker/
+```
+
+It verifies Stripe webhook signatures, reads `mcp_guard_product` metadata, creates deterministic Pro license keys, and can send fulfillment email through Resend. Keep it separate from the static GitHub Pages site because webhook secrets and signing secrets must live only in a backend or worker runtime.
+
+Set this metadata on each Payment Link before using the worker:
+
+| Product | Metadata key | Metadata value |
+| --- | --- | --- |
+| Starter kit | `mcp_guard_product` | `starter-kit` |
+| Pro monthly | `mcp_guard_product` | `pro-monthly` |
+| Team setup | `mcp_guard_product` | `team-setup` |
+
 ## Product Boundary
 
 Keep the open-source project useful:

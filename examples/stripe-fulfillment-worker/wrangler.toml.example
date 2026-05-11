@@ -1,0 +1,12 @@
+name = "mcp-guard-fulfillment"
+main = "worker.js"
+compatibility_date = "2026-05-11"
+
+# Configure these with `wrangler secret put`, not in this file:
+# STRIPE_WEBHOOK_SECRET
+# LICENSE_SIGNING_SECRET
+# RESEND_API_KEY
+# FULFILLMENT_FROM
+
+[vars]
+SUPPORT_EMAIL = "hechaoyue0307@gmail.com"
