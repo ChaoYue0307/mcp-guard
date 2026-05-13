@@ -10,3 +10,6 @@ output/playwright/
 .env
 .env.*
 !examples/*.env.example
+.secrets/
+*recovery-codes*.txt
+*_recovery_codes.txt
