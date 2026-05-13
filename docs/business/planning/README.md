@@ -51,7 +51,13 @@ Working name for now: `mcp-guard`.
 
 ## Implementation Status
 
-Local repo: `/Users/chaoyue/Library/CloudStorage/Dropbox/OPC/mcp-guard`
+Local workspace: `/Users/chaoyue/Library/CloudStorage/Dropbox/OPC/mcp-guard-project`
+
+Local repos:
+
+- main product repo: `/Users/chaoyue/Library/CloudStorage/Dropbox/OPC/mcp-guard-project/mcp-guard`
+- Marketplace action repo: `/Users/chaoyue/Library/CloudStorage/Dropbox/OPC/mcp-guard-project/mcp-guard-action`
+- demo repo: `/Users/chaoyue/Library/CloudStorage/Dropbox/OPC/mcp-guard-project/mcp-guard-demo`
 
 Current published version:
 

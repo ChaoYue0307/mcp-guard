@@ -35,6 +35,12 @@ This creates:
 dist/mcp-guard-action/
 ```
 
+The local Marketplace repo lives beside the main repo at:
+
+```text
+/Users/chaoyue/Library/CloudStorage/Dropbox/OPC/mcp-guard-project/mcp-guard-action
+```
+
 The generated directory includes only the files needed by the action:
 
 - `action.yml`

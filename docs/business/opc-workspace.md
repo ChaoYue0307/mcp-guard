@@ -17,6 +17,9 @@ Build open-source projects that can create trust, attract users, and convert int
 
 ## Folder Structure
 
+- `mcp-guard/`: main product repo with CLI, website, docs, tests, GitHub Pages, and npm package metadata.
+- `mcp-guard-action/`: dedicated Marketplace action repo exported from `mcp-guard/dist/mcp-guard-action/`.
+- `mcp-guard-demo/`: public demo repo and intentional failing PR for the GitHub Action.
 - `docs/business/services/`: service ideas and prioritization.
 - `docs/business/planning/`: original project planning notes.
 - `docs/business/templates/`: reusable planning templates.
